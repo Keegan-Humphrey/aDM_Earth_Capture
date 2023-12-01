@@ -1,3 +1,0 @@
-Creation Date of this Version: 26 / 11 / 23
-
-New version made because of temperature enhancement bug found in electronic scattering and to run d\sigma/dE_R
