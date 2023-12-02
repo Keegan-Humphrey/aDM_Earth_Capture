@@ -3,6 +3,7 @@
 Needs["FormFactors`"]
 Needs["Constants`"]
 Needs["Utilities`"]
+Needs["Dielectrics`"]
 
 
 BeginPackage["EnergyLoss`"];
@@ -27,6 +28,9 @@ LossIntegrand::usage = "Loss integrand from optical fits";
 
 EnergyLossMSI::usage = "Compute the energy loss for 1 oscillator using theory collision rate";
 EnergyLossMSIFit::usage = "Compute the energy loss for 1 oscillator using fit parameters";
+
+EnergyLossMSIFitEnhanced::usage = "Compute the energy loss for 1 oscillator using fit parameters with Temperature enhancement";
+uMIntegralFitEnhanced::usage = "test";
 
 EnergyLossMSIFitSumOscillators::usage = "Compute EL from optical fits of a material";
 
@@ -116,6 +120,7 @@ upp[z_?NumberQ,m\[Chi]_?NumberQ,v\[Chi]_?NumberQ,params_]:=v\[Chi]/"vF" + z "m"/
 
 upm[z_?NumberQ,m\[Chi]_?NumberQ,v\[Chi]_?NumberQ,params_]:=v\[Chi]/"vF" - z "m"/m\[Chi]/.params (* u_-' - lower boundary of EL Integrals*)
 
+
 zt[m\[Chi]_?NumberQ,v\[Chi]_?NumberQ,params_]:=((m\[Chi] v\[Chi])/("m" "vF"))/.params (* 0 of upm*)
 
 
@@ -154,6 +159,46 @@ LossIntegrand[strtotalparams_,q_,\[Omega]_]:=Log10[Sum[( ("Ai")/("JpereV") (("qF
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
+EnhancementFactorPW[u_,z_,IRCut_]:=\!\(\*
+TagBox[GridBox[{
+{"\[Piecewise]", GridBox[{
+{"1", 
+RowBox[{"1", "<=", 
+RowBox[{"\"\<EF\>\"", " ", "\"\<\[Beta]\>\"", " ", "u", " ", "z"}]}]},
+{
+FractionBox["1", 
+RowBox[{"1", "-", 
+SuperscriptBox["E", 
+RowBox[{
+RowBox[{"-", "4"}], "\"\<\[Beta]\>\"", "\"\<EF\>\"", " ", "u", " ", "z"}]]}]], 
+RowBox[{"IRCut", " ", "<=", 
+RowBox[{"\"\<EF\>\"", " ", "\"\<\[Beta]\>\"", " ", "u", " ", "z"}], "<=", "1"}]},
+{
+RowBox[{
+FractionBox["1", 
+RowBox[{"4", " ", "\"\<EF\>\"", " ", "\"\<\[Beta]\>\"", " ", "z", " ", "u"}]], "+", 
+FractionBox["1", "2"]}], 
+RowBox[{
+RowBox[{"\"\<EF\>\"", " ", "\"\<\[Beta]\>\"", " ", "u", " ", "z"}], " ", "<=", " ", "IRCut"}]}
+},
+AllowedDimensions->{2, Automatic},
+Editable->True,
+GridBoxAlignment->{"Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxItemSize->{"Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {Offset[0.27999999999999997`], {Offset[0.84]}, Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {Offset[0.2], {Offset[0.4]}, Offset[0.2]}, "RowsIndexed" -> {}},
+Selectable->True]}
+},
+GridBoxAlignment->{"Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxItemSize->{"Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {Offset[0.27999999999999997`], {Offset[0.35]}, Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {Offset[0.2], {Offset[0.4]}, Offset[0.2]}, "RowsIndexed" -> {}}],
+"Piecewise",
+DeleteWithContents->True,
+Editable->False,
+SelectWithContents->True,
+Selectable->False,
+StripWrapperBoxes->True]\)(*Cut at low and high energies for stability (use limits)*)
+
+
 (*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
     NIntegrate[u(1 + HeavisideTheta[1 - 4(\[Beta]core)("EF"/.params) u z] Exp[4(\[Beta]core)("EF"/.params) u z]) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
          -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (*assumes core temperatures*)*)
@@ -162,15 +207,27 @@ LossIntegrand[strtotalparams_,q_,\[Omega]_]:=Log10[Sum[( ("Ai")/("JpereV") (("qF
     NIntegrate[u(1+HeavisideTheta[1-(\[Beta]core)("EF"/.params) u z](1/(1-Exp[-4(\[Beta]core)("EF"/.params) u z])-1)) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
          -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}]*)
          
-uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
+(*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
     NIntegrate[u(1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1)) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
          -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] 
-         
+*)
+uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
+    NIntegrate[u (1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1))Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
+         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)
+(*(1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1))*)
+ (*HeavisideTheta[(("\[HBar]""\[Omega]bg")/(z 4"EF")-Abs[u])/.params]*)
+(*zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
+    NIntegrate[z uMIntegralFit[z, m\[Chi], v\[Chi], params], {z, 0, \[Infinity]}]*)
+    
+uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
+    NIntegrate[u (EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
+         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)
+    
 zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
-    NIntegrate[z uMIntegralFit[z, m\[Chi], v\[Chi], params], {z, 0, \[Infinity]}]
+    NIntegrate[z uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params], {z, 0, \[Infinity]}]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*EL Single Oscillator - Public*)
 
 
@@ -221,7 +278,7 @@ EnergyLossMSIFit[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -277,7 +334,7 @@ EnergyLossMSIFitSumOscillators[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*With Temperature Enhancement*)
 
 

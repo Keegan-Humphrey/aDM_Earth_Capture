@@ -88,12 +88,12 @@ LinDielectric[q_,\[Omega]_] := uzLinDielectric[uf[q,\[Omega]],zf[q]] (*Lindhard 
 \[Epsilon]RPA0[z_]:=Refine[uzLinDielectric[0,z],Assumptions->z>0]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Mermin Dielectric (Random Time Approximation) Private Definitions*)
 
 
-(* ::Subsubsection::Closed:: *)
-(*Subscript[\[Epsilon], RPA](\[Omega] +I \[Nu])*)
+(* ::Subsubsection:: *)
+(*Subscript[\[Epsilon], RTA](\[Omega] +I \[Nu])*)
 
 
 \[CapitalZeta][a_,u\[Nu]_]:= Module[{h1,h2},
