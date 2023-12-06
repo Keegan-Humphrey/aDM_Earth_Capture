@@ -93,7 +93,7 @@ LinDielectric[q_,\[Omega]_] := uzLinDielectric[uf[q,\[Omega]],zf[q]] (*Lindhard 
 
 
 (* ::Subsubsection:: *)
-(*Subscript[\[Epsilon], RTA](\[Omega] +I \[Nu])*)
+(*Subscript[\[Epsilon], RPA](\[Omega] +I \[Nu])*)
 
 
 \[CapitalZeta][a_,u\[Nu]_]:= Module[{h1,h2},
@@ -112,11 +112,11 @@ LinDielectric[q_,\[Omega]_] := uzLinDielectric[uf[q,\[Omega]],zf[q]] (*Lindhard 
 \[Epsilon]RPAC[up_,z_,u\[Nu]_]:={1,0} + "\[Chi]"^2/(4 z^3) (\[CapitalZeta][up+z,u\[Nu]]-\[CapitalZeta][up-z,u\[Nu]])
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Mermin Dielectric Public Definitions*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Degenerate*)
 
 

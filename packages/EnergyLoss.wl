@@ -29,9 +29,9 @@ LossIntegrand::usage = "Loss integrand from optical fits";
 EnergyLossMSI::usage = "Compute the energy loss for 1 oscillator using theory collision rate";
 EnergyLossMSIFit::usage = "Compute the energy loss for 1 oscillator using fit parameters";
 
-EnergyLossMSIFitEnhanced::usage = "Compute the energy loss for 1 oscillator using fit parameters with Temperature enhancement";
+(*EnergyLossMSIFitEnhanced::usage = "Compute the energy loss for 1 oscillator using fit parameters with Temperature enhancement";
 uMIntegralFitEnhanced::usage = "test";
-
+*)
 EnergyLossMSIFitSumOscillators::usage = "Compute EL from optical fits of a material";
 
 EnergyLossTableAndInter::usage = "Create an EL table and interpolation function from theory collision rate";
@@ -211,9 +211,9 @@ StripWrapperBoxes->True]\)(*Cut at low and high energies for stability (use limi
     NIntegrate[u(1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1)) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
          -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] 
 *)
-uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
+(*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
     NIntegrate[u (1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1))Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
-         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)
+         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)*)
 (*(1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1))*)
  (*HeavisideTheta[(("\[HBar]""\[Omega]bg")/(z 4"EF")-Abs[u])/.params]*)
 (*zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
