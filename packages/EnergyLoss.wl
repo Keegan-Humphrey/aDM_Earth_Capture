@@ -6,6 +6,9 @@ Needs["Utilities`"]
 Needs["Dielectrics`"]
 
 
+FrontEndTokenExecute@"Save"
+
+
 BeginPackage["EnergyLoss`"];
 
 
@@ -64,6 +67,9 @@ EnergyLossTableAndInterNuc::usage = "Create an EL table and interpolation functi
 
 dPd\[Omega]Nuc0::usage = "Derivative of Transition rate wrt \[Omega] for Nuclear Interactions(proportional to \!\(\*FormBox[FractionBox[\(d\[Sigma]\), \(d\\\ \*SubscriptBox[\(E\), \(R\)]\)],
 TraditionalForm]\)) at 0 Temperature";
+dPd\[Omega]Nuc0Num::usage = "Derivative of Transition rate wrt \[Omega] for Nuclear Interactions(proportional to \!\(\*FormBox[FractionBox[\(d\[Sigma]\), \(d\\\ \*SubscriptBox[\(E\), \(R\)]\)],
+TraditionalForm]\)) at 0 Temperature";
+
 d\[Sigma]dERNuc0::usage = "\!\(\*FormBox[FractionBox[\(d\[Sigma]\), \(d\\\ \*SubscriptBox[\(E\), \(R\)]\)],
 TraditionalForm]\) for Nuclear Interactions at 0 Temperature";
 
@@ -73,9 +79,12 @@ TraditionalForm]\) for Nuclear Interactions at 0 Temperature";
 
 
 dPd\[Omega]e::usage = "Calculate dPd\[Omega] from electronic contributions (using optical data fits)";
-zIntegrald\[Sigma]dER::usage = "Calculate the integral over z appearing in dPd\[Omega]";
+dPd\[Omega]eNum::usage = "Numerically Calculate dPd\[Omega] from electronic contributions (using optical data fits)";
+
+(*zIntegrald\[Sigma]dER::usage = "Calculate the integral over z appearing in dPd\[Omega]";*)
 
 d\[Sigma]dERe::usage = "Calculate the distribution of cross-section with recoil energy for electrons";
+d\[Sigma]dEReNum::usage = "Numerically Calculate the distribution of cross-section with recoil energy for electrons";
 
 
 (* ::Text:: *)
@@ -104,11 +113,11 @@ Kinematics[m\[Chi]_,v\[Chi]_,meshdims_]:=Module[{lm\[Chi]list,lv\[Chi]list},
 ]
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Electonic*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*EL Integrals - Electronic*)
 
 
@@ -155,7 +164,7 @@ zMIntegralFit[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
 LossIntegrand[strtotalparams_,q_,\[Omega]_]:=Log10[Sum[( ("Ai")/("JpereV") (("qF" "vF")/("c"))^2 8 /Pi  ("e")^2/(4 \[Pi] "\[Epsilon]0")/.strtotalparams[[i]])Im[(-Dielectrics`uf[q,\[Omega]]Dielectrics`zf[q]/.strtotalparams)/Dielectrics`\[Epsilon]MNum[Dielectrics`uf[q,\[Omega]]/.strtotalparams[[i]],Dielectrics`zf[q]/.strtotalparams[[i]],("\[Nu]i")/(2 "vF" "qF" Dielectrics`zf[q])/.strtotalparams[[i]],strtotalparams[[i]]]],{i,Length[strtotalparams]}]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -227,7 +236,7 @@ zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
     NIntegrate[z uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params], {z, 0, \[Infinity]}]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*EL Single Oscillator - Public*)
 
 
@@ -278,7 +287,7 @@ EnergyLossMSIFit[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -309,7 +318,7 @@ EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*EL Sum over Oscillators - Public*)
 
 
@@ -334,7 +343,7 @@ EnergyLossMSIFitSumOscillators[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*With Temperature Enhancement*)
 
 
@@ -355,7 +364,7 @@ EnergyLossMSIFitSumOscillatorsEnhanced[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*EL Interpolation and Table - Public*)
 
 
@@ -526,7 +535,7 @@ EnergyLossTableAndInterFITTotalParams[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 
     ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -643,7 +652,7 @@ EnergyLossTableAndInterFITTotalParamsEnhanced[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]
     ]*)
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Nuclear*)
 
 
@@ -839,6 +848,8 @@ qb[sign_,m\[Chi]_,v\[Chi]_,\[Omega]_]:= ((m\[Chi] v\[Chi] + <|"+"->1,"-"->(-1)|>
 
 dPd\[Omega]Nuc0[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_,statpars_]:= ("nI" /.statpars)/(2 \[Omega] "\[HBar]") q^2/("\[HBar]" (2 \[Pi])^2 v\[Chi]) VCoul[q,params]^2 FormFactors`Zeff[q,coeffs]^2 HeavisideTheta[qb["+",m\[Chi],v\[Chi],\[Omega]]-q]HeavisideTheta[q-qb["-",m\[Chi],v\[Chi],\[Omega]]]/. q -> Sqrt[((2 coeffs[["mN"]] \[Omega])/("\[HBar]")) ]/.params
 
+dPd\[Omega]Nuc0Num[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_,statpars_]:= ("nI" /.statpars)/(2 \[Omega] "\[HBar]") q^2/("\[HBar]" (2 \[Pi])^2 v\[Chi]) VCoul[q,params]^2 FormFactors`Zeff[q,coeffs]^2 HeavisideTheta[qb["+",m\[Chi],v\[Chi],\[Omega]]-q]HeavisideTheta[q-qb["-",m\[Chi],v\[Chi],\[Omega]]]/. q -> Sqrt[((2 coeffs[["mN"]] \[Omega])/("\[HBar]")) ]/.params
+
 
 d\[Sigma]dERNuc0[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_]:= 1/(2 \[Omega] ("\[HBar]")^3) q^2/((2 \[Pi])^2 v\[Chi]^2) VCoul[q,params]^2 FormFactors`Zeff[q,coeffs]^2 HeavisideTheta[qb["+",m\[Chi],v\[Chi],\[Omega]]-q]HeavisideTheta[q-qb["-",m\[Chi],v\[Chi],\[Omega]]]/. q -> Sqrt[((2 coeffs[["mN"]] \[Omega])/("\[HBar]")) ]/.params
 
@@ -867,12 +878,14 @@ dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi] "\[HB
 
 dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
-
+dPd\[Omega]eNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 
 d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+
+d\[Sigma]dEReNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 
 (* ::Section::Closed:: *)

@@ -25,13 +25,15 @@ nIFromDensity::usage = "Computes the number density of Ions from a given mass de
 
 
 (* ::Text:: *)
-(*Public Variables*)
+(*Public Replacement Tables*)
 
 
 SIcoreparams::usage = "Iron parameters in the core (8 conduction electrons)";
 SIcrustparams::usage = "Iron parameters in the crust (8 conduction electrons)";
 
 SIConstRepl::usage = "Replacement table for SI constants";
+
+EarthRepl
 
 
 (* ::Text:: *)
@@ -176,7 +178,7 @@ SIcrustparams = SIParams[Tcrust,neSIIron[\[Rho]crust,8],8];
 
 
 SIConsts={"e","m","hbar","c","\[Alpha]","\[Epsilon]0","JpereV","kB"}/.SIcoreparams;
-SIConstRepl={"e"->SIConsts[[1]],"m"->SIConsts[[2]],"hbar"->SIConsts[[3]],"\[HBar]"->SIConsts[[3]],"c"->SIConsts[[4]],"\[Alpha]"->SIConsts[[5]],"\[Epsilon]0"->SIConsts[[6]],"JpereV"->SIConsts[[7]],"kB"->SIConsts[[8]]};
+SIConstRepl={"e"->SIConsts[[1]],"m"->SIConsts[[2]],"hbar"->SIConsts[[3]],"\[HBar]"->SIConsts[[3]],"c"->SIConsts[[4]],"\[Alpha]"->SIConsts[[5]],"\[Epsilon]0"->SIConsts[[6]],"JpereV"->SIConsts[[7]],"kB"->SIConsts[[8]],"G"->6.67 10^-11};
 
 
 \[Beta]crust = 1/(Tcrust "kB")/.SIConstRepl;
@@ -200,6 +202,11 @@ vescape = 11200; (*[m s^-1]*)
 
 REarth = 6.371 10^6; (*[m]*)
 rcore = REarth - 2.885 10^6; (*[m]*)
+
+
+EarthRepl = <|"rE"->REarth,"ME"->5.97 10^24,"vesc"->vescape,"rcore"->rcore,
+			"Tcrust"->Tcrust,"Tcore"->Tcore,"\[Beta]crust"->\[Beta]crust,"\[Beta]core"->\[Beta]core,
+			"SiO2Frac"->0.447,"MgOFrac"->0.387|>;
 
 
 (* ::Section::Closed:: *)
