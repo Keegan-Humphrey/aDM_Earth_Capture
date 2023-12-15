@@ -32,6 +32,8 @@ LinDielectric::usage = "Lindhard Degenerate Dielectric in q \[Omega] variables";
 \[Epsilon]MNum::usage = "Numerical argument version of \[Epsilon]M (for Numerical Integration)";
 \[Epsilon]M\[Omega]qNum::usage = "Numerical argument version of \[Epsilon]M\[Omega]q (for Numerical Integration)";
 
+\[Epsilon]RPAC::usage = "Complex RPA dielectric";
+
 \[Epsilon]RPA0::usage = "Static limit of RPA dielectric";
 
 

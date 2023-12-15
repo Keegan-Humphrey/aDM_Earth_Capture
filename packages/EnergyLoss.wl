@@ -6,7 +6,7 @@ Needs["Utilities`"]
 Needs["Dielectrics`"]
 
 
-FrontEndTokenExecute@"Save"
+(*FrontEndTokenExecute@"Save"*)
 
 
 BeginPackage["EnergyLoss`"];
@@ -30,16 +30,23 @@ Kinematics::usage = "Make a mesh table of DM masses and velocity defining kinema
 LossIntegrand::usage = "Loss integrand from optical fits";
 
 EnergyLossMSI::usage = "Compute the energy loss for 1 oscillator using theory collision rate";
-EnergyLossMSIFit::usage = "Compute the energy loss for 1 oscillator using fit parameters";
+(*EnergyLossMSIFit::usage = "Compute the energy loss for 1 oscillator using fit parameters";*)
+EnergyLossMSIFitEnhanced::usage = "Compute the energy loss for 1 oscillator using fit parameters";
 
 (*EnergyLossMSIFitEnhanced::usage = "Compute the energy loss for 1 oscillator using fit parameters with Temperature enhancement";
 uMIntegralFitEnhanced::usage = "test";
 *)
-EnergyLossMSIFitSumOscillators::usage = "Compute EL from optical fits of a material";
+(*BandGapTruncation::usage = "";*)
+
+(*EnergyLossMSIFitSumOscillators::usage = "Compute EL from optical fits of a material";*)
+EnergyLossMSIFitSumOscillatorsEnhanced::usage = "Compute EL from optical fits of a material";
+
+zMIntegralFitEnhanced::usage="";
+\[Epsilon]test::usage="";
 
 EnergyLossTableAndInter::usage = "Create an EL table and interpolation function from theory collision rate";
-EnergyLossTableAndInterFIT::usage = "Create an EL table and interpolation function from optical fits of a material";
-EnergyLossTableAndInterFITTotalParams::usage = "Create an EL table and interpolation function from optical fits of a material using 1 repl table";
+(*EnergyLossTableAndInterFIT::usage = "Create an EL table and interpolation function from optical fits of a material";
+EnergyLossTableAndInterFITTotalParams::usage = "Create an EL table and interpolation function from optical fits of a material using 1 repl table";*)
 EnergyLossTableAndInterFITTotalParamsEnhanced::usage = "Create an EL table and interpolation function from optical fits of a material using 1 repl table including the temperature enhancement from FD Theorem";
 
 
@@ -113,11 +120,11 @@ Kinematics[m\[Chi]_,v\[Chi]_,meshdims_]:=Module[{lm\[Chi]list,lv\[Chi]list},
 ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Electonic*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*EL Integrals - Electronic*)
 
 
@@ -164,7 +171,7 @@ zMIntegralFit[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
 LossIntegrand[strtotalparams_,q_,\[Omega]_]:=Log10[Sum[( ("Ai")/("JpereV") (("qF" "vF")/("c"))^2 8 /Pi  ("e")^2/(4 \[Pi] "\[Epsilon]0")/.strtotalparams[[i]])Im[(-Dielectrics`uf[q,\[Omega]]Dielectrics`zf[q]/.strtotalparams)/Dielectrics`\[Epsilon]MNum[Dielectrics`uf[q,\[Omega]]/.strtotalparams[[i]],Dielectrics`zf[q]/.strtotalparams[[i]],("\[Nu]i")/(2 "vF" "qF" Dielectrics`zf[q])/.strtotalparams[[i]],strtotalparams[[i]]]],{i,Length[strtotalparams]}]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -208,35 +215,36 @@ Selectable->False,
 StripWrapperBoxes->True]\)(*Cut at low and high energies for stability (use limits)*)
 
 
-(*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
-    NIntegrate[u(1 + HeavisideTheta[1 - 4(\[Beta]core)("EF"/.params) u z] Exp[4(\[Beta]core)("EF"/.params) u z]) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
-         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (*assumes core temperatures*)*)
+BandGapTruncation[\[Omega]_,l_]:= If[l<0,HeavisideTheta["\[Omega]BG"-\[Omega]],1]
+
 
 (*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
-    NIntegrate[u(1+HeavisideTheta[1-(\[Beta]core)("EF"/.params) u z](1/(1-Exp[-4(\[Beta]core)("EF"/.params) u z])-1)) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
-         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}]*)
-         
-(*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
-    NIntegrate[u(1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1)) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
-         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] 
-*)
-(*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
-    NIntegrate[u (1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1))Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
-         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)*)
-(*(1+HeavisideTheta[1-("\[Beta]"/.params)("EF"/.params) u z](1/(1-Exp[-4("\[Beta]"/.params)("EF"/.params) u z])-1))*)
- (*HeavisideTheta[(("\[HBar]""\[Omega]bg")/(z 4"EF")-Abs[u])/.params]*)
-(*zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
-    NIntegrate[z uMIntegralFit[z, m\[Chi], v\[Chi], params], {z, 0, \[Infinity]}]*)
-    
-uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
     NIntegrate[u (EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
          -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)
     
 zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
-    NIntegrate[z uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params], {z, 0, \[Infinity]}]
+    NIntegrate[z uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params], {z, 0, \[Infinity]}]*)
+    
+(*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[u^Abs[l] (BandGapTruncation[u z 2 "qF" "vF"/.params,l]/.params)(EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
+         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)
+(* l - [] energy moment of the interaction per unit length as a function of energy distribution *)
+    
+zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[z^Abs[l] uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, \[Infinity]}]*)
+    
+    uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[u^l (BandGapTruncation[u z 2 "qF" "vF"/.params,l]/.params)(EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
+         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)
+(* l - [] energy moment of the interaction per unit length as a function of energy distribution *)
+    
+zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[z^l uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, \[Infinity]}]
+    
+    \[Epsilon]test[u_,z_,params_]:= Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*EL Single Oscillator - Public*)
 
 
@@ -256,11 +264,11 @@ EnergyLossMSI[m\[Chi]_, v\[Chi]_, params_] :=
     ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Using Optical Fits Parameters*)
 
 
-EnergyLossMSIFit[m\[Chi]_, v\[Chi]_, fitrepl_, consts_, T_] :=
+(*EnergyLossMSIFit[m\[Chi]_, v\[Chi]_, fitrepl_, consts_, T_] :=
     Module[{lL, lPrefactor, ldEdr, fitparams},
         fitparams = Join[Constants`SIParams[T, (("m" "\[Epsilon]0" "\[Omega]i"^2) / ("e"^2) /. fitrepl 
             /. consts)], fitrepl]; (*this extracts the number density from the fitted
@@ -284,14 +292,14 @@ EnergyLossMSIFit[m\[Chi]_, v\[Chi]_, fitparams_] :=
              lPrefactor, "\ndEdr:\t", ldEdr];
         <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitparams, "L" -> lL,
              "Prefactor" -> lPrefactor, "dEdr" -> ldEdr|>
-    ]
+    ]*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
-EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitrepl_, consts_, T_] :=
+(*EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitrepl_, consts_, T_] :=
     Module[{lL, lPrefactor, ldEdr, fitparams},
         fitparams = Join[Constants`SIParams[T, (("m" "\[Epsilon]0" "\[Omega]i"^2) / ("e"^2) /. fitrepl 
             /. consts)], fitrepl]; (*this extracts the number density from the fitted
@@ -303,30 +311,44 @@ EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitrepl_, consts_, T_] :=
              lPrefactor, "\ndEdr:\t", ldEdr];
         <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitparams, "fitrepl"
              -> fitrepl, "L" -> lL, "Prefactor" -> lPrefactor, "dEdr" -> ldEdr|>
-    ]
+    ]*)
 
-EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitparams_] :=
+EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitparams_,l_:1] :=
     Module[
         {lL, lPrefactor, ldEdr},
-        lL = zMIntegralFitEnhanced[m\[Chi], v\[Chi], fitparams];
-        lPrefactor = "Ai" / "JpereV" (("qF" "vF") / v\[Chi])^2 8 / Pi "e"^2 / (4 \[Pi] "\[Epsilon]0") /. fitparams;
+        lL = zMIntegralFitEnhanced[m\[Chi], v\[Chi], fitparams,l];
+        (*lPrefactor = "Ai" / "JpereV" (("qF" "vF") / v\[Chi])^2 8 / Pi "e"^2 / (4 \[Pi] "\[Epsilon]0") /. fitparams;*)
+        lPrefactor = ("\[HBar]")^(Abs[l]-1) ("Ai" / ("JpereV")^Abs[l]) (("qF" "vF")^(Abs[l]+1)/v\[Chi]^2 (2^(Abs[l]+2) / Pi) ("e"^2 / (4 \[Pi] "\[Epsilon]0"))) /. fitparams;
         ldEdr = lPrefactor Total[lL];
         Print["For m\[Chi] = ", m\[Chi], " , v\[Chi] = ", v\[Chi], "\nL:\t", Total[lL] "\nPrefactor:\t",
              lPrefactor, "\ndEdr:\t", ldEdr];
         <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitparams, "L" -> lL,
              "Prefactor" -> lPrefactor, "dEdr" -> ldEdr|>
     ]
+    
+   (* EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitparams_,l_:1] :=
+    Module[
+        {lL, lPrefactor, ldEdr},
+        lL = zMIntegralFitEnhanced[m\[Chi], v\[Chi], fitparams,l];
+        (*lPrefactor = "Ai" / "JpereV" (("qF" "vF") / v\[Chi])^2 8 / Pi "e"^2 / (4 \[Pi] "\[Epsilon]0") /. fitparams;*)
+        lPrefactor = ("\[HBar]")^(l-1) ("Ai" / ("JpereV")^l) (("qF" "vF")^(l+1)/v\[Chi]^2 (2^(l+2) / Pi) ("e"^2 / (4 \[Pi] "\[Epsilon]0"))) /. fitparams;
+        ldEdr = lPrefactor Total[lL];
+        Print["For m\[Chi] = ", m\[Chi], " , v\[Chi] = ", v\[Chi], "\nL:\t", Total[lL] "\nPrefactor:\t",
+             lPrefactor, "\ndEdr:\t", ldEdr];
+        <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitparams, "L" -> lL,
+             "Prefactor" -> lPrefactor, "dEdr" -> ldEdr|>
+    ]*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*EL Sum over Oscillators - Public*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Without Temperature Enhancement*)
 
 
-EnergyLossMSIFitSumOscillators[m\[Chi]_, v\[Chi]_, fitreplNested_, consts_, T_] :=
+(*EnergyLossMSIFitSumOscillators[m\[Chi]_, v\[Chi]_, fitreplNested_, consts_, T_] :=
     Module[{ELlist},
         ELlist = Table[EnergyLossMSIFit[m\[Chi], v\[Chi], fitreplNested[[i]], consts,T]["dEdr"], {i, Length[fitreplNested]}];
         Print["dEdr total: ", Total[ELlist]];
@@ -340,31 +362,31 @@ EnergyLossMSIFitSumOscillators[m\[Chi]_, v\[Chi]_, fitparams_] :=
         Print["dEdr total: ", Total[ELlist]];
         <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitparams, "ELlist" 
             -> ELlist, "dEdr" -> Total[ELlist]|>
-    ]
+    ]*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*With Temperature Enhancement*)
 
 
-EnergyLossMSIFitSumOscillatorsEnhanced[m\[Chi]_, v\[Chi]_, fitreplNested_, consts_, T_] :=
+(*EnergyLossMSIFitSumOscillatorsEnhanced[m\[Chi]_, v\[Chi]_, fitreplNested_, consts_, T_] :=
     Module[{ELlist},
         ELlist = Table[EnergyLossMSIFitEnhanced[m\[Chi], v\[Chi], fitreplNested[[i]], consts,T]["dEdr"], {i, Length[fitreplNested]}];
         Print["dEdr total: ", Total[ELlist]];
         <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitreplNested, "consts"
              -> consts, "T" -> T, "ELlist" -> ELlist, "dEdr" -> Total[ELlist]|>
-    ]
+    ]*)
 
-EnergyLossMSIFitSumOscillatorsEnhanced[m\[Chi]_, v\[Chi]_, fitparams_] :=
+EnergyLossMSIFitSumOscillatorsEnhanced[m\[Chi]_, v\[Chi]_, fitparams_,l_:1] :=
     Module[{ELlist},
-        ELlist = Table[EnergyLossMSIFitEnhanced[m\[Chi], v\[Chi], fitparams[[i]]]["dEdr"], {i, Length[fitparams]}];
+        ELlist = Table[EnergyLossMSIFitEnhanced[m\[Chi], v\[Chi], fitparams[[i]],l]["dEdr"], {i, Length[fitparams]}];
         Print["dEdr total: ", Total[ELlist]];
         <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitparams, "ELlist" 
             -> ELlist, "dEdr" -> Total[ELlist]|>
     ]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*EL Interpolation and Table - Public*)
 
 
@@ -421,7 +443,7 @@ EnergyLossTableAndInter[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^ -2
 (*Using Optical Fits Parameters*)
 
 
-EnergyLossTableAndInterFIT[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
+(*EnergyLossTableAndInterFIT[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
      -2}, meshdims_ : <|"m\[Chi]" -> 5, "v\[Chi]" -> 5|>, fitreplNested_, consts_, 
     T_, save_:True, fname_:"outputdict"] :=
     Module[
@@ -476,10 +498,10 @@ EnergyLossTableAndInterFIT[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
         ];
         outputdict
     ]
+*)
 
 
-
-EnergyLossTableAndInterFITTotalParams[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
+(*EnergyLossTableAndInterFITTotalParams[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
      -2}, meshdims_ : <|"m\[Chi]" -> 5, "v\[Chi]" -> 5|>, fitreplNested_, save_:True,
      fname_:"outputdict"] :=
     Module[
@@ -532,16 +554,16 @@ EnergyLossTableAndInterFITTotalParams[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 
             Utilities`SaveIt[NotebookDirectory[] <> fname, outputdict]
         ];
         outputdict
-    ]
+    ]*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
 EnergyLossTableAndInterFITTotalParamsEnhanced[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
      -2}, meshdims_ : <|"m\[Chi]" -> 5, "v\[Chi]" -> 5|>, fitreplNested_, save_:True,
-     fname_:"outputdict"] :=
+     fname_:"outputdict",l_:1] :=
     Module[
         {kinlist, EnergyLossTable, m\[Chi]Mesh, v\[Chi]Mesh, EnergyLossMesh, InterpolationTable,
              LogInterpolation, outputdict, count, times, timesMesh}
@@ -550,6 +572,9 @@ EnergyLossTableAndInterFITTotalParamsEnhanced[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]
 	  m\[Chi] - [kg] max and min of masses in grid
 	v\[Chi] - [m s^-1] max and min of velocities in grid
 	meshdims - size of equally (in log space) spaced grids of m\[Chi] and v\[Chi] 
+    l - [] which moment of interaction per unit length (1/vdP/Subscript[dE, R])to calculate 
+           (l=1 gives Energy Loss per unit length [eV m^-1]], 
+            l=0 gives inverse interaction length [m^-1])
     
     to compute energy loss over
 	
@@ -564,7 +589,7 @@ EnergyLossTableAndInterFITTotalParamsEnhanced[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]
             Print[count, " of ", meshdims[["m\[Chi]"]] meshdims[["v\[Chi]"]]];
             AppendTo[times, AbsoluteTiming[AppendTo[EnergyLossTable, 
                 EnergyLossMSIFitSumOscillatorsEnhanced[(kinlist[["m\[Chi]"]])[[i]], (kinlist[["v\[Chi]"
-                ]])[[j]], fitreplNested]]][[1]]]
+                ]])[[j]], fitreplNested,l]]][[1]]]
             ,
             {i, meshdims[["m\[Chi]"]]}
             ,
@@ -835,11 +860,11 @@ EnergyLossTableAndInterNuc[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10^-4, 10^-2
     ]
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*d\[Sigma]/(d Subscript[E, R]) *)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*0 Temperature - Nuclear*)
 
 
@@ -854,7 +879,7 @@ dPd\[Omega]Nuc0Num[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_,statpars_]:= ("nI
 d\[Sigma]dERNuc0[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_]:= 1/(2 \[Omega] ("\[HBar]")^3) q^2/((2 \[Pi])^2 v\[Chi]^2) VCoul[q,params]^2 FormFactors`Zeff[q,coeffs]^2 HeavisideTheta[qb["+",m\[Chi],v\[Chi],\[Omega]]-q]HeavisideTheta[q-qb["-",m\[Chi],v\[Chi],\[Omega]]]/. q -> Sqrt[((2 coeffs[["mN"]] \[Omega])/("\[HBar]")) ]/.params
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Electronic*)
 
 
@@ -888,25 +913,39 @@ d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[C
 d\[Sigma]dEReNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Plotting*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Plot Energy Loss Interpolation Function - Public*)
 
 
 PlotEL[ELdict_,material_:"Earth"]:=Module[{},
-(* ELdict - association returned by EnergyLossTableAndInterFIT (assumes SI) *)
-Print[Show[{DensityPlot[ELdict[["f"]][m+6 - Log10[("c"^2)/("JpereV")/.Constants`SIConstRepl],v +Log10["c"/.Constants`SIConstRepl]],
-		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
-		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
-		PlotRange->All,FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[m\[Chi]] [MeV]","\!\(\*SubscriptBox[\(Log\), \(10\)]\)[v\[Chi]] [c]"},PlotLabel->StringForm["\!\(\*SubscriptBox[\(Log\), \(10\)]\)[Energy Loss] [eV \!\(\*SuperscriptBox[\(m\), \(-1\)]\)] - ``",material]],
-ContourPlot[ELdict[["f"]][m+6- Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],v+Log10["c"/.Constants`SIConstRepl]],
-		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
-		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
-		PlotRange->All,ContourLabels->True,ContourShading->False]}]]
-]
+  (* ELdict - association returned by EnergyLossTableAndInterFIT (assumes SI) *)
+  Print[Show[{DensityPlot[ELdict[["f"]][m+6 - Log10[("c"^2)/("JpereV")/.Constants`SIConstRepl],v +Log10["c"/.Constants`SIConstRepl]],
+  		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
+  		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
+  		PlotRange->All,FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[m\[Chi]] [MeV]","\!\(\*SubscriptBox[\(Log\), \(10\)]\)[v\[Chi]] [c]"},PlotLabel->StringForm["\!\(\*SubscriptBox[\(Log\), \(10\)]\)[Energy Loss] [eV \!\(\*SuperscriptBox[\(m\), \(-1\)]\)] - ``",material]],
+  ContourPlot[ELdict[["f"]][m+6- Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],v+Log10["c"/.Constants`SIConstRepl]],
+  		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
+  		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
+  		PlotRange->All,ContourLabels->True,ContourShading->False]}]]
+  ]
+  
+  (*PlotEL[ELdict_,material_:"Earth",ChangeTitle_:False,Title_]:=Module[{plottitle},
+  (* ELdict - association returned by EnergyLossTableAndInterFIT (assumes SI) *)
+  plottitle=If[ChangeTitle,Title,StringForm["\!\(\*SubscriptBox[\(Log\), \(10\)]\)[Energy Loss] [eV \!\(\*SuperscriptBox[\(m\), \(-1\)]\)] - ``",material]];
+  Print[plottitle];
+  Print[Show[{DensityPlot[ELdict[["f"]][m+6 - Log10[("c"^2)/("JpereV")/.Constants`SIConstRepl],v +Log10["c"/.Constants`SIConstRepl]],
+  		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
+  		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
+  		PlotRange->All,FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[m\[Chi]] [MeV]","\!\(\*SubscriptBox[\(Log\), \(10\)]\)[v\[Chi]] [c]"},PlotLabel->plottitle],
+  ContourPlot[ELdict[["f"]][m+6- Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],v+Log10["c"/.Constants`SIConstRepl]],
+  		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
+  		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
+  		PlotRange->All,ContourLabels->True,ContourShading->False]}]]
+  ]*)
 
 
 (* ::Chapter::Closed:: *)
