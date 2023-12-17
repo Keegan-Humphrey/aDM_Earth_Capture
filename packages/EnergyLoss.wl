@@ -128,7 +128,7 @@ Kinematics[m\[Chi]_,v\[Chi]_,meshdims_]:=Module[{lm\[Chi]list,lv\[Chi]list},
 (*EL Integrals - Electronic*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Integration Bounds*)
 
 
@@ -233,13 +233,22 @@ zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
 zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
     NIntegrate[z^Abs[l] uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, \[Infinity]}]*)
     
-    uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    (*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
     NIntegrate[u^l (BandGapTruncation[u z 2 "qF" "vF"/.params,l]/.params)(EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
-         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* only include below silicate band gap \[Omega]bg*)
+         -upp[z, m\[Chi], v\[Chi], params], upm[z, m\[Chi], v\[Chi], params]}] (* l=-1 => only include below silicate band gap \[Omega]bg*)
 (* l - [] energy moment of the interaction per unit length as a function of energy distribution *)
     
 zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
-    NIntegrate[z^l uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, \[Infinity]}]
+    NIntegrate[z^l uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, \[Infinity]}]*)
+    
+    
+ uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[u^l (BandGapTruncation[u z 2 "qF" "vF"/.params,l]/.params)(EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
+         0, upm[z, m\[Chi], v\[Chi], params]}] (* l=-1 => only include below silicate band gap \[Omega]bg*)
+(* l - [] energy moment of the interaction per unit length as a function of energy distribution *)
+    
+zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[z^l uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, zt[m\[Chi],v\[Chi],params]}]
     
     \[Epsilon]test[u_,z_,params_]:= Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]]
 
@@ -315,15 +324,15 @@ EnergyLossMSIFit[m\[Chi]_, v\[Chi]_, fitparams_] :=
 
 EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitparams_,l_:1] :=
     Module[
-        {lL, lPrefactor, ldEdr},
+        {lL, lPrefactor, lthEmoment},
         lL = zMIntegralFitEnhanced[m\[Chi], v\[Chi], fitparams,l];
         (*lPrefactor = "Ai" / "JpereV" (("qF" "vF") / v\[Chi])^2 8 / Pi "e"^2 / (4 \[Pi] "\[Epsilon]0") /. fitparams;*)
         lPrefactor = ("\[HBar]")^(Abs[l]-1) ("Ai" / ("JpereV")^Abs[l]) (("qF" "vF")^(Abs[l]+1)/v\[Chi]^2 (2^(Abs[l]+2) / Pi) ("e"^2 / (4 \[Pi] "\[Epsilon]0"))) /. fitparams;
-        ldEdr = lPrefactor Total[lL];
+        lthEmoment = lPrefactor Total[lL];
         Print["For m\[Chi] = ", m\[Chi], " , v\[Chi] = ", v\[Chi], "\nL:\t", Total[lL] "\nPrefactor:\t",
-             lPrefactor, "\ndEdr:\t", ldEdr];
+             lPrefactor, StringForm["\n \!\(\*SuperscriptBox[\(``\), \(th\)]\) E moment:\t",l], lthEmoment];
         <|"m\[Chi]" -> m\[Chi], "v\[Chi]" -> v\[Chi], "fitparams" -> fitparams, "L" -> lL,
-             "Prefactor" -> lPrefactor, "dEdr" -> ldEdr|>
+             "Prefactor" -> lPrefactor, "dEdr" -> lthEmoment|>
     ]
     
    (* EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitparams_,l_:1] :=
@@ -921,7 +930,7 @@ d\[Sigma]dEReNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("
 (*Plot Energy Loss Interpolation Function - Public*)
 
 
-PlotEL[ELdict_,material_:"Earth"]:=Module[{},
+(*PlotEL[ELdict_,material_:"Earth"]:=Module[{},
   (* ELdict - association returned by EnergyLossTableAndInterFIT (assumes SI) *)
   Print[Show[{DensityPlot[ELdict[["f"]][m+6 - Log10[("c"^2)/("JpereV")/.Constants`SIConstRepl],v +Log10["c"/.Constants`SIConstRepl]],
   		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
@@ -931,12 +940,11 @@ PlotEL[ELdict_,material_:"Earth"]:=Module[{},
   		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
   		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
   		PlotRange->All,ContourLabels->True,ContourShading->False]}]]
-  ]
+  ]*)
   
-  (*PlotEL[ELdict_,material_:"Earth",ChangeTitle_:False,Title_]:=Module[{plottitle},
+  PlotEL[ELdict_,material_:"Earth",ChangeTitle_:False,Title_]:=Module[{plottitle},
   (* ELdict - association returned by EnergyLossTableAndInterFIT (assumes SI) *)
   plottitle=If[ChangeTitle,Title,StringForm["\!\(\*SubscriptBox[\(Log\), \(10\)]\)[Energy Loss] [eV \!\(\*SuperscriptBox[\(m\), \(-1\)]\)] - ``",material]];
-  Print[plottitle];
   Print[Show[{DensityPlot[ELdict[["f"]][m+6 - Log10[("c"^2)/("JpereV")/.Constants`SIConstRepl],v +Log10["c"/.Constants`SIConstRepl]],
   		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
   		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
@@ -945,7 +953,7 @@ PlotEL[ELdict_,material_:"Earth"]:=Module[{},
   		{m,Log[10,First[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["m\[Chi]"]]]]-6 + Log10[("c")^2/("JpereV")/.Constants`SIConstRepl]},
   		{v,Log[10,First[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl],Log[10,Last[ELdict[["kinlist"]][["v\[Chi]"]]]]-Log10["c"/.Constants`SIConstRepl]},
   		PlotRange->All,ContourLabels->True,ContourShading->False]}]]
-  ]*)
+  ]
 
 
 (* ::Chapter::Closed:: *)
