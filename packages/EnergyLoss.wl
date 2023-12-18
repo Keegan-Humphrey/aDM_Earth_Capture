@@ -41,8 +41,8 @@ uMIntegralFitEnhanced::usage = "test";
 (*EnergyLossMSIFitSumOscillators::usage = "Compute EL from optical fits of a material";*)
 EnergyLossMSIFitSumOscillatorsEnhanced::usage = "Compute EL from optical fits of a material";
 
-zMIntegralFitEnhanced::usage="";
-\[Epsilon]test::usage="";
+(*zMIntegralFitEnhanced::usage="";*)
+(*\[Epsilon]test::usage="";*)
 
 EnergyLossTableAndInter::usage = "Create an EL table and interpolation function from theory collision rate";
 (*EnergyLossTableAndInterFIT::usage = "Create an EL table and interpolation function from optical fits of a material";
@@ -242,15 +242,24 @@ zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
     NIntegrate[z^l uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, \[Infinity]}]*)
     
     
- uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+ (*uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
     NIntegrate[u^l (BandGapTruncation[u z 2 "qF" "vF"/.params,l]/.params)(EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
          0, upm[z, m\[Chi], v\[Chi], params]}] (* l=-1 => only include below silicate band gap \[Omega]bg*)
 (* l - [] energy moment of the interaction per unit length as a function of energy distribution *)
     
 zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
     NIntegrate[z^l uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, zt[m\[Chi],v\[Chi],params]}]
+ *)   
+    (*\[Epsilon]test[u_,z_,params_]:= Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]]*)
     
-    \[Epsilon]test[u_,z_,params_]:= Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]]
+    uMIntegralFitEnhanced[z_?NumberQ, m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[u^Abs[l] (BandGapTruncation[u z 2 "qF" "vF"/.params,l]/.params)(EnhancementFactorPW[u,z,10^-3]/.params) Im[-1 / Dielectrics`\[Epsilon]MNum[u, z, u\[Nu]Fit[z] /. params, params]], {u,
+         0, upm[z, m\[Chi], v\[Chi], params]}] (* l=-1 => only include below silicate band gap \[Omega]bg*)
+(* l - [] energy moment of the interaction per unit length as a function of energy distribution *)
+    
+zMIntegralFitEnhanced[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_,l_:1] :=
+    NIntegrate[z^Abs[l] uMIntegralFitEnhanced[z, m\[Chi], v\[Chi], params,l], {z, 0, zt[m\[Chi],v\[Chi],params]}]
+    
 
 
 (* ::Subsection:: *)

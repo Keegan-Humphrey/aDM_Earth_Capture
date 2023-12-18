@@ -45,6 +45,13 @@ ContourTotalParams::usage = "Contour Plot of integrand of EL integrals using fit
 ContourTotalParams\[Omega]q::usage = "Contour Plot of integrand of EL integrals using fit replacement table in \[Omega] q variables";
 
 
+(* ::Text:: *)
+(*Interpolate with absolute value*)
+
+
+AbsInterpolation::usage = "interpolate energy loss table with an absolute value (for negative values from numerical instability)";
+
+
 (* ::Section:: *)
 (*Private*)
 
@@ -106,7 +113,7 @@ ExpToStrConverter[table_]:=Module[{temptable},
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Rescale Fit Coefficients*)
 
 
@@ -159,11 +166,24 @@ ReplaceParams[params_,ent_,par_]:=Module[{list,location},
 ]
 
 
+(* ::Subsubsection:: *)
+(*Interpolation*)
+
+
+AbsInterpolation[dict_]:= Module[{InterpolationTable},
+ InterpolationTable = Table[{{dict["m\[Chi]Mesh"][[i, j]], dict["v\[Chi]Mesh"][[i, j]]},
+             Abs[dict["EnergyLossMesh"][[i, j]]]}, {i, dict["meshdims"][["m\[Chi]"]]}, {j, dict["meshdims"][["v\[Chi]"]]
+            }];
+Interpolation[Flatten[Log[10, InterpolationTable
+            ], 1]]
+]
+
+
 (* ::Subsection:: *)
 (*Plotting*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Plot \[Epsilon] contour via total params*)
 
 

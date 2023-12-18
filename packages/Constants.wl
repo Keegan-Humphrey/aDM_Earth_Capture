@@ -33,7 +33,7 @@ SIcrustparams::usage = "Iron parameters in the crust (8 conduction electrons)";
 
 SIConstRepl::usage = "Replacement table for SI constants";
 
-EarthRepl
+MassDensities::usage = "mass densities in the mantle [kg \!\(\*SuperscriptBox[\(m\), \(-3\)]\)]";
 
 
 (* ::Text:: *)
@@ -148,43 +148,6 @@ Usage:
 (*Define Public Replacement Tables*)
 
 
-(* ::Subsubsection:: *)
-(*Physical Inputs*)
-
-
-(* ::Text:: *)
-(****** should put all this into a dictionary*)
-
-
-T0=0;  (*[K] 0 temperature*)
-Tcrust=290;  (*[K] ambient temperature*)
-Tcore=5470;  (*[K] core temperature*)
-
-
-\[Rho]crust = 7800;(*[kg m^-3] iron density at crust*)
-\[Rho]core = 13000;(*[kg m^-3] iron density at earth's core*)
-
-
-(* ::Subsubsection:: *)
-(*Compute Outputs*)
-
-
-(* ::Text:: *)
-(*With 8 conduction electrons*)
-
-
-SIcoreparams = SIParams[Tcore,neSIIron[\[Rho]core,8],8];
-SIcrustparams = SIParams[Tcrust,neSIIron[\[Rho]crust,8],8];
-
-
-SIConsts={"e","m","hbar","c","\[Alpha]","\[Epsilon]0","JpereV","kB"}/.SIcoreparams;
-SIConstRepl={"e"->SIConsts[[1]],"m"->SIConsts[[2]],"hbar"->SIConsts[[3]],"\[HBar]"->SIConsts[[3]],"c"->SIConsts[[4]],"\[Alpha]"->SIConsts[[5]],"\[Epsilon]0"->SIConsts[[6]],"JpereV"->SIConsts[[7]],"kB"->SIConsts[[8]],"G"->6.67 10^-11};
-
-
-\[Beta]crust = 1/(Tcrust "kB")/.SIConstRepl;
-\[Beta]core = 1/(Tcore "kB")/.SIConstRepl;
-
-
 (* ::Subsection:: *)
 (*Misc Constants*)
 
@@ -207,6 +170,42 @@ rcore = REarth - 2.885 10^6; (*[m]*)
 EarthRepl = <|"rE"->REarth,"ME"->5.97 10^24,"vesc"->vescape,"rcore"->rcore,
 			"Tcrust"->Tcrust,"Tcore"->Tcore,"\[Beta]crust"->\[Beta]crust,"\[Beta]core"->\[Beta]core,
 			"SiO2Frac"->0.447,"MgOFrac"->0.387|>;
+
+
+(* ::Text:: *)
+(****** should put all this into a dictionary*)
+
+
+T0=0;  (*[K] 0 temperature*)
+Tcrust=290;  (*[K] ambient temperature*)
+Tcore=5470;  (*[K] core temperature*)
+
+
+\[Rho]crust = 7800;(*[kg m^-3] iron density at crust*)
+\[Rho]core = 13000;(*[kg m^-3] iron density at earth's core*)
+
+
+MassDensities = <|"\[Rho]M"->4500,"\[Rho]SiO2"->2650,"\[Rho]MgO"->3580|> (*[kg m^-3] mantle and silicate densities*)
+
+
+(* ::Subsubsection:: *)
+(*Compute Outputs*)
+
+
+(* ::Text:: *)
+(*With 8 conduction electrons*)
+
+
+SIcoreparams = SIParams[Tcore,neSIIron[\[Rho]core,8],8];
+SIcrustparams = SIParams[Tcrust,neSIIron[\[Rho]crust,8],8];
+
+
+SIConsts={"e","m","hbar","c","\[Alpha]","\[Epsilon]0","JpereV","kB"}/.SIcoreparams;
+SIConstRepl={"e"->SIConsts[[1]],"m"->SIConsts[[2]],"hbar"->SIConsts[[3]],"\[HBar]"->SIConsts[[3]],"c"->SIConsts[[4]],"\[Alpha]"->SIConsts[[5]],"\[Epsilon]0"->SIConsts[[6]],"JpereV"->SIConsts[[7]],"kB"->SIConsts[[8]],"G"->6.67 10^-11};
+
+
+\[Beta]crust = 1/(Tcrust "kB")/.SIConstRepl;
+\[Beta]core = 1/(Tcore "kB")/.SIConstRepl;
 
 
 (* ::Section::Closed:: *)
