@@ -41,7 +41,8 @@ uMIntegralFitEnhanced::usage = "test";
 (*EnergyLossMSIFitSumOscillators::usage = "Compute EL from optical fits of a material";*)
 EnergyLossMSIFitSumOscillatorsEnhanced::usage = "Compute EL from optical fits of a material";
 
-(*zMIntegralFitEnhanced::usage="";*)
+(*uMIntegralFitEnhanced::usage="";
+zMIntegralFitEnhanced::usage="";*)
 (*\[Epsilon]test::usage="";*)
 
 EnergyLossTableAndInter::usage = "Create an EL table and interpolation function from theory collision rate";
@@ -128,7 +129,7 @@ Kinematics[m\[Chi]_,v\[Chi]_,meshdims_]:=Module[{lm\[Chi]list,lv\[Chi]list},
 (*EL Integrals - Electronic*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Integration Bounds*)
 
 
@@ -282,7 +283,7 @@ EnergyLossMSI[m\[Chi]_, v\[Chi]_, params_] :=
     ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Using Optical Fits Parameters*)
 
 
