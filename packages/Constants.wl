@@ -45,6 +45,8 @@ vescape::usage = "escape velocity at the surface of the Earth";
 REarth::usage = "radius of the Earth";
 rcore::usage = "radius of Earth's core";
 
+EarthRepl::usage = "Replacement Table for constants specific to the Earth";
+
 \[Beta]crust::usage = "\[Beta] at Earth's surface";
 \[Beta]core::usage = "\[Beta] at Earth's core";
 

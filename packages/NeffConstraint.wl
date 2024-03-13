@@ -24,6 +24,8 @@ Z1::usage = "classical single particle partition function";
 nD0::usage = "DM number density today as a function of temperature";
 nDR::usage = "DM number density at recombination as a function of temperature";
 
+NumIntegrand::usage = "integrand used in ESM Integral";
+ESMIntegral::usage = "integral to compute energy transfer / interaction rates w electrons as a function of temperature";
 InterpolateEtransRate::usage = "Interpolate over temperature to find energy transfer rate as a funtion of mass";
 InterpolateTotEtrans::usage = "Interpolate over mass to find energy transfered to DS";
 
@@ -793,13 +795,25 @@ ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ]:=NIntegrate[m/\[Xi]\[Beta] N
 (*"], "Byte", ColorSpace -> "RGB", ImageResolution -> {191.9986, 191.9986}, Interleaving -> True]*)
 
 
-Integrate[Ett/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
+(*Integrate[Ett/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
 Simplify[%/."ms"->("m"^2+"mD"^2)/(2 "mD")];
-Integrand =Simplify[Simplify[(%/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(%/.Ett->0)]];
+Integrand =Simplify[Simplify[(%/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(%/.Ett->0)]];*)
 
 
-NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_]:=2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"] Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]"],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})/.params
-ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,params_]:=(m/.params)/\[Xi]\[Beta] NIntegrate[ NumIntegrand[mD,m,\[Kappa],\[Xi]\[Beta],\[Xi]E,params],{\[Xi]E,0,\[Infinity]}](*extra factor comes from jacobian*)
+(*NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_]:=2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"] Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]"],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})/.params
+ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,params_]:=(m/.params)/\[Xi]\[Beta] NIntegrate[ NumIntegrand[mD,m,\[Kappa],\[Xi]\[Beta],\[Xi]E,params],{\[Xi]E,0,\[Infinity]}](*extra factor comes from jacobian*)*)
+
+
+NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_,l_:1]:= Module[{Integrand,E1ms,E1},
+(*l - == 1 => energy transfer rate integrand, == 0 => interaction rate (over Subscript[n, D]) integrand*)
+ E1ms=Integrate[Ett^l/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
+	E1=Simplify[E1ms/."ms"->("m"^2+"mD"^2)/(2 "mD")];
+	Integrand =Simplify[Simplify[(E1/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(E1/.Ett->0)]];
+2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]"],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})/.params
+]
+
+
+ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,params_,l_:1]:=(m/.params)/\[Xi]\[Beta] NIntegrate[ NumIntegrand[mD,m,\[Kappa],\[Xi]\[Beta],\[Xi]E,params],{\[Xi]E,0,\[Infinity]}](*extra factor comes from jacobian*)
 
 
 (* ::Text:: *)
@@ -818,7 +832,7 @@ RateLogFnof\[Beta]=Interpolation[InterPoints];
 ]*)
 
 
-InterpolateEtransRate[mD_,m_,\[Kappa]_,params_]:=Module[{n=13,Inter\[Xi]\[Beta]s,InterPoints,RateLogFnof\[Beta],\[CapitalDelta]Etransfered,Td,TR,Tdt},
+InterpolateEtransRate[mD_,m_,\[Kappa]_,params_,l_:1]:=Module[{n=13,Inter\[Xi]\[Beta]s,InterPoints,RateLogFnof\[Beta],\[CapitalDelta]Etransfered,Td,TR,Tdt},
 
 Td = "Td"/.params;
 TR = "TR" /.params;
@@ -826,7 +840,7 @@ Tdt = "Tdt"/.params;
 
 (*Interpolate to find the energy transfer rate between e e decoupling and recombination*)
 Inter\[Xi]\[Beta]s= Subdivide[Log10[m/Td],Log10[m/TR],n]; (*points to be samples, we have made \[Beta] dimensionless (\[Xi]\[Beta]=m \[Beta])*)
-InterPoints=Table[{Inter\[Xi]\[Beta]s[[i]],Log10[Abs[ESMIntegral[mD,m,\[Kappa],10^Inter\[Xi]\[Beta]s[[i]],params]]]},{i,Length[Inter\[Xi]\[Beta]s]}] ;(*Abs since numerical instability at early times*)
+InterPoints=Table[{Inter\[Xi]\[Beta]s[[i]],Log10[Abs[ESMIntegral[mD,m,\[Kappa],10^Inter\[Xi]\[Beta]s[[i]],params,l]]]},{i,Length[Inter\[Xi]\[Beta]s]}] ;(*Abs since numerical instability at early times*)
 RateLogFnof\[Beta]=Interpolation[InterPoints];
 \[CapitalDelta]Etransfered = NIntegrate[Tdt 10^RateLogFnof\[Beta][Log10[\[Beta] m]],{\[Beta],1/Td,1/TR}];
 (*RateFnof\[Beta][\[Beta]_] := 10^RateLogFnof\[Beta][Log10[\[Beta] m]];*)
@@ -851,10 +865,10 @@ TotLogFnofm=Interpolation[\[CapitalDelta]EPoints];
 ]*)
 
 
-InterpolateTotEtrans[mD_:{10^-3 ("me"/.CosmoParams[]),10^4 ("me"/.CosmoParams[])},m_:("me"/.CosmoParams[]),\[Kappa]_:1,params_]:=Module[{n=Round[Log10[mD[[2]]]-Log10[mD[[1]]]]+1,Interms,TableofInters,\[CapitalDelta]EPoints,TotLogFnofm},
+InterpolateTotEtrans[mD_:{10^-3 ("me"/.CosmoParams[]),10^4 ("me"/.CosmoParams[])},m_:("me"/.CosmoParams[]),\[Kappa]_:1,params_,l_:1]:=Module[{n=Round[Log10[mD[[2]]]-Log10[mD[[1]]]]+1,Interms,TableofInters,\[CapitalDelta]EPoints,TotLogFnofm},
 (*Interpolate to find the energy transfer rate between e e decoupling and recombination*)
 Interms= N[Subdivide[Log10[mD[[2]]],Log10[mD[[1]]],n]]; (*points to be samples, we have made \[Beta] dimensionless (\[Xi]\[Beta]=m \[Beta])*)
-TableofInters=Table[InterpolateEtransRate[10^Interms[[i]],m,\[Kappa],params],{i,Length[Interms]}];(*table of interpolations*)
+TableofInters=Table[InterpolateEtransRate[10^Interms[[i]],m,\[Kappa],params,l],{i,Length[Interms]}];(*table of interpolations*)
 \[CapitalDelta]EPoints=Table[{Interms[[i]],Log10[TableofInters[[i]][["\[CapitalDelta]Etot"]]]},{i,Length[Interms]}] ;(*Abs since numerical instability at early times*)
 TotLogFnofm=Interpolation[\[CapitalDelta]EPoints];
 (*RateFnof\[Beta][\[Beta]_] := 10^RateLogFnof\[Beta][Log10[\[Beta] m]];*)
