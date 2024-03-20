@@ -49,6 +49,7 @@ EnergyLossTableAndInter::usage = "Create an EL table and interpolation function 
 (*EnergyLossTableAndInterFIT::usage = "Create an EL table and interpolation function from optical fits of a material";
 EnergyLossTableAndInterFITTotalParams::usage = "Create an EL table and interpolation function from optical fits of a material using 1 repl table";*)
 EnergyLossTableAndInterFITTotalParamsEnhanced::usage = "Create an EL table and interpolation function from optical fits of a material using 1 repl table including the temperature enhancement from FD Theorem";
+(*EnergyLossTableAndInterFITTotalParamsEnhancedOscillators::usage = "Create an EL table and interpolation function from optical fits of a material using 1 repl table including the temperature enhancement from FD Theorem, and giving information for each oscillator";*)
 
 
 (* ::Text:: *)
@@ -580,6 +581,7 @@ EnergyLossTableAndInter[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^ -2
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
+(*CORRECT ONE WHICH WORKS - DOESN'T GIVE INDIVIDUAL OSCILLATOR INFO*)
 EnergyLossTableAndInterFITTotalParamsEnhanced[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
      -2}, meshdims_ : <|"m\[Chi]" -> 5, "v\[Chi]" -> 5|>, fitreplNested_, save_:True,
      fname_:"outputdict",l_:1] :=
@@ -637,6 +639,77 @@ EnergyLossTableAndInterFITTotalParamsEnhanced[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]
         ];
         outputdict
     ]
+    
+(*MODIFYING TO GET INDIVIDUAL OSCILLATOR FITS*)
+(*EnergyLossTableAndInterFITTotalParamsEnhancedOscillators[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
+     -2}, meshdims_ : <|"m\[Chi]" -> 5, "v\[Chi]" -> 5|>, fitreplNested_, save_:True,
+     fname_:"outputdict",l_:1] :=
+    Module[
+        {kinlist, EnergyLossTable, m\[Chi]Mesh, v\[Chi]Mesh, EnergyLossMesh, InterpolationTable,
+             LogInterpolation, EnergyLossMeshELlist, LogInterpolationELlist, outputdict,
+              count, times, timesMesh}
+        ,
+(*
+	  m\[Chi] - [kg] max and min of masses in grid
+	v\[Chi] - [m s^-1] max and min of velocities in grid
+	meshdims - size of equally (in log space) spaced grids of m\[Chi] and v\[Chi] to compute energy loss / interaction length over
+    l - [] which moment of interaction per unit length (1/vdP/Subscript[dE, R])to calculate 
+           (l=1 gives Energy Loss per unit length [eV m^-1]], 
+            l=0 gives inverse interaction length [m^-1])
+	
+	Output is in [eV m^-1] or [m^-1], Oscillator suffix is for individual oscillators in the fit
+		EnergyLossMesh(Oscillators) - table of energy loss / interaction length over the kinematic mesh
+		f(Oscillators) - Log Log interpolation of EnergyLossMesh
+	*)
+        kinlist = Kinematics[m\[Chi], v\[Chi], meshdims];
+        count = 0;
+        EnergyLossTable = {};
+        times = {};
+        Do[
+            count++;
+            Print[count, " of ", meshdims[["m\[Chi]"]] meshdims[["v\[Chi]"]]];
+            AppendTo[times, AbsoluteTiming[AppendTo[EnergyLossTable, 
+                EnergyLossMSIFitSumOscillatorsEnhanced[(kinlist[["m\[Chi]"]])[[i]], (kinlist[["v\[Chi]"
+                ]])[[j]], fitreplNested,l]]][[1]]]
+            ,
+            {i, meshdims[["m\[Chi]"]]}
+            ,
+            {j, meshdims[["v\[Chi]"]]}
+        ];
+        
+        
+        (*Save Times*)
+        timesMesh = ArrayReshape[times, {meshdims[["m\[Chi]"]], meshdims[[
+            "v\[Chi]"]]}];
+        
+        (*Compute kinematic meshes*)
+        m\[Chi]Mesh = ArrayReshape[Table[EnergyLossTable[[i]][["m\[Chi]"]], {i,
+             Length[EnergyLossTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]}];
+        v\[Chi]Mesh = ArrayReshape[Table[EnergyLossTable[[i]][["v\[Chi]"]], {i,
+             Length[EnergyLossTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]}];
+        
+        (*Compute total *)
+        EnergyLossMesh = ArrayReshape[Table[EnergyLossTable[[i]][["dEdr"
+            ]], {i, Length[EnergyLossTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]
+            }];
+        LogInterpolation=Utilities`InterpolateTable[m\[Chi]Mesh,v\[Chi]Mesh,meshdims,EnergyLossMesh];
+        
+        (*Compute Individual Oscillators*)
+        EnergyLossMeshELlist = Table[ArrayReshape[Table[EnergyLossTable[[i]][["ELlist"
+            ]][[j]], {i, Length[EnergyLossTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]
+            }],{j,Length[fitreplNested]}];    
+        LogInterpolationELlist=Table[Utilities`InterpolateTable[m\[Chi]Mesh,v\[Chi]Mesh,meshdims,EnergyLossMeshELlist[[j]]],{j,Length[fitreplNested]}];
+        
+        
+        outputdict = <|"f" -> LogInterpolation, "fOscillators"->LogInterpolationELlist, "m\[Chi]Mesh" -> m\[Chi]Mesh, "v\[Chi]Mesh"
+             -> v\[Chi]Mesh, "EnergyLossMesh" -> EnergyLossMesh, "EnergyLossMeshOscillators"->EnergyLossMeshELlist, 
+             "fitparams" -> fitreplNested, "fname" -> fname, "kinlist" -> kinlist, "meshdims" -> meshdims, "timesMesh"
+             -> timesMesh, "totalTime" -> Total[timesMesh, 2]|>;
+        If[save,
+            Utilities`SaveIt[NotebookDirectory[] <> fname, outputdict]
+        ];
+        outputdict
+    ]*)
 
 
 (*EnergyLossTableAndInterFITTotalParamsEnhanced[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^

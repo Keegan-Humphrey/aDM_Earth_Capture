@@ -46,10 +46,17 @@ ContourTotalParams\[Omega]q::usage = "Contour Plot of integrand of EL integrals 
 
 
 (* ::Text:: *)
-(*Interpolate with absolute value*)
+(*Interpolate Moment Table with absolute value*)
 
 
-AbsInterpolation::usage = "interpolate energy loss table with an absolute value (for negative values from numerical instability)";
+AbsInterpolation::usage = "interpolate Moment Table with an absolute value (for negative values from numerical instability)";
+
+
+(* ::Text:: *)
+(*Interpolate Moment Table without absolute value*)
+
+
+InterpolateTable::usage = "interpolate Moment Table loss table";
 
 
 (* ::Section:: *)
@@ -175,6 +182,14 @@ AbsInterpolation[dict_]:= Module[{InterpolationTable},
              Abs[dict["EnergyLossMesh"][[i, j]]]}, {i, dict["meshdims"][["m\[Chi]"]]}, {j, dict["meshdims"][["v\[Chi]"]]
             }];
 Interpolation[Flatten[Log[10, InterpolationTable
+            ], 1]]
+]
+
+InterpolateTable[m\[Chi]Mesh_,v\[Chi]Mesh_,meshdims_,EnergyLossMesh_] := Module[{InterpolationTable},
+InterpolationTable = Table[{{m\[Chi]Mesh[[i, j]], v\[Chi]Mesh[[i, j]]},
+             EnergyLossMesh[[i, j]]}, {i, meshdims[["m\[Chi]"]]}, {j, meshdims[["v\[Chi]"]]
+            }];
+        Interpolation[Flatten[Log[10, InterpolationTable
             ], 1]]
 ]
 
