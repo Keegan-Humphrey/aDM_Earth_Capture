@@ -92,50 +92,7 @@ Degen = EF/Tdt; (*Degeneracy of gas today*)
 
 
 (* ::Text:: *)
-(*Cosmo Constants - temperatures and scale factors*)
-
-
-(*Td = 5 10^5; (*[eV] annihilation temperature*)
-ad =(2 10^9)^-1; (*[] scale factor (~(1/z)) at annihilation*)
-Tdt = 2.5 10^-4 (*[eV] Temperature of the Universe today*)
-T0 = 2.5 10^-4 (*[eV] Temperature of the Universe today*)
-aR = (1100)^-1;(*[] scale factor ~ (1/z) at recombination*)
-TR = (Tdt/aR) (*[eV] Temperature at recombination*)*)
-
-
-(* ::Text:: *)
-(*Critical density*)
-
-
-(*h= 0.67 (*baumann 1.2.64*)
-\[Rho]critbaumanncm = 1.1 10^-5 h^2 (*[protons cm^-3]*) 
-\[Rho]critbaumannm = \[Rho]critbaumanncm  (10^6) (*[protons m^-3]*)*)
-
-
-(* ::Text:: *)
-(*Conversion*)
-
-
-(*eVm = N[200 10^-15 10^6] (*[eV m] = 1 follows from 1 = 200 MeV fm*)*)
-
-
-(* ::Text:: *)
-(*Hubble*)
-
-
-(*H0tinv = 4.4 10^17; (*s*)
-H0linv = 3 10^8 H0tinv; (*m*)
-H0inv = eVm^-1 H0linv; (*eV^-1*)
-H0= (H0inv^-1) (*eV*) *)
-
-
-(* ::Text:: *)
 (*Define hubble and scale speed*)
-
-
-(*\[CapitalLambda]CDMrepl= {\[CapitalOmega]k ->0.01,\[CapitalOmega]r->9.4 10^-5, \[CapitalOmega]m->0.32,\[CapitalOmega]\[CapitalLambda]->0.68,\[CapitalOmega]b->0.05,\[CapitalOmega]c->0.27}; (*[] \[CapitalLambda]CDM density parameters*)
-H[\[Beta]_] :=H0 (\[CapitalOmega]r a^-4+\[CapitalOmega]m a^-3+\[CapitalOmega]k a^-2 + \[CapitalOmega]\[CapitalLambda])^(1/2)/.\[CapitalLambda]CDMrepl/.a->(Tdt \[Beta])
-aH[\[Beta]_] :=a H0 (\[CapitalOmega]r a^-4+\[CapitalOmega]m a^-3+\[CapitalOmega]k a^-2 + \[CapitalOmega]\[CapitalLambda])^(1/2)/.\[CapitalLambda]CDMrepl/.a->(Tdt \[Beta])*)
 
 
 (*Density Parameters for Hubble*)
@@ -148,29 +105,11 @@ aH[\[Beta]_] :="a" "H0" ("\[CapitalOmega]r" "a"^-4+"\[CapitalOmega]m" "a"^-3+"\[
 (*Number density today*)
 
 
-(*n0 = \[CapitalOmega]b \[Rho]critbaumannm eVm^3 /.\[CapitalLambda]CDMrepl  (*[eV^3] proton / electron number density today*)
-ne[\[Beta]_]:= n0 (1/(\[Beta] Tdt))^3 (*[eV^3] number density as a function of temperature*)
-nd = n0 (Td/Tdt)^3 (*[eV^3] number density at decoupling*)
-nr = n0 ((Td/Tdt)^3) (*[eV^3] number density at decoupling*)*)
-
-
 ne[\[Beta]_]:= "n0" (1/(\[Beta] "Tdt"))^3 (*[eV^3] number density as a function of temperature*)
 
 
 (* ::Text:: *)
 (*Thermal Quantities*)
-
-
-(*me = 5 10^5; (*[eV] electron mass*)
-\[Alpha]=1/137;
-pth =( (me Tdt)/(2 \[Pi]))^(1/2); (*[eV] thermal de-broglie momentum*)
-g = 4; (*[] dofs in SM electron*)
-Z1[\[Beta]_] := (g pth^3)/n0 (1/(Tdt \[Beta]))^(-3/2)(*[] single particle classical partition function*)
-kF = N[(3 \[Pi]^2 n0)^(1/3)] (*[eV] fermi momentum today*)
-EF = kF^2/(2 me)
-EFd = EF Td/Tdt (*[eV]fermi energy at decoupling*)
-Degen = EF/Tdt (*Degeneracy of gas today - degeneracy is independent of time*)
-*)
 
 
 Z1[\[Beta]_] := ("g" "pth"^3)/"n0" (1/("Tdt" \[Beta]))^(-3/2)(*[] single particle classical partition function - normalization of distribution Subscript[n, e]*)
@@ -190,27 +129,11 @@ nDR[fD_,mDMtot_] := 1/"aR"^3 nD0[fD,mDMtot]
 (*Debeye energy - Assuming electron mass*)
 
 
-\[CapitalLambda][\[Beta]_]:= 4 \[Pi] "\[Alpha]" (2\[Pi] "n0")/("me" "Tdt" ) (1/(\[Beta] "Tdt"))^2
+\[CapitalLambda][\[Beta]_,m_]:= 4 \[Pi] "\[Alpha]" (2\[Pi] "n0")/(m "Tdt" ) (1/(\[Beta] "Tdt"))^2
 
 
 (* ::Text:: *)
-(*Determine interaction rate as a function of temperature ***** UNCOMMENT BEFORE USE*)
-
-
-(*Integrate[Ett/(Ett+\[CapitalLambda])^2 ((ms + ESMt)^2+(ms+(Ett-ESMt))^2),Ett];
-Simplify[%/.ms->(m^2+mD^2)/(2 mD)];
-Integrand =Simplify[Simplify[(%/.Ett->(2 mD)/((ESMt+mD)^2/(ESMt^2-m^2)-1))-(%/.Ett->0)]];
-NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ]:=2/\[Pi] (\[Alpha]^2 \[Kappa]^2)/mDt (E^(-\[Beta] ESMt + \[Beta] \[Mu])/aH[\[Beta]] Integrand /.\[Mu]->m - 1/\[Beta] Log[Qt]/.{\[CapitalLambda]->\[CapitalLambda][\[Beta]],Qt->Z1[\[Beta]]}/.ESMt->1/\[Beta] \[Xi]E + m/.\[Beta]->\[Xi]\[Beta]/m/.{m->mt,mD->mDt})
-ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ]:=NIntegrate[m/\[Xi]\[Beta] NumIntegrand[mD,m,\[Kappa],\[Xi]\[Beta],\[Xi]E],{\[Xi]E,0,\[Infinity]}](*extra factor comes from jacobian*)*)
-
-
-(*Integrate[Ett/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
-Simplify[%/."ms"->("m"^2+"mD"^2)/(2 "mD")];
-Integrand =Simplify[Simplify[(%/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(%/.Ett->0)]];*)
-
-
-(*NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_]:=2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"] Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]"],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})/.params
-ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,params_]:=(m/.params)/\[Xi]\[Beta] NIntegrate[ NumIntegrand[mD,m,\[Kappa],\[Xi]\[Beta],\[Xi]E,params],{\[Xi]E,0,\[Infinity]}](*extra factor comes from jacobian*)*)
+(*Determine interaction rate as a function of temperature *)
 
 
 NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_,l_:1]:= Module[{Integrand,E1ms,E1},
@@ -218,7 +141,7 @@ NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_,l_
  E1ms=Integrate[Ett^l/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
 	E1=Simplify[E1ms/."ms"->("m"^2+"mD"^2)/(2 "mD")];
 	Integrand =Simplify[Simplify[(E1/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(E1/.Ett->0)]];
-2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]"],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})/.params
+2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]",mt],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})/.params
 ]
 
 
@@ -227,8 +150,23 @@ NonNumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_,\[Xi]E_,l_:1]:= Module[{Integra
  E1ms=Integrate[Ett^l/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
 	E1=Simplify[E1ms/."ms"->("m"^2+"mD"^2)/(2 "mD")];
 	Integrand =Simplify[Simplify[(E1/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(E1/.Ett->0)]];
-2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]"],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})
+2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]",mt],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})
 ]
+
+
+(*P\[CapitalMu]=("ms"+ESM)^2+("ms"+(Et-ESM))^2;
+prefactor = ("n0")/("T0" \[Beta])^31/("Z1")((4 \[Pi]"\[Alpha]")^2 \[Kappa]^2)/(mD (2 \[Pi])^3) ("g")/4 ;(* prefactor of eqn (629) of notes over nD*)
+integrand=E^(-\[Beta](ESM-m))P\[CapitalMu]/(Et + "\[CapitalLambda]")^2Et^l
+boundsE= {m,\[Infinity]};
+boundsEt={0,(2 mD)/((ESM+mD)^2/(ESM^2-m^2)-1) };
+(*shorthandrepl={"ms"->(m^2+mD^2)/(2 mD),"\[CapitalLambda]"->4\[Pi] "\[Alpha]" (2 \[Pi] "n0")/(m "T0") (1/("T0" \[Beta]))^2,"Z1"->"g" ((2 \[Pi] \[Beta])/ m)^(-3/2)};*)
+thermalrepl={"\[CapitalLambda]"->"\[CapitalLambda]0" (1/("T0" \[Beta]))^2,"Z1"->"g" ((2 \[Pi] \[Beta])/ m)^(-3/2)};
+\[CapitalLambda]repl={"\[CapitalLambda]0"->4\[Pi] "\[Alpha]" (2 \[Pi] "n0")/(m "T0")}
+msrepl = {"ms"->(m^2+mD^2)/(2 mD)}
+pthav=3 Sqrt[2] Sqrt[(2 m)/(\[Beta] 2 \[Pi])] (*average thermal momentum for boltzman distributed species (ie for SM electrons)*)
+Integrate[integrand/. l->0,Et];
+(*Etintegral=((%/.Et->boundsEt[[2]])-(%/.Et->boundsEt[[1]]))*)
+Etintegral= Et  integrand/.l->0/.Et->pthav^2/(2 m)*)
 
 
 ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,params_,l_:1]:=(m/.params)/\[Xi]\[Beta] NIntegrate[ NumIntegrand[mD,m,\[Kappa],\[Xi]\[Beta],\[Xi]E,params,l],{\[Xi]E,0,\[Infinity]}](*extra factor comes from jacobian*)
@@ -236,18 +174,6 @@ ESMIntegral[mD_,m_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,params_,l_:1]:=(m/.params)/\[
 
 (* ::Text:: *)
 (*Interpolate over temperature, find total energy transferred to dark sector at recombination*)
-
-
-(*InterpolateEtransRate[mD_,m_,\[Kappa]_]:=Module[{n=13,Inter\[Xi]\[Beta]s,InterPoints,RateLogFnof\[Beta],\[CapitalDelta]Etransfered},
-(*Interpolate to find the energy transfer rate between e e decoupling and recombination*)
-Inter\[Xi]\[Beta]s= Subdivide[Log10[m/Td],Log10[m/TR],n]; (*points to be samples, we have made \[Beta] dimensionless (\[Xi]\[Beta]=m \[Beta])*)
-InterPoints=Table[{Inter\[Xi]\[Beta]s[[i]],Log10[Abs[ESMIntegral[mD,m,\[Kappa],10^Inter\[Xi]\[Beta]s[[i]]]]]},{i,Length[Inter\[Xi]\[Beta]s]}] ;(*Abs since numerical instability at early times*)
-RateLogFnof\[Beta]=Interpolation[InterPoints];
-\[CapitalDelta]Etransfered = NIntegrate[Tdt 10^RateLogFnof\[Beta][Log10[\[Beta] me]],{\[Beta],1/Td,1/TR}];
-(*RateFnof\[Beta][\[Beta]_] := 10^RateLogFnof\[Beta][Log10[\[Beta] m]];*)
-(*<|"f"->RateFnof\[Beta],"LogLogf"->RateLogFnof\[Beta],"\[Xi]\[Beta]"->Inter\[Xi]\[Beta]s,"Points"->InterPoints|>*)
-<|"f"->RateLogFnof\[Beta],"\[CapitalDelta]Etot"->\[CapitalDelta]Etransfered,"\[Xi]\[Beta]"->Inter\[Xi]\[Beta]s,"Points"->InterPoints,"mD"->mD,"m"->m,"\[Kappa]"->\[Kappa]|>
-]*)
 
 
 InterpolateEtransRate[mD_,m_,\[Kappa]_,params_,l_:1]:=Module[{n=13,Inter\[Xi]\[Beta]s,InterPoints,RateLogFnof\[Beta],\[CapitalDelta]Etransfered,Td,TR,Tdt},
@@ -271,18 +197,6 @@ RateLogFnof\[Beta]=Interpolation[InterPoints];
 (*Interpolate over a given mass range*)
 
 
-(*InterpolateTotEtrans[mD_:{10^-3 me,10^4 me},m_:me,\[Kappa]_:1]:=Module[{n=Round[Log10[mD[[2]]]-Log10[mD[[1]]]]+1,Interms,TableofInters,\[CapitalDelta]EPoints,TotLogFnofm},
-(*Interpolate to find the energy transfer rate between e e decoupling and recombination*)
-Interms= N[Subdivide[Log10[mD[[2]]],Log10[mD[[1]]],n]]; (*points to be samples, we have made \[Beta] dimensionless (\[Xi]\[Beta]=m \[Beta])*)
-TableofInters=Table[InterpolateEtransRate[10^Interms[[i]],m,\[Kappa]],{i,Length[Interms]}];(*table of interpolations*)
-\[CapitalDelta]EPoints=Table[{Interms[[i]],Log10[TableofInters[[i]][["\[CapitalDelta]Etot"]]]},{i,Length[Interms]}] ;(*Abs since numerical instability at early times*)
-TotLogFnofm=Interpolation[\[CapitalDelta]EPoints];
-(*RateFnof\[Beta][\[Beta]_] := 10^RateLogFnof\[Beta][Log10[\[Beta] m]];*)
-(*<|"f"->RateFnof\[Beta],"LogLogf"->RateLogFnof\[Beta],"\[Xi]\[Beta]"->Inter\[Xi]\[Beta]s,"Points"->InterPoints|>*)
-<|"f"->TotLogFnofm,"Inters"->TableofInters,"Points"->\[CapitalDelta]EPoints,"Interms"->Interms,"mD"->mD,"m"->m,"\[Kappa]"->\[Kappa]|>
-]*)
-
-
 InterpolateTotEtrans[mD_:{10^-3 ("me"/.CosmoParams[]),10^4 ("me"/.CosmoParams[])},m_:("me"/.CosmoParams[]),\[Kappa]_:1,params_,l_:1]:=Module[{n=Round[Log10[mD[[2]]]-Log10[mD[[1]]]]+1,Interms,TableofInters,\[CapitalDelta]EPoints,TotLogFnofm},
 (*Interpolate to find the energy transfer rate between e e decoupling and recombination*)
 Interms= N[Subdivide[Log10[mD[[2]]],Log10[mD[[1]]],n]]; (*points to be samples, we have made \[Beta] dimensionless (\[Xi]\[Beta]=m \[Beta])*)
@@ -297,12 +211,6 @@ TotLogFnofm=Interpolation[\[CapitalDelta]EPoints];
 
 (* ::Text:: *)
 (*Neff constraint and dark temperature*)
-
-
-(*gstar=2 (TDRt/TR)^4(* []effective gstar for dark photon at recombination*)
-\[CapitalDelta]Neff = 8/7 (11/4)^(4/3) gstar (*[]*)
-constraint = 0.1 (*[]constraint on \[CapitalDelta]Neff*)
-TDRconst = TDRt/.Solve[\[CapitalDelta]Neff==constraint,TDRt][[4]] (*[eV]upper bound on TD at recombination*)*)
 
 
 Compute\[CapitalDelta]NeffConstraint[\[CapitalDelta]EtotDict_]:=Module[{gstar,\[CapitalDelta]Neff,constraint,TDRconst},

@@ -11,4 +11,6 @@ Modules to compute nuclear scattering are defined in EnergyLoss.nb. There are bo
 
 The capture folder contains a notebook to implement a capture algorithm described in the notes. At intermediate interaction strengths, this consists of a detailed monte-carlo propagation algorithm. 
 
+The cosmo_constraints folder looks to calculate the constraint on Kinetic mixing from N_{eff} (which is found to be extremely weak) and CMB distortion.
+
 We also look to determine the equilibrium configuration using a simple Vlasov Poisson model of the captured DM, which we intend to solve numerically.
