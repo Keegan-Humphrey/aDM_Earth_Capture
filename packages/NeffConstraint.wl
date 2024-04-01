@@ -29,6 +29,7 @@ NonNumIntegrand::usage = "integrand used in ESM Integral in symbolic form";
 ESMIntegral::usage = "integral to compute energy transfer / interaction rates w electrons as a function of temperature";
 InterpolateEtransRate::usage = "Interpolate over temperature to find energy transfer rate as a funtion of mass";
 InterpolateTotEtrans::usage = "Interpolate over mass to find energy transfered to DS";
+Interpolatey::usage = "Find the CMB distortion comptonization parameter";
 
 Compute\[CapitalDelta]NeffConstraint::usage = "Compute \[CapitalDelta]Neff constraint and produce contour plot of \[Kappa] bound in \!\(\*SubscriptBox[\(m\), \(D\)]\),\!\(\*SubscriptBox[\(f\), \(D\)]\) plane";
 
@@ -40,7 +41,7 @@ Compute\[CapitalDelta]NeffConstraint::usage = "Compute \[CapitalDelta]Neff const
 Begin["`Private`"];
 
 
-CosmoParams[]:= Module[{Td,ad,Tdt,T0,aR,TR,h,eVm,c,\[Rho]critbaumanncm,\[Rho]critbaumannm,\[Rho]crit,H0tinv,H0linv,H0inv,H0,n0,nd,nr,mSMtot,me,\[Alpha],g,pth,kF,EF,EFd,Degen,\[Rho]DM0},
+CosmoParams[]:= Module[{Td,ad,Tdt,T0,aR,TR,aB,TB,h,eVm,c,\[Rho]critbaumanncm,\[Rho]critbaumannm,\[Rho]crit,H0tinv,H0linv,H0inv,H0,n0,nd,nr,mSMtot,me,\[Alpha],g,pth,kF,EF,EFd,Degen,\[Rho]DM0},
 
 (*Cosmo Constants - temperatures and scale factors*)
 Td = 5 10^5; (*[eV] annihilation temperature*)
@@ -49,6 +50,8 @@ Tdt = 2.5 10^-4; (*[eV] Temperature of the Universe today*)
 T0 = 2.5 10^-4; (*[eV] Temperature of the Universe today*)
 aR = (1100)^-1;(*[] scale factor ~ (1/z) at recombination*)
 TR = (Tdt/aR); (*[eV] Temperature at recombination*)
+aB = 10^-7; (*[] scale factor when brehmstrahlung becomes inefficient*)
+TB = T0/aB; (*[eV] temperature when brehmstrahlung becomes inefficient*)
 
 (*Conversion*)
 eVm = N[200 10^-15 10^6]; (*[eV m] = 1 follows from 1 = 200 MeV fm*)
@@ -87,7 +90,7 @@ Degen = EF/Tdt; (*Degeneracy of gas today*)
 (*DM energy density*)
 \[Rho]DM0= "\[CapitalOmega]c"/"\[CapitalOmega]b" n0 mSMtot/.\[CapitalLambda]CDMrepl;
 
-{"Td"->Td,"ad"->ad,"Tdt"->Tdt,"T0"->T0,"aR"->aR,"TR"->TR,"eVm"->eVm,"c"->c,"h"->h,"\[Rho]crit"->\[Rho]crit,"H0"->H0,"n0"->n0,"nd"->nd,"nr"->nr,"me"->me,"\[Alpha]"->\[Alpha],"g"->g,"pth"->pth,"kF"->kF,"EF"->EF,"EFd"->EFd,"Degen"->Degen,"\[Rho]DM0"->\[Rho]DM0}
+{"Td"->Td,"ad"->ad,"Tdt"->Tdt,"T0"->T0,"aR"->aR,"TR"->TR,"aB"->aB,"TB"->TB,"eVm"->eVm,"c"->c,"h"->h,"\[Rho]crit"->\[Rho]crit,"H0"->H0,"n0"->n0,"nd"->nd,"nr"->nr,"me"->me,"\[Alpha]"->\[Alpha],"g"->g,"pth"->pth,"kF"->kF,"EF"->EF,"EFd"->EFd,"Degen"->Degen,"\[Rho]DM0"->\[Rho]DM0}
 ]
 
 
@@ -96,7 +99,8 @@ Degen = EF/Tdt; (*Degeneracy of gas today*)
 
 
 (*Density Parameters for Hubble*)
-\[CapitalLambda]CDMrepl= {"\[CapitalOmega]k" ->0.01,"\[CapitalOmega]r"->9.4 10^-5, "\[CapitalOmega]m"->0.32,"\[CapitalOmega]\[CapitalLambda]"->0.68,"\[CapitalOmega]b"->0.05,"\[CapitalOmega]c"->0.27}; (*[] \[CapitalLambda]CDM density parameters*)
+(*\[CapitalLambda]CDMrepl= {"\[CapitalOmega]k" ->0.01,"\[CapitalOmega]r"->9.4 10^-5, "\[CapitalOmega]m"->0.32,"\[CapitalOmega]\[CapitalLambda]"->0.68,"\[CapitalOmega]b"->0.05,"\[CapitalOmega]c"->0.27}; (*[] \[CapitalLambda]CDM density parameters*)*)
+\[CapitalLambda]CDMrepl= {"\[CapitalOmega]k" ->0.00,"\[CapitalOmega]r"->9.4 10^-5, "\[CapitalOmega]m"->0.32,"\[CapitalOmega]\[CapitalLambda]"->0.68,"\[CapitalOmega]b"->0.05,"\[CapitalOmega]c"->0.27}; (*[] \[CapitalLambda]CDM density parameters*)
 H[\[Beta]_] := "H0" ("\[CapitalOmega]r" "a"^-4+"\[CapitalOmega]m" "a"^-3+"\[CapitalOmega]k" "a"^-2 + "\[CapitalOmega]\[CapitalLambda]")^(1/2)/.\[CapitalLambda]CDMrepl/."a"->("Tdt" \[Beta])
 aH[\[Beta]_] :="a" "H0" ("\[CapitalOmega]r" "a"^-4+"\[CapitalOmega]m" "a"^-3+"\[CapitalOmega]k" "a"^-2 + "\[CapitalOmega]\[CapitalLambda]")^(1/2)/.\[CapitalLambda]CDMrepl/."a"->("Tdt" \[Beta])
 
@@ -136,21 +140,53 @@ nDR[fD_,mDMtot_] := 1/"aR"^3 nD0[fD,mDMtot]
 (*Determine interaction rate as a function of temperature *)
 
 
-NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_,l_:1]:= Module[{Integrand,E1ms,E1},
+(*NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_,l_:1]:= Module[{Integrand,E1ms,E1},
 (*l - == 1 => energy transfer rate integrand, == 0 => interaction rate (over Subscript[n, D]) integrand*)
  E1ms=Integrate[Ett^l/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
 	E1=Simplify[E1ms/."ms"->("m"^2+"mD"^2)/(2 "mD")];
 	Integrand =Simplify[Simplify[(E1/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(E1/.Ett->0)]];
 2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]",mt],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})/.params
+]*)
+NumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_?NumberQ,\[Xi]E_?NumberQ,params_,l_:1]:= Module[{P\[CapitalMu],prefactor,IntegrandEt,boundsE,boundsEt,thermalrepl,\[CapitalLambda]repl,msrepl,\[Xi]Erepl,\[Xi]\[Beta]repl,IntegrandESM},
+(*l == 1 => energy transfer rate integrand (per particle per efold)
+l == 0 => interaction rate (over Subscript[n, D]) integrand*)
+P\[CapitalMu]=("ms"+"ESM")^2+("ms"+(Et-"ESM"))^2;
+prefactor = ("n0")/(("T0" "\[Beta]")^3 aH["\[Beta]"]^l) 1/("Z1") ((4 \[Pi] "\[Alpha]")^2 \[Kappa]^2)/("mD" (2 \[Pi])^3) ("g")/4 ;(* prefactor of eqn (629) of notes over nD*)
+IntegrandEt=E^(-"\[Beta]"("ESM"-"m")) P\[CapitalMu]/(Et + "\[CapitalLambda]")^2 Et^l;
+boundsEt={0,(2 "mD")/(("ESM"+"mD")^2/(("ESM")^2-("m")^2)-1) };
+thermalrepl={"\[CapitalLambda]"->"\[CapitalLambda]0" (1/("T0" "\[Beta]"))^2,"Z1"->"g" ((2 \[Pi] "\[Beta]")/( "m"))^(-3/2)};
+\[CapitalLambda]repl={"\[CapitalLambda]0"->4\[Pi] "\[Alpha]" (2 \[Pi] "n0")/("m" "T0")};
+msrepl = {"ms"->(("m")^2+("mD")^2)/(2 "mD")};
+\[Xi]Erepl={"ESM"->\[Xi]E /"\[Beta]" + "m"};
+\[Xi]\[Beta]repl="\[Beta]"->\[Xi]\[Beta]/"m";
+
+IntegrandESM=Integrate[IntegrandEt,Et];
+prefactor((IntegrandESM/.Et->boundsEt[[2]])-(IntegrandESM/.Et->boundsEt[[1]]))/.msrepl/.thermalrepl/.\[CapitalLambda]repl/.\[Xi]Erepl/.\[Xi]\[Beta]repl/.{"m"->mt,"mD"->mDt}/.params
 ]
 
 
-NonNumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_,\[Xi]E_,l_:1]:= Module[{Integrand,E1ms,E1},
+(*NonNumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_,\[Xi]E_,l_:1]:= Module[{Integrand,E1ms,E1},
 (*l - == 1 => energy transfer rate integrand, == 0 => interaction rate (over Subscript[n, D]) integrand*)
  E1ms=Integrate[Ett^l/(Ett+"\[CapitalLambda]")^2 (("ms" + "ESMt")^2+("ms"+(Ett-"ESMt"))^2),Ett];
 	E1=Simplify[E1ms/."ms"->("m"^2+"mD"^2)/(2 "mD")];
 	Integrand =Simplify[Simplify[(E1/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(E1/.Ett->0)]];
 2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]",mt],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})
+]*)
+NonNumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_,\[Xi]E_,params_,l_:1]:= Module[{P\[CapitalMu],prefactor,IntegrandEt,boundsE,boundsEt,thermalrepl,\[CapitalLambda]repl,msrepl,\[Xi]Erepl,\[Xi]\[Beta]repl,IntegrandESM},
+(*l == 1 => energy transfer rate integrand (per particle per efold)
+l == 0 => interaction rate (over Subscript[n, D]) integrand*)
+P\[CapitalMu]=("ms"+"ESM")^2+("ms"+(Et-"ESM"))^2;
+prefactor = ("n0")/(("T0" "\[Beta]")^3 aH["\[Beta]"]^l) 1/("Z1") ((4 \[Pi] "\[Alpha]")^2 \[Kappa]^2)/("mD" (2 \[Pi])^3) ("g")/4 ;(* prefactor of eqn (629) of notes over nD*)
+IntegrandEt=E^(-"\[Beta]"("ESM"-"m")) P\[CapitalMu]/(Et + "\[CapitalLambda]")^2 Et^l;
+boundsEt={0,(2 "mD")/(("ESM"+"mD")^2/(("ESM")^2-("m")^2)-1) };
+thermalrepl={"\[CapitalLambda]"->"\[CapitalLambda]0" (1/("T0" "\[Beta]"))^2,"Z1"->"g" ((2 \[Pi] "\[Beta]")/( "m"))^(-3/2)};
+\[CapitalLambda]repl={"\[CapitalLambda]0"->4\[Pi] "\[Alpha]" (2 \[Pi] "n0")/("m" "T0")};
+msrepl = {"ms"->(("m")^2+("mD")^2)/(2 "mD")};
+\[Xi]Erepl={"ESM"->\[Xi]E /"\[Beta]" + "m"};
+\[Xi]\[Beta]repl="\[Beta]"->\[Xi]\[Beta]/"m";
+
+IntegrandESM=Integrate[IntegrandEt,Et];
+prefactor((IntegrandESM/.Et->boundsEt[[2]])-(IntegrandESM/.Et->boundsEt[[1]]))/.msrepl/.thermalrepl/.\[CapitalLambda]repl/.\[Xi]Erepl/.\[Xi]\[Beta]repl/.{"m"->mt,"mD"->mDt}/.params
 ]
 
 
@@ -193,6 +229,43 @@ RateLogFnof\[Beta]=Interpolation[InterPoints];
 ]
 
 
+(*Interpolatey[mD_,m_,mpD_,fD_,\[Kappa]_,params_,l_:1]:=Module[{n=13,Inter\[Xi]\[Beta]s,InterPoints,RateLogFnof\[Beta],\[CapitalDelta]Etransfered,Td,TR,Tdt},
+
+Td = "Td"/.params; (*this is Subscript[T, 0]*)
+TR = "TR" /.params;
+Tdt = "Tdt"/.params;
+
+(*Interpolate to find the energy transfer rate between e e decoupling and recombination*)
+Inter\[Xi]\[Beta]s= Subdivide[Log10[m/Td],Log10[m/TR],n]; (*points to be samples, we have made \[Beta] dimensionless (\[Xi]\[Beta]=m \[Beta])*)
+InterPoints=Table[{Inter\[Xi]\[Beta]s[[i]],Log10[Abs[ESMIntegral[mD,m,\[Kappa],10^Inter\[Xi]\[Beta]s[[i]],params,l]]]},{i,Length[Inter\[Xi]\[Beta]s]}] ;(*Abs since numerical instability at early times*)
+RateLogFnof\[Beta]=Interpolation[InterPoints];
+\[CapitalDelta]Etransfered = NIntegrate[Tdt 10^RateLogFnof\[Beta][Log10[\[Beta] m]],{\[Beta],1/Td,1/TR}];
+(*RateFnof\[Beta][\[Beta]_] := 10^RateLogFnof\[Beta][Log10[\[Beta] m]];*)
+(*<|"f"->RateFnof\[Beta],"LogLogf"->RateLogFnof\[Beta],"\[Xi]\[Beta]"->Inter\[Xi]\[Beta]s,"Points"->InterPoints|>*)
+<|"f"->RateLogFnof\[Beta],"\[CapitalDelta]Etot"->\[CapitalDelta]Etransfered,"\[Xi]\[Beta]"->Inter\[Xi]\[Beta]s,"Points"->InterPoints,"mD"->mD,"m"->m,"\[Kappa]"->\[Kappa],"params"->params|>
+]*)
+Interpolatey[mD_,m_,mpD_,fD_,\[Kappa]_,params_,l_:1]:=Module[{n=13,Inter\[Xi]\[Beta]s,InterPoints,yLogFnof\[Beta],yprefactor,y,TB,TR,T0},
+
+TB = "TB"/.params; (*brehmstrahlung inefficiency*)
+TR = "TR" /.params; (*recombination*)
+T0 = "T0"/.params; (*today*)
+
+(*Interpolate to find the energy transfer rate between e e decoupling and recombination*)
+Inter\[Xi]\[Beta]s= Subdivide[Log10[m/TB],Log10[m/TR],n]; (*points to be samples, we have made \[Beta] dimensionless (\[Xi]\[Beta]=m \[Beta])*)
+(*Print[Inter\[Xi]\[Beta]s];*)
+yprefactor= T0 /4  (nD0[fD,mpD]/(T0^3 \[Beta]^3))(\[Pi]^2/30 2)^-1 \[Beta]^4/.params;
+(*Print[Table[(yprefactor /.\[Beta]->10^Inter\[Xi]\[Beta]s[[i]]/m),{i,Length[Inter\[Xi]\[Beta]s]}]];*)
+InterPoints=Table[{Inter\[Xi]\[Beta]s[[i]],Log10[Abs[(yprefactor /.\[Beta]->10^Inter\[Xi]\[Beta]s[[i]]/m)ESMIntegral[mD,m,\[Kappa],10^Inter\[Xi]\[Beta]s[[i]],params,l]]]},{i,Length[Inter\[Xi]\[Beta]s]}] ;
+Print[InterPoints];(*Abs since numerical instability at early times*)
+(*computed in the notes*)
+yLogFnof\[Beta]=Interpolation[InterPoints];
+y = NIntegrate[10^yLogFnof\[Beta][Log10[\[Beta] m]],{\[Beta],1/TB,1/TR}];
+(*RateFnof\[Beta][\[Beta]_] := 10^RateLogFnof\[Beta][Log10[\[Beta] m]];*)
+(*<|"f"->RateFnof\[Beta],"LogLogf"->RateLogFnof\[Beta],"\[Xi]\[Beta]"->Inter\[Xi]\[Beta]s,"Points"->InterPoints|>*)
+<|"f"->yLogFnof\[Beta],"y"->y,"\[Xi]\[Beta]"->Inter\[Xi]\[Beta]s,"Points"->InterPoints,"mD"->mD,"m"->m,"\[Kappa]"->\[Kappa],"params"->params|>
+]
+
+
 (* ::Text:: *)
 (*Interpolate over a given mass range*)
 
@@ -213,7 +286,7 @@ TotLogFnofm=Interpolation[\[CapitalDelta]EPoints];
 (*Neff constraint and dark temperature*)
 
 
-Compute\[CapitalDelta]NeffConstraint[\[CapitalDelta]EtotDict_]:=Module[{gstar,\[CapitalDelta]Neff,constraint,TDRconst},
+(*Compute\[CapitalDelta]NeffConstraint[\[CapitalDelta]EtotDict_]:=Module[{gstar,\[CapitalDelta]Neff,constraint,TDRconst},
 gstar=2 (TDRt/"TR")^4/.\[CapitalDelta]EtotDict[["params"]];(* []effective gstar for dark photon at recombination*)
 \[CapitalDelta]Neff = 8/7 (11/4)^(4/3) gstar; (*[]*)
 constraint = 0.1; (*[]constraint on \[CapitalDelta]Neff*)
@@ -221,6 +294,16 @@ TDRconst = TDRt/.Solve[\[CapitalDelta]Neff==constraint,TDRt][[4]] ;(*[eV]upper b
 Print[Plot[\[CapitalDelta]EtotDict[["f"]][mDM+6],{mDM,Log10[\[CapitalDelta]EtotDict[["mD"]][[1]]]-6+6,Log10[\[CapitalDelta]EtotDict[["mD"]][[2]]]-6},PlotLabel->"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[Energy Transfered to DS] [eV]",AxesLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(m\), \(D\)]\)] [MeV]"}]];
 Print[ContourPlot[Log10[\[Pi]^2/45 TDRconst^3/nDR[10^fDt,10^(mDM+6)]/.\[CapitalDelta]EtotDict[["params"]]],{fDt,-5,0},{mDM,Log10[\[CapitalDelta]EtotDict[["mD"]][[1]]]-6,Log10[\[CapitalDelta]EtotDict[["mD"]][[2]]]-6},ContourLabels->True,FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(f\), \(D\)]\)] []","\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(m\), \(D\)]\)] [MeV]"},PlotLabel->"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*FractionBox[SubscriptBox[\(\[Rho]\), SubscriptBox[\(\[Gamma]\), \(D\)]], SubscriptBox[\(\[Rho]\), \(aDM\)]]\)]"]];
 Print[ContourPlot[1/2 Log10[(3TDRconst)/10^\[CapitalDelta]EtotDict[["f"]][6+mDM] (1+\[Pi]^2/45 TDRconst^3/nDR[10^fDt,10^(6+mDM)])/.\[CapitalDelta]EtotDict[["params"]]],{fDt,-5,0},{mDM,Log10[\[CapitalDelta]EtotDict[["mD"]][[1]]]-6,Log10[\[CapitalDelta]EtotDict[["mD"]][[2]]]-6},ContourLabels->True,PlotLabel->"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\[Kappa]] [] - \!\(\*SubscriptBox[\(\[CapitalDelta]N\), \(eff\)]\) bound",FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(f\), \(D\)]\)] []","\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(m\), \(D\)]\)] [MeV]"}]]
+(*Print[ContourPlot[1/2Log10[(3TDRconst)/10^\[CapitalDelta]EtotDict[["f"]][6+mDM](1+\[Pi]^2/45TDRconst^3/nDR[10^fDt,10^(6+mDM)])],{fDt,-5,0},{mDM,Log10[10^-3 me]-6,Log10[10^4 me]-6},ContourLabels->True,PlotLabel->"Subscript[Log, 10][\[Kappa]] [] - Subscript[\[CapitalDelta]N, eff] bound",FrameLabel->{"Subscript[Log, 10][Subscript[f, D]] []","Subscript[Log, 10][Subscript[m, D]] [MeV]"}]]*)
+]*)
+Compute\[CapitalDelta]NeffConstraint[\[CapitalDelta]EtotDict_,mpD_]:=Module[{gstar,\[CapitalDelta]Neff,constraint,TDRconst},
+gstar=2 (TDRt/"TR")^4/.\[CapitalDelta]EtotDict[["params"]];(* []effective gstar for dark photon at recombination*)
+\[CapitalDelta]Neff = 8/7 (11/4)^(4/3) gstar; (*[]*)
+constraint = 0.1; (*[]constraint on \[CapitalDelta]Neff*)
+TDRconst = TDRt/.Solve[\[CapitalDelta]Neff==constraint,TDRt][[4]] ;(*[eV]upper bound on TD at recombination*)
+Print[Plot[\[CapitalDelta]EtotDict[["f"]][mDM+6],{mDM,Log10[\[CapitalDelta]EtotDict[["mD"]][[1]]]-6,Log10[\[CapitalDelta]EtotDict[["mD"]][[2]]]-6},PlotLabel->"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[Energy Transfered to DS] [eV]",AxesLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(m\), \(D\)]\)] [MeV]"}]];
+Print[ContourPlot[Log10[\[Pi]^2/45 TDRconst^3/nDR[10^fDt,10^(6+mDM)]/.\[CapitalDelta]EtotDict[["params"]]],{fDt,-5,0},{mDM,Log10[\[CapitalDelta]EtotDict[["mD"]][[1]]]-6,Log10[\[CapitalDelta]EtotDict[["mD"]][[2]]]-6},ContourLabels->True,FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(f\), \(D\)]\)] []","\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(m\), \(pD\)]\)] [MeV]"},PlotLabel->"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*FractionBox[SubscriptBox[\(\[Rho]\), SubscriptBox[\(\[Gamma]\), \(D\)]], SubscriptBox[\(\[Rho]\), \(aDM\)]]\)]"]];
+Print[ContourPlot[1/2 Log10[(3TDRconst)/10^\[CapitalDelta]EtotDict[["f"]][6+mDM] (1+\[Pi]^2/45 TDRconst^3/nDR[10^fDt,mpD])/.\[CapitalDelta]EtotDict[["params"]]],{fDt,-5,0},{mDM,Log10[\[CapitalDelta]EtotDict[["mD"]][[1]]]-6,Log10[\[CapitalDelta]EtotDict[["mD"]][[2]]]-6},ContourLabels->True,PlotLabel->"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\[Kappa]] [] - \!\(\*SubscriptBox[\(\[CapitalDelta]N\), \(eff\)]\) bound",FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(f\), \(D\)]\)] []","\!\(\*SubscriptBox[\(Log\), \(10\)]\)[\!\(\*SubscriptBox[\(m\), \(D\)]\)] [MeV]"}]]
 (*Print[ContourPlot[1/2Log10[(3TDRconst)/10^\[CapitalDelta]EtotDict[["f"]][6+mDM](1+\[Pi]^2/45TDRconst^3/nDR[10^fDt,10^(6+mDM)])],{fDt,-5,0},{mDM,Log10[10^-3 me]-6,Log10[10^4 me]-6},ContourLabels->True,PlotLabel->"Subscript[Log, 10][\[Kappa]] [] - Subscript[\[CapitalDelta]N, eff] bound",FrameLabel->{"Subscript[Log, 10][Subscript[f, D]] []","Subscript[Log, 10][Subscript[m, D]] [MeV]"}]]*)
 ]
 
