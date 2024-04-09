@@ -41,7 +41,7 @@ Compute\[CapitalDelta]NeffConstraint::usage = "Compute \[CapitalDelta]Neff const
 Begin["`Private`"];
 
 
-CosmoParams[]:= Module[{Td,ad,Tdt,T0,aR,TR,aB,TB,h,eVm,c,\[Rho]critbaumanncm,\[Rho]critbaumannm,\[Rho]crit,H0tinv,H0linv,H0inv,H0,n0,nd,nr,mSMtot,me,\[Alpha],g,pth,kF,EF,EFd,Degen,\[Rho]DM0},
+CosmoParams[]:= Module[{Td,ad,Tdt,T0,aR,TR,aB,TB,h,eVm,c,\[Rho]critbaumanncm,\[Rho]critbaumannm,\[Rho]crit,H0tinv,H0linv,H0inv,H0,n0,nd,nr,mSMtot,me,\[Alpha],g,gstar,pth,kF,EF,EFd,Degen,\[Rho]DM0},
 
 (*Cosmo Constants - temperatures and scale factors*)
 Td = 5 10^5; (*[eV] annihilation temperature*)
@@ -78,7 +78,8 @@ nr = n0 (TR/Tdt)^3; (*[eV^3] number density at recombination*)
 mSMtot= me + 2000 me;
 me = 5 10^5; (*[eV] electron mass*)
 \[Alpha]=1/137;
-g = 4; (*[] dofs in SM electron*)
+g = 4; (*[] number of dofs in SM electron*)
+gstar = 3.38;(*[] gstar after decoupling*)
 
 (*Thermal Quantities*)
 pth =( (me Tdt)/(2 \[Pi]))^(1/2); (*[eV] thermal de-broglie momentum today *)
@@ -90,7 +91,7 @@ Degen = EF/Tdt; (*Degeneracy of gas today*)
 (*DM energy density*)
 \[Rho]DM0= "\[CapitalOmega]c"/"\[CapitalOmega]b" n0 mSMtot/.\[CapitalLambda]CDMrepl;
 
-{"Td"->Td,"ad"->ad,"Tdt"->Tdt,"T0"->T0,"aR"->aR,"TR"->TR,"aB"->aB,"TB"->TB,"eVm"->eVm,"c"->c,"h"->h,"\[Rho]crit"->\[Rho]crit,"H0"->H0,"n0"->n0,"nd"->nd,"nr"->nr,"me"->me,"\[Alpha]"->\[Alpha],"g"->g,"pth"->pth,"kF"->kF,"EF"->EF,"EFd"->EFd,"Degen"->Degen,"\[Rho]DM0"->\[Rho]DM0}
+{"Td"->Td,"ad"->ad,"Tdt"->Tdt,"T0"->T0,"aR"->aR,"TR"->TR,"aB"->aB,"TB"->TB,"eVm"->eVm,"c"->c,"h"->h,"\[Rho]crit"->\[Rho]crit,"H0"->H0,"n0"->n0,"nd"->nd,"nr"->nr,"me"->me,"\[Alpha]"->\[Alpha],"g"->g,"gstar"->gstar,"pth"->pth,"kF"->kF,"EF"->EF,"EFd"->EFd,"Degen"->Degen,"\[Rho]DM0"->\[Rho]DM0}
 ]
 
 

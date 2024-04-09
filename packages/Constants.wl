@@ -169,11 +169,6 @@ REarth = 6.371 10^6; (*[m]*)
 rcore = REarth - 2.885 10^6; (*[m]*)
 
 
-EarthRepl = <|"rE"->REarth,"ME"->5.97 10^24,"vesc"->vescape,"rcore"->rcore,
-			"Tcrust"->Tcrust,"Tcore"->Tcore,"\[Beta]crust"->\[Beta]crust,"\[Beta]core"->\[Beta]core,
-			"SiO2Frac"->0.447,"MgOFrac"->0.387|>;
-
-
 (* ::Text:: *)
 (****** should put all this into a dictionary*)
 
@@ -185,6 +180,11 @@ Tcore=5470;  (*[K] core temperature*)
 
 \[Rho]crust = 7800;(*[kg m^-3] iron density at crust*)
 \[Rho]core = 13000;(*[kg m^-3] iron density at earth's core*)
+
+
+EarthRepl = <|"rE"->REarth,"ME"->5.97 10^24,"vesc"->vescape,"rcore"->rcore,
+			"Tcrust"->Tcrust,"Tcore"->Tcore,"\[Beta]crust"->\[Beta]crust,"\[Beta]core"->\[Beta]core,
+			"SiO2Frac"->0.447,"MgOFrac"->0.387|>;
 
 
 MassDensities = <|"\[Rho]M"->4500,"\[Rho]SiO2"->2650,"\[Rho]MgO"->3580|> (*[kg m^-3] mantle and silicate densities*)

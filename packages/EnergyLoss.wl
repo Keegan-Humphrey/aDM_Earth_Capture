@@ -952,7 +952,7 @@ EnergyLossTableAndInterNuc[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10^-4, 10^-2
     ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*d\[Sigma]/(d Subscript[E, R]) *)
 
 
@@ -971,7 +971,7 @@ dPd\[Omega]Nuc0Num[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_,statpars_]:= ("nI
 d\[Sigma]dERNuc0[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_]:= 1/(2 \[Omega] ("\[HBar]")^3) q^2/((2 \[Pi])^2 v\[Chi]^2) VCoul[q,params]^2 FormFactors`Zeff[q,coeffs]^2 HeavisideTheta[qb["+",m\[Chi],v\[Chi],\[Omega]]-q]HeavisideTheta[q-qb["-",m\[Chi],v\[Chi],\[Omega]]]/. q -> Sqrt[((2 coeffs[["mN"]] \[Omega])/("\[HBar]")) ]/.params
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Electronic*)
 
 
@@ -998,7 +998,7 @@ dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Ch
 dPd\[Omega]eNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 
-d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+(*d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]*)
 
 d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
