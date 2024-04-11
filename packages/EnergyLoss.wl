@@ -95,6 +95,9 @@ dPd\[Omega]eNum::usage = "Numerically Calculate dPd\[Omega] from electronic cont
 d\[Sigma]dERe::usage = "Calculate the distribution of cross-section with recoil energy for electrons";
 d\[Sigma]dEReNum::usage = "Numerically Calculate the distribution of cross-section with recoil energy for electrons";
 
+Interpolated\[Sigma]dERe::usage = "Interpolate over d\[Sigma]dER for electronic contribution ";
+d\[Sigma]dEReInterpolateKinematics::usage = "Interpolate over d\[Sigma]dER for the kinetmatics for the electronic contribution";
+
 
 (* ::Text:: *)
 (*Plot Energy Loss Interpolation Function*)
@@ -173,7 +176,7 @@ zMIntegralFit[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
 LossIntegrand[strtotalparams_,q_,\[Omega]_]:=Log10[Sum[( ("Ai")/("JpereV") (("qF" "vF")/("c"))^2 8 /Pi  ("e")^2/(4 \[Pi] "\[Epsilon]0")/.strtotalparams[[i]])Im[(-Dielectrics`uf[q,\[Omega]]Dielectrics`zf[q]/.strtotalparams)/Dielectrics`\[Epsilon]MNum[Dielectrics`uf[q,\[Omega]]/.strtotalparams[[i]],Dielectrics`zf[q]/.strtotalparams[[i]],("\[Nu]i")/(2 "vF" "qF" Dielectrics`zf[q])/.strtotalparams[[i]],strtotalparams[[i]]]],{i,Length[strtotalparams]}]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -315,7 +318,7 @@ EnergyLossMSIFit[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -364,7 +367,7 @@ EnergyLossMSIFitEnhanced[m\[Chi]_, v\[Chi]_, fitparams_,l_:1] :=
 (*EL Sum over Oscillators - Public*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Without Temperature Enhancement*)
 
 
@@ -385,7 +388,7 @@ EnergyLossMSIFitSumOscillators[m\[Chi]_, v\[Chi]_, fitparams_] :=
     ]*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*With Temperature Enhancement*)
 
 
@@ -1000,9 +1003,92 @@ dPd\[Omega]eNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\
 
 (*d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]*)
 
-d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_,cut_:4]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[cut- \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 d\[Sigma]dEReNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+
+
+(* ::Text:: *)
+(*Interpolate d\[Sigma]dER*)
+
+
+Interpolated\[Sigma]dERe[m\[Chi]_,v\[Chi]_,params_]:=Module[{ERmin,ERmax,InterP\[Omega],\[Epsilon],n=20,Interd\[Sigma]Table,Interd\[Sigma]f},
+(*Interpolate over d\[Sigma]dER for electronic contribution (to avoid doing the integral over momentum transfer at every evaluation and to speed up the numerical integration over it to find the normalization)*)
+(*local parameters*)
+ERmin= "\[Omega]edgei"/.params;
+ERmax = 1/(2"\[HBar]") m\[Chi] v\[Chi]^2/.params;
+InterP\[Omega]=  10^Subdivide[Log10[ERmin],Log10[ERmax],n];
+\[Epsilon]=10^-10;(*Subdivide takes us slightly over ERmax, which throws errors. So subtract off a small fraction \[Epsilon] of ER max*)
+
+Interd\[Sigma]Table=Table[{InterP\[Omega][[i]],d\[Sigma]dERe[InterP\[Omega][[i]](1-\[Epsilon]),m\[Chi],v\[Chi],{params},"\[Beta]"/.params]HeavisideTheta[InterP\[Omega][[i]]-ERmin]},{i,n+1}];
+Interd\[Sigma]f=Interpolation[Interd\[Sigma]Table];
+<|"d\[Sigma]f"->Interd\[Sigma]f,"d\[Sigma]Table"->Interd\[Sigma]Table,"Interpoints"->InterP\[Omega]|>
+]
+
+
+(* ::Text:: *)
+(*Interpolate over the kinematics as well*)
+
+
+d\[Sigma]dEReInterpolateKinematics[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
+     -2}, meshdims_ : <|"m\[Chi]" -> 5, "v\[Chi]" -> 5|>, fitreplNested_, save_:True,
+     fname_:"outputdict"] :=
+    Module[
+        {kinlist, d\[Sigma]deTable, m\[Chi]Mesh, v\[Chi]Mesh, d\[Sigma]deMesh, InterpolationTable,
+             LogInterpolation, outputdict, count, times, timesMesh}
+        ,
+(*
+	  m\[Chi] - [kg] max and min of masses in grid
+	v\[Chi] - [m s^-1] max and min of velocities in grid
+	meshdims - size of equally (in log space) spaced grids of m\[Chi] and v\[Chi] 
+    l - [] which moment of interaction per unit length (1/vdP/Subscript[dE, R])to calculate 
+           (l=1 gives Energy Loss per unit length [eV m^-1]], 
+            l=0 gives inverse interaction length [m^-1])
+    
+    to compute energy loss over
+	
+	Output energy loss is in [eV m^-1]
+	*)
+		(*m\[Chi]=m\[Chi] ("JpereV")/("c")^2/.fitreplNested;
+		v\[Chi]=v\[Chi] "c"/.fitreplNested;*)
+        kinlist = Kinematics[m\[Chi], v\[Chi], meshdims];
+        count = 0;
+        d\[Sigma]deTable = {};
+        times = {};
+        Do[
+            count++;
+            Print[count, " of ", meshdims[["m\[Chi]"]] meshdims[["v\[Chi]"]]];
+            AppendTo[times, AbsoluteTiming[AppendTo[d\[Sigma]deTable, 
+                Interpolated\[Sigma]dERe[(kinlist[["m\[Chi]"]])[[i]], (kinlist[["v\[Chi]"
+                ]])[[j]], fitreplNested]]][[1]]]
+            ,
+            {i, meshdims[["m\[Chi]"]]}
+            ,
+            {j, meshdims[["v\[Chi]"]]}
+        ];
+        m\[Chi]Mesh = ArrayReshape[Table[d\[Sigma]deTable[[i]][["m\[Chi]"]], {i,
+             Length[d\[Sigma]deTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]}];
+        v\[Chi]Mesh = ArrayReshape[Table[d\[Sigma]deTable[[i]][["v\[Chi]"]], {i,
+             Length[d\[Sigma]deTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]}];
+        d\[Sigma]deMesh = ArrayReshape[Table[d\[Sigma]deTable[[i]][["dEdr"
+            ]], {i, Length[d\[Sigma]deTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]
+            }];
+        timesMesh = ArrayReshape[times, {meshdims[["m\[Chi]"]], meshdims[[
+            "v\[Chi]"]]}];
+        InterpolationTable = Table[{{m\[Chi]Mesh[[i, j]], v\[Chi]Mesh[[i, j]]},
+             d\[Sigma]deMesh[[i, j]]}, {i, meshdims[["m\[Chi]"]]}, {j, meshdims[["v\[Chi]"]]
+            }];
+        LogInterpolation = Interpolation[Flatten[Log[10, InterpolationTable
+            ], 1]];
+        outputdict = <|"f" -> LogInterpolation, "m\[Chi]Mesh" -> m\[Chi]Mesh, "v\[Chi]Mesh"
+             -> v\[Chi]Mesh, "d\[Sigma]deMesh" -> d\[Sigma]deMesh, "fitparams" -> fitreplNested,
+             "fname" -> fname, "kinlist" -> kinlist, "meshdims" -> meshdims, "timesMesh"
+             -> timesMesh, "totalTime" -> Total[timesMesh, 2]|>;
+        If[save,
+            Utilities`SaveIt[NotebookDirectory[] <> fname, outputdict]
+        ];
+        outputdict
+    ]
 
 
 (* ::Section:: *)
