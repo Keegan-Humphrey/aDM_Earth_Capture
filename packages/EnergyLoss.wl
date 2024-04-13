@@ -95,8 +95,27 @@ dPd\[Omega]eNum::usage = "Numerically Calculate dPd\[Omega] from electronic cont
 d\[Sigma]dERe::usage = "Calculate the distribution of cross-section with recoil energy for electrons";
 d\[Sigma]dEReNum::usage = "Numerically Calculate the distribution of cross-section with recoil energy for electrons";
 
-Interpolated\[Sigma]dERe::usage = "Interpolate over d\[Sigma]dER for electronic contribution ";
-d\[Sigma]dEReInterpolateKinematics::usage = "Interpolate over d\[Sigma]dER for the kinetmatics for the electronic contribution";
+
+(* ::Text:: *)
+(*Interpolate over d\[Sigma]dERe*)
+
+
+Interpolated\[Sigma]dERe::usage = "Interpolate d\[Sigma]dER over \[Omega] for electronic contribution ";
+
+\[Omega]of\[Xi]::usage = "Get \[Omega](\[Xi]) (where \[Xi] is the dimensionless parameter used in the interpolation)";
+
+\[Omega]maxofv\[Chi]::usage = "Get the maximum energy transfer allowable by DM kinematics (units of [s^-1])";
+\[Omega]of\[Xi]andv\[Chi]::usage = "\[Omega]of\[Xi] as a function of DM kinematics";
+\[Xi]of\[Omega]andv\[Chi]::usage = "inverse of \[Omega]of\[Xi]andv\[Chi]";
+
+\[Omega]maxNuc::usage = "Get the maximum energy transfer allowable by DM kinematics (units of [s^-1]) for Nuclear";
+\[Omega]of\[Xi]Nuc::usage = "\[Omega]of\[Xi] as a function of DM kinematics";
+\[Xi]of\[Omega]Nuc::usage = "inverse of \[Omega]of\[Xi]andv\[Chi]";
+
+Getv\[Chi]and\[Xi]List::usage = "Get points to interpolate d\[Sigma]dER over at fixed v\[Chi]";
+
+Interpolatev\[Chi]and\[Omega]\[Sigma]dERe\[Xi]::usage = "Interpolate d\[Sigma]dER over v\[Chi] and \[Omega](\[Xi]) for electronic";
+Interpolatev\[Chi]and\[Omega]\[Sigma]dERNuc\[Xi]::usage = "Interpolate d\[Sigma]dER over v\[Chi] and \[Omega](\[Xi]) for nuclear";
 
 
 (* ::Text:: *)
@@ -580,7 +599,7 @@ EnergyLossTableAndInter[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^ -2
     ]*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -959,7 +978,7 @@ EnergyLossTableAndInterNuc[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10^-4, 10^-2
 (*d\[Sigma]/(d Subscript[E, R]) *)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*0 Temperature - Nuclear*)
 
 
@@ -994,22 +1013,24 @@ dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=( ("e")^2/(v\[Chi] "
 dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0")2/(1 - E^(-\[Beta] "\[HBar]" \[Omega]))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 *)
 
-dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,cut_:4]:= Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[cut - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_,cut_:4]:=Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[cut - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
-dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
-
-dPd\[Omega]eNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+dPd\[Omega]eNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,cut_:4]:= Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[cut - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 
-(*d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]*)
-
+d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,cut_:4]:= Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[cut - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_,cut_:4]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[cut- \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 d\[Sigma]dEReNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 
+(* ::Subsubsection:: *)
+(*Interpolate d\[Sigma]dER - Nuclear and Electronic*)
+
+
 (* ::Text:: *)
-(*Interpolate d\[Sigma]dER*)
+(*Interpolate over \[Omega]*)
 
 
 Interpolated\[Sigma]dERe[m\[Chi]_,v\[Chi]_,params_]:=Module[{ERmin,ERmax,InterP\[Omega],\[Epsilon],n=20,Interd\[Sigma]Table,Interd\[Sigma]f},
@@ -1027,68 +1048,122 @@ Interd\[Sigma]f=Interpolation[Interd\[Sigma]Table];
 
 
 (* ::Text:: *)
-(*Interpolate over the kinematics as well*)
+(*Kinematics and Changes of Variable*)
 
 
-d\[Sigma]dEReInterpolateKinematics[m\[Chi]_ : {5 10^5, 10^9}, v\[Chi]_ : {10 ^ -4, 10 ^
-     -2}, meshdims_ : <|"m\[Chi]" -> 5, "v\[Chi]" -> 5|>, fitreplNested_, save_:True,
-     fname_:"outputdict"] :=
-    Module[
-        {kinlist, d\[Sigma]deTable, m\[Chi]Mesh, v\[Chi]Mesh, d\[Sigma]deMesh, InterpolationTable,
-             LogInterpolation, outputdict, count, times, timesMesh}
-        ,
-(*
-	  m\[Chi] - [kg] max and min of masses in grid
-	v\[Chi] - [m s^-1] max and min of velocities in grid
-	meshdims - size of equally (in log space) spaced grids of m\[Chi] and v\[Chi] 
-    l - [] which moment of interaction per unit length (1/vdP/Subscript[dE, R])to calculate 
-           (l=1 gives Energy Loss per unit length [eV m^-1]], 
-            l=0 gives inverse interaction length [m^-1])
-    
-    to compute energy loss over
-	
-	Output energy loss is in [eV m^-1]
-	*)
-		(*m\[Chi]=m\[Chi] ("JpereV")/("c")^2/.fitreplNested;
-		v\[Chi]=v\[Chi] "c"/.fitreplNested;*)
-        kinlist = Kinematics[m\[Chi], v\[Chi], meshdims];
-        count = 0;
-        d\[Sigma]deTable = {};
-        times = {};
-        Do[
-            count++;
-            Print[count, " of ", meshdims[["m\[Chi]"]] meshdims[["v\[Chi]"]]];
-            AppendTo[times, AbsoluteTiming[AppendTo[d\[Sigma]deTable, 
-                Interpolated\[Sigma]dERe[(kinlist[["m\[Chi]"]])[[i]], (kinlist[["v\[Chi]"
-                ]])[[j]], fitreplNested]]][[1]]]
-            ,
-            {i, meshdims[["m\[Chi]"]]}
-            ,
-            {j, meshdims[["v\[Chi]"]]}
-        ];
-        m\[Chi]Mesh = ArrayReshape[Table[d\[Sigma]deTable[[i]][["m\[Chi]"]], {i,
-             Length[d\[Sigma]deTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]}];
-        v\[Chi]Mesh = ArrayReshape[Table[d\[Sigma]deTable[[i]][["v\[Chi]"]], {i,
-             Length[d\[Sigma]deTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]}];
-        d\[Sigma]deMesh = ArrayReshape[Table[d\[Sigma]deTable[[i]][["dEdr"
-            ]], {i, Length[d\[Sigma]deTable]}], {meshdims[["m\[Chi]"]], meshdims[["v\[Chi]"]]
-            }];
-        timesMesh = ArrayReshape[times, {meshdims[["m\[Chi]"]], meshdims[[
-            "v\[Chi]"]]}];
-        InterpolationTable = Table[{{m\[Chi]Mesh[[i, j]], v\[Chi]Mesh[[i, j]]},
-             d\[Sigma]deMesh[[i, j]]}, {i, meshdims[["m\[Chi]"]]}, {j, meshdims[["v\[Chi]"]]
-            }];
-        LogInterpolation = Interpolation[Flatten[Log[10, InterpolationTable
-            ], 1]];
-        outputdict = <|"f" -> LogInterpolation, "m\[Chi]Mesh" -> m\[Chi]Mesh, "v\[Chi]Mesh"
-             -> v\[Chi]Mesh, "d\[Sigma]deMesh" -> d\[Sigma]deMesh, "fitparams" -> fitreplNested,
-             "fname" -> fname, "kinlist" -> kinlist, "meshdims" -> meshdims, "timesMesh"
-             -> timesMesh, "totalTime" -> Total[timesMesh, 2]|>;
-        If[save,
-            Utilities`SaveIt[NotebookDirectory[] <> fname, outputdict]
-        ];
-        outputdict
-    ]
+\[Omega]of\[Xi][\[Xi]_,\[Omega]min_,\[Omega]max_]:=\[Omega]min + \[Xi] (\[Omega]max - \[Omega]min)
+
+
+(* ::Text:: *)
+(*For electronic*)
+
+
+\[Omega]maxofv\[Chi][v\[Chi]_,m\[Chi]_,params_]:= 1/(2"\[HBar]") m\[Chi] v\[Chi]^2/.params
+\[Omega]of\[Xi]andv\[Chi][\[Xi]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,params_]:=\[Omega]min + \[Xi] (\[Omega]maxofv\[Chi][v\[Chi],m\[Chi],params] - \[Omega]min)
+\[Xi]of\[Omega]andv\[Chi][\[Omega]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,params_]:=(\[Omega]-\[Omega]min )/(\[Omega]maxofv\[Chi][v\[Chi],m\[Chi],params] - \[Omega]min)
+
+
+(* ::Text:: *)
+(*Interpolate over the v\[Chi] as well - Electronic*)
+
+
+Getv\[Chi]and\[Xi]List[v\[Chi]_,n_:20,\[Epsilon]_:10^-4,uselog_:False]:=Module[{Interpoints\[Xi]},
+Interpoints\[Xi]=If[uselog,10^Subdivide[Log10[\[Epsilon]],Log10[1-\[Epsilon]],n],Subdivide[\[Epsilon],1-\[Epsilon],n]];(*move slightly away from the boundaries so we can do a log-log interpolation (d\[Sigma]/Subscript[dE, R]->0 at Subscript[\[Omega], max], and \[Xi]->0 at Subscript[\[Omega], min])*)
+(*Interpoints\[Xi]=10^Subdivide[Log10[\[Epsilon]],Log10[1-\[Epsilon]],n];*)
+(*Interpoints\[Xi]=Subdivide[\[Epsilon],1-\[Epsilon],n];*)(*move slightly away from the boundaries so we can do a log-log interpolation (d\[Sigma]/Subscript[dE, R]->0 at Subscript[\[Omega], max], and \[Xi]->0 at Subscript[\[Omega], min])*)
+Table[{v\[Chi],Interpoints\[Xi][[i]]},{i,n+1}]
+]
+
+
+(*Interpolatev\[Chi]and\[Omega]\[Sigma]dERe\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,v\[Chi]_:{4 10^-4,10^-2}"c"/.Constants`SIConstRepl,params_,m_:5,n_:60,\[Epsilon]_:10^-4,cut_:4,uselog_:False]:=Module[{\[Omega]min,\[Omega]max,Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f,Inter\[Sigma]Table,Inter\[Sigma]f},
+(*Interpolate over d\[Sigma]dER for electronic contribution (to avoid doing the integral over momentum transfer at every evaluation and to speed up the numerical integration over it to find the normalization)*)
+
+\[Omega]min= "\[Omega]edgei"/.params;
+
+
+Interpointsv\[Chi]=10^Subdivide[Log10[v\[Chi][[1]]],Log10[v\[Chi][[2]]],m];
+Interpointsv\[Chi]and\[Xi]=SortBy[Table[Getv\[Chi]and\[Xi]List[Interpointsv\[Chi][[i]],n,\[Epsilon],uselog],{i,m+1}],Last];
+
+(*Interpolate to get d\[Sigma]/dER*)
+Interd\[Sigma]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],d\[Sigma]dERe[\[Omega]of\[Xi][Interpointsv\[Chi]and\[Xi][[i,j]][[2]],\[Omega]min,\[Omega]maxofv\[Chi][Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],params]],m\[Chi],Interpointsv\[Chi]and\[Xi][[i,j]][[1]],{params},"\[Beta]"/.params,cut]},{i,m+1},{j,n+1}];
+Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],InterpolationOrder->4];
+
+(*Interpolate to get \[Sigma]*)
+Inter\[Sigma]Table =Table[{Interpointsv\[Chi][[i]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
+Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table],InterpolationOrder->4];
+(*Inter\[Sigma]f = Interpolation[Inter\[Sigma]Table,InterpolationOrder->4];*)
+
+<|"d\[Sigma]f"->Interd\[Sigma]f,"d\[Sigma]Table"->Interd\[Sigma]Table,"Interpoints"->Interpointsv\[Chi]and\[Xi],"Interpointsv\[Chi]"->Interpointsv\[Chi],"\[Sigma]f"->Inter\[Sigma]f,"\[Sigma]Table"->Inter\[Sigma]Table,"m\[Chi]"->m\[Chi],"v\[Chi]"->Log10[v\[Chi]],"\[Xi]"->Log10[{\[Epsilon],1-\[Epsilon]}],"params"->params,"\[Omega]min"->\[Omega]min|>
+]*)
+
+
+Interpolatev\[Chi]and\[Omega]\[Sigma]dERe\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,params_,m_:5,n_:60,\[Epsilon]_:10^-4,cut_:4,uselog_:False]:=Module[{\[Omega]min,v\[Chi],Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f,Inter\[Sigma]Table,Inter\[Sigma]f},
+(*Interpolate over d\[Sigma]dER for electronic contribution (to avoid doing the integral over momentum transfer at every evaluation and to speed up the numerical integration over it to find the normalization)*)
+
+\[Omega]min= "\[Omega]edgei"/.params; (*the cutoff used in the data fitting*)
+
+v\[Chi] = {3Sqrt[("\[HBar]" \[Omega]min)/(2 m\[Chi])], 2 10^-1 "c"}/.Constants`SIConstRepl;(*interpolate from the minimum velocity (up to an order 1 fudge factor (3) for numerical stability) to the boundary of the non-relativistic regime*)
+
+Interpointsv\[Chi]=10^Subdivide[Log10[v\[Chi][[1]]],Log10[v\[Chi][[2]]],m];
+Interpointsv\[Chi]and\[Xi]=SortBy[Table[Getv\[Chi]and\[Xi]List[Interpointsv\[Chi][[i]],n,\[Epsilon],uselog],{i,m+1}],Last];
+
+(*Interpolate to get d\[Sigma]/dER*)
+Interd\[Sigma]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],d\[Sigma]dERe[\[Omega]of\[Xi][Interpointsv\[Chi]and\[Xi][[i,j]][[2]],\[Omega]min,\[Omega]maxofv\[Chi][Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],params]],m\[Chi],Interpointsv\[Chi]and\[Xi][[i,j]][[1]],{params},"\[Beta]"/.params,cut]},{i,m+1},{j,n+1}];
+Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],InterpolationOrder->4];
+
+(*Interpolate to get \[Sigma]*)
+Inter\[Sigma]Table =Table[{Interpointsv\[Chi][[i]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
+(*Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table]];*)
+Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table],InterpolationOrder->4];
+(*Inter\[Sigma]f = Interpolation[Inter\[Sigma]Table,InterpolationOrder->4];*)
+
+<|"d\[Sigma]f"->Interd\[Sigma]f,"d\[Sigma]Table"->Interd\[Sigma]Table,"Interpoints"->Interpointsv\[Chi]and\[Xi],"Interpointsv\[Chi]"->Interpointsv\[Chi],"\[Sigma]f"->Inter\[Sigma]f,"\[Sigma]Table"->Inter\[Sigma]Table,"m\[Chi]"->m\[Chi],"v\[Chi]"->Log10[v\[Chi]],"\[Xi]"->Log10[{\[Epsilon],1-\[Epsilon]}],"params"->params,"\[Omega]min"->\[Omega]min|>
+]
+
+
+(* ::Text:: *)
+(*Interpolate over the v\[Chi] as well - Nuclear*)
+
+
+\[Omega]maxNuc[v\[Chi]_,m\[Chi]_,mN_,params_]:= (2 v\[Chi]^2)/("\[HBar]") (m\[Chi]^2 mN)/(m\[Chi] + mN)^2/.params
+\[Omega]of\[Xi]Nuc[\[Xi]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,mN_,params_]:=\[Omega]min + \[Xi] (\[Omega]maxNuc[v\[Chi],m\[Chi],mN,params] - \[Omega]min)
+\[Xi]of\[Omega]Nuc[\[Omega]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,mN_,params_]:=(\[Omega]-\[Omega]min )/(\[Omega]maxNuc[v\[Chi],m\[Chi],mN,params] - \[Omega]min)
+
+
+(*Interpolatev\[Chi]and\[Omega]\[Sigma]dERNuc\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,v\[Chi]_:{4 10^-4,10^-2}"c"/.Constants`SIConstRepl,FFcoeffs_,params_,m_:5,n_:60,\[Epsilon]_:10^-4]:=Module[{\[Omega]min,mN,Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f},
+(*Interpolate over d\[Sigma]dER for electronic contribution (to avoid doing the integral over momentum transfer at every evaluation and to speed up the numerical integration over it to find the normalization)*)
+
+\[Omega]min=0;
+mN = "mN"/.FFcoeffs;
+
+Interpointsv\[Chi]=10^Subdivide[Log10[v\[Chi][[1]]],Log10[v\[Chi][[2]]],m];
+Interpointsv\[Chi]and\[Xi]=SortBy[Table[Getv\[Chi]and\[Xi]List[Interpointsv\[Chi][[i]],n,\[Epsilon],True],{i,m+1}],Last];
+
+Interd\[Sigma]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],d\[Sigma]dERNuc0[\[Omega]of\[Xi][Interpointsv\[Chi]and\[Xi][[i,j]][[2]],\[Omega]min,\[Omega]maxNuc[Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],mN,params]],m\[Chi],Interpointsv\[Chi]and\[Xi][[i,j]][[1]],FFcoeffs,params]},{i,m+1},{j,n+1}];
+Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],InterpolationOrder->4];
+<|"d\[Sigma]f"->Interd\[Sigma]f,"d\[Sigma]Table"->Interd\[Sigma]Table,"Interpoints"->Interpointsv\[Chi]and\[Xi],"Interpointsv\[Chi]"->Interpointsv\[Chi],"m\[Chi]"->m\[Chi],"v\[Chi]"->Log10[v\[Chi]],"\[Xi]"->Log10[{\[Epsilon],1-\[Epsilon]}],"NucleusParams"->FFcoeffs,"params"->params,"\[Omega]min"->\[Omega]min|>
+]*)
+
+
+Interpolatev\[Chi]and\[Omega]\[Sigma]dERNuc\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,v\[Chi]_:{4 10^-4,10^-2}"c"/.Constants`SIConstRepl,FFcoeffs_,params_,m_:5,n_:60,\[Epsilon]_:10^-4]:=Module[{\[Omega]min,mN,Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f,Inter\[Sigma]Table,Inter\[Sigma]f},
+(*Interpolate over d\[Sigma]dER and \[Sigma] for Nuclear contribution (to avoid doing the integral over momentum transfer at every evaluation and to speed up the numerical integration over it to find the normalization)*)
+
+\[Omega]min=0;
+mN = "mN"/.FFcoeffs;
+
+Interpointsv\[Chi]=10^Subdivide[Log10[v\[Chi][[1]]],Log10[v\[Chi][[2]]],m];
+Interpointsv\[Chi]and\[Xi]=SortBy[Table[Getv\[Chi]and\[Xi]List[Interpointsv\[Chi][[i]],n,\[Epsilon],True],{i,m+1}],Last];
+
+(*Interpolate to get d\[Sigma]/dER*)
+Interd\[Sigma]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],d\[Sigma]dERNuc0[\[Omega]of\[Xi][Interpointsv\[Chi]and\[Xi][[i,j]][[2]],\[Omega]min,\[Omega]maxNuc[Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],mN,params]],m\[Chi],Interpointsv\[Chi]and\[Xi][[i,j]][[1]],FFcoeffs,params]},{i,m+1},{j,n+1}];
+Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],InterpolationOrder->4];
+
+(*Interpolate to get \[Sigma]*)
+Inter\[Sigma]Table =Table[{Interpointsv\[Chi][[i]],("\[HBar]"/.params)(\[Omega]maxNuc[Interpointsv\[Chi][[i]],m\[Chi],mN,params]-\[Omega]min)NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
+Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table],InterpolationOrder->4];
+
+<|"d\[Sigma]f"->Interd\[Sigma]f,"d\[Sigma]Table"->Interd\[Sigma]Table,"Interpoints"->Interpointsv\[Chi]and\[Xi],"\[Sigma]f"->Inter\[Sigma]f,"\[Sigma]Table"->Inter\[Sigma]Table,"Interpointsv\[Chi]"->Interpointsv\[Chi],"m\[Chi]"->m\[Chi],"v\[Chi]"->Log10[v\[Chi]],"\[Xi]"->Log10[{\[Epsilon],1-\[Epsilon]}],"NucleusParams"->FFcoeffs,"params"->params,"\[Omega]min"->\[Omega]min|>
+]
 
 
 (* ::Section:: *)

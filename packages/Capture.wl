@@ -1,5 +1,8 @@
 (* ::Package:: *)
 
+Needs["Constants`"]
+
+
 BeginPackage["Capture`"];
 
 
@@ -20,7 +23,7 @@ Updatev::usage = "update velocity according to passed velocity mass and interact
 Begin["`Private`"];
 
 
-(* ::Text:: *)
+(* ::Subsubsection:: *)
 (*Propagation to the earth*)
 
 
@@ -33,7 +36,7 @@ br[m\[Chi]_,v\[Infinity]_,b\[Infinity]_,r\[Infinity]_,V_,r_]:=b\[Infinity]/Sqrt[
 Vgrav[r_,m\[Chi]_,] :=- ((m\[Chi] "G""ME")/r);*)
 
 
-(* ::Text:: *)
+(* ::Subsubsection:: *)
 (*Update trajectory*)
 
 
@@ -55,7 +58,7 @@ v
 ]*)
 
 
-(* ::Text:: *)
+(* ::Subsubsection:: *)
 (*Get interaction length*)
 
 
@@ -70,14 +73,14 @@ v\[Chi]natconv="c"/.Constants`SIConstRepl;
 ]
 
 
-(* ::Text:: *)
+(* ::Subsubsection:: *)
 (*Gravitational Potential*)
 
 
-Vgrav[r_]:=Piecewise[{{-(("G" "ME")/r),r>"rE"/. EarthRepl},{-(("ME" "G")/(2("rE")^3))( 3("rE")^2-r^2),r<"rE"/. EarthRepl}}]/.SIConstRepl/.EarthRepl
+Vgrav[r_]:=Piecewise[{{-(("G" "ME")/r),r>"rE"/. Constants`EarthRepl},{-(("ME" "G")/(2("rE")^3))( 3("rE")^2-r^2),r<"rE"/. Constants`EarthRepl}}]/.Constants`SIConstRepl/.Constants`EarthRepl
 
 
-(* ::Text:: *)
+(* ::Subsubsection:: *)
 (*Update velocity according to interaction length and direction of propagation*)
 
 
@@ -93,7 +96,7 @@ reached=(m\[Chi]/2)speed^2-(m\[Chi]/2)vp^2+V[r] >V[Abs[r+\[CapitalDelta]r]];(*ch
 ]
 
 
-(* ::Text:: *)
+(* ::Subsubsection:: *)
 (*Select Interaction Process*)
 
 
