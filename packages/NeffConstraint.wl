@@ -27,6 +27,9 @@ nDR::usage = "DM number density at recombination as a function of temperature";
 NumIntegrand::usage = "integrand used in ESM Integral";
 NonNumIntegrand::usage = "integrand used in ESM Integral in symbolic form";
 ESMIntegral::usage = "integral to compute energy transfer / interaction rates w electrons as a function of temperature";
+
+Ettotheld\[CapitalGamma]dEt::usage = "\!\(\*SuperscriptBox[\(E\), \(l\)]\)\!\(\*FractionBox[\(d\[CapitalGamma]\), SubscriptBox[\(dE\), \(t\)]]\)";
+
 InterpolateEtransRate::usage = "Interpolate over temperature to find energy transfer rate as a funtion of mass";
 InterpolateTotEtrans::usage = "Interpolate over mass to find energy transfered to DS";
 Interpolatey::usage = "Find the CMB distortion comptonization parameter";
@@ -173,7 +176,7 @@ prefactor((IntegrandESM/.Et->boundsEt[[2]])-(IntegrandESM/.Et->boundsEt[[1]]))/.
 	Integrand =Simplify[Simplify[(E1/.Ett->(2 "mD")/(("ESMt"+"mD")^2/("ESMt"^2-"m"^2)-1))-(E1/.Ett->0)]];
 2/\[Pi] ("\[Alpha]"^2 \[Kappa]^2)/mDt (E^(-"\[Beta]" "ESMt" + "\[Beta]" "\[Mu]")/aH["\[Beta]"]^l Integrand /."\[Mu]"->"m" - 1/"\[Beta]" Log["Qt"]/.{"\[CapitalLambda]"->\[CapitalLambda]["\[Beta]",mt],"Qt"->Z1["\[Beta]"]}/."ESMt"->1/"\[Beta]" \[Xi]E + "m"/."\[Beta]"->\[Xi]\[Beta]/"m"/.{"m"->mt,"mD"->mDt})
 ]*)
-NonNumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_,\[Xi]E_,params_,l_:1]:= Module[{P\[CapitalMu],prefactor,IntegrandEt,boundsE,boundsEt,thermalrepl,\[CapitalLambda]repl,msrepl,\[Xi]Erepl,\[Xi]\[Beta]repl,IntegrandESM},
+NonNumIntegrand[mDt_,mt_,\[Kappa]_,\[Xi]\[Beta]_,\[Xi]E_,l_:1]:= Module[{P\[CapitalMu],prefactor,IntegrandEt,boundsE,boundsEt,thermalrepl,\[CapitalLambda]repl,msrepl,\[Xi]Erepl,\[Xi]\[Beta]repl,IntegrandESM},
 (*l == 1 => energy transfer rate integrand (per particle per efold)
 l == 0 => interaction rate (over Subscript[n, D]) integrand*)
 P\[CapitalMu]=("ms"+"ESM")^2+("ms"+(Et-"ESM"))^2;
@@ -187,7 +190,23 @@ msrepl = {"ms"->(("m")^2+("mD")^2)/(2 "mD")};
 \[Xi]\[Beta]repl="\[Beta]"->\[Xi]\[Beta]/"m";
 
 IntegrandESM=Integrate[IntegrandEt,Et];
-prefactor((IntegrandESM/.Et->boundsEt[[2]])-(IntegrandESM/.Et->boundsEt[[1]]))/.msrepl/.thermalrepl/.\[CapitalLambda]repl/.\[Xi]Erepl/.\[Xi]\[Beta]repl/.{"m"->mt,"mD"->mDt}/.params
+prefactor((IntegrandESM/.Et->boundsEt[[2]])-(IntegrandESM/.Et->boundsEt[[1]]))/.msrepl/.thermalrepl/.\[CapitalLambda]repl/.\[Xi]Erepl/.\[Xi]\[Beta]repl/.{"m"->mt,"mD"->mDt}
+]
+
+
+Ettotheld\[CapitalGamma]dEt[mD_,m_,\[Kappa]_,\[Beta]_,Et_,l_:1]:=Module[{P\[CapitalMu],prefactor,EintsIntegrand,boundsE,boundsEt,thermalrepl,\[CapitalLambda]repl,msrepl,\[Xi]Erepl,\[Xi]\[Beta]repl,IntegrandESM,pthav,Etint,},
+P\[CapitalMu]=("ms"+ESM)^2+("ms"+(Et-ESM))^2;
+prefactor = ("n0")/("T0" \[Beta])^3 1/("Z1") ((4 \[Pi] "\[Alpha]")^2 \[Kappa]^2)/(mD (2 \[Pi])^3) ("g")/4 ;(* prefactor of eqn (629) of notes over nD*)
+EintsIntegrand=E^(-\[Beta](ESM-m)) P\[CapitalMu]/(Et + "\[CapitalLambda]")^2 Et^l;
+boundsE= {Et/2+1/2 Sqrt[((Et + 2 mD)(2 m^2+Et mD))/mD],\[Infinity]};
+(*boundsEt={0,\[Infinity] };*)
+(*shorthandrepl={"ms"->(m^2+mD^2)/(2 mD),"\[CapitalLambda]"->4\[Pi] "\[Alpha]" (2 \[Pi] "n0")/(m "T0") (1/("T0" \[Beta]))^2,"Z1"->"g" ((2 \[Pi] \[Beta])/ m)^(-3/2)};*)
+thermalrepl={"\[CapitalLambda]"->"\[CapitalLambda]0" (1/("T0" \[Beta]))^2,"Z1"->"g" ((2 \[Pi] \[Beta])/ m)^(-3/2)};
+\[CapitalLambda]repl={"\[CapitalLambda]0"->4\[Pi] "\[Alpha]" (2 \[Pi] "n0")/(m "T0")};
+msrepl = {"ms"->(m^2+mD^2)/(2 mD)};
+pthav=3 Sqrt[2] Sqrt[(2 m)/(\[Beta] 2 \[Pi])]; (*average thermal momentum for boltzman distributed species (ie for SM electrons)*)
+Etint=0-(Integrate[prefactor EintsIntegrand,ESM]/.ESM->boundsE[[1]])//Simplify;
+<|"Ettotheld\[CapitalGamma]dEt"->Etint,"msrepl"->msrepl,"\[CapitalLambda]repl"->\[CapitalLambda]repl,"thermalrepl"->thermalrepl|>
 ]
 
 
