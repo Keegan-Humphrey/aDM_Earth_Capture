@@ -198,6 +198,7 @@ Ettotheld\[CapitalGamma]dEt[mD_,m_,\[Kappa]_,\[Beta]_,Et_,l_:1]:=Module[{P\[Capi
 P\[CapitalMu]=("ms"+ESM)^2+("ms"+(Et-ESM))^2;
 prefactor = ("n0")/("T0" \[Beta])^3 1/("Z1") ((4 \[Pi] "\[Alpha]")^2 \[Kappa]^2)/(mD (2 \[Pi])^3) ("g")/4 ;(* prefactor of eqn (629) of notes over nD*)
 EintsIntegrand=E^(-\[Beta](ESM-m)) P\[CapitalMu]/(Et + "\[CapitalLambda]")^2 Et^l;
+(*EintsIntegrand=E^(-\[Beta](ESM)) P\[CapitalMu]/(Et + "\[CapitalLambda]")^2 Et^l;*)
 boundsE= {Et/2+1/2 Sqrt[((Et + 2 mD)(2 m^2+Et mD))/mD],\[Infinity]};
 (*boundsEt={0,\[Infinity] };*)
 (*shorthandrepl={"ms"->(m^2+mD^2)/(2 mD),"\[CapitalLambda]"->4\[Pi] "\[Alpha]" (2 \[Pi] "n0")/(m "T0") (1/("T0" \[Beta]))^2,"Z1"->"g" ((2 \[Pi] \[Beta])/ m)^(-3/2)};*)
