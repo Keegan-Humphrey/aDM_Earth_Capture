@@ -41,6 +41,7 @@ MassDensities::usage = "mass densities in the mantle [kg \!\(\*SuperscriptBox[\(
 
 
 vescape::usage = "escape velocity at the surface of the Earth";
+vescgal::usage = "galactic escape velocity";
 
 REarth::usage = "radius of the Earth";
 rcore::usage = "radius of Earth's core";
@@ -159,6 +160,13 @@ Usage:
 
 
 vescape = 11200; (*[m s^-1]*)
+
+
+(* ::Text:: *)
+(*Galactic escape velocity*)
+
+
+vescgal = 5.37 10^5;
 
 
 (* ::Text:: *)

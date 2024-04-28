@@ -20,9 +20,23 @@ RotateuAboutvby\[Phi]::usage = "Rotate a vector about another by an angle using 
 \[Sigma]selector::usage = "Sample to find the interaction process that occurred using the cross-sections of possible processes";
 
 Interpolate\[Epsilon]euztrunced::usage = "Interpolate \[Epsilon] to speed up function evaluation time for the Monte-Carlo";
-d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon]::usage = "Interpolate over \[Epsilon] for electronic contribution to reduce time for a function evaluation of \[Epsilon]. We do it over the range we will be probing in the Monte-Carlo";
+d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon]::usage = "define d\[Sigma]dERd\[CapitalOmega] for electronic scattering";
 Get\[Xi]\[Omega]andcos\[Theta]::usage = "Sample the distribution of d\[Sigma]dERd\[CapitalOmega] for \[Xi]\[Omega] and cos\[Theta]";
 GetNMaxofd\[Sigma]dERd\[CapitalOmega]::usage = "Numerically solve for the maximum of d\[Sigma]dERd\[CapitalOmega] slightly away from the boundaries, and with a small rescaling buffer (for use with the rejection method)";
+
+d\[Sigma]d\[CapitalOmega]Nuc0::usage = "define d\[Sigma]d\[CapitalOmega] for 0 temperature nuclear scattering";
+GetNMaxofd\[Sigma]d\[CapitalOmega]Nuc0::usage = "Numerically solve for the maximum of d\[Sigma]dERd\[CapitalOmega] slightly away from the boundaries, and with a small rescaling buffer (for use with the rejection method)";
+Get\[Omega]andcos\[Theta]Nuc0::usage = "Sample the distribution of d\[Sigma]dERd\[CapitalOmega] for \[Xi]\[Omega] and cos\[Theta]";
+
+ProcessDataAssemblerElectronic::usage = "take data of a electronic material / process and format it for the MC. Also does interpolation of \[Epsilon].";
+Interpolated\[Sigma]dERd\[Sigma]Max::usage = "Interpolate the maximum of d\[Sigma]dERd\[CapitalOmega] as a function of v\[Chi]";
+
+Getv\[Chi]\[Infinity]::usage = "Get the initial v\[Chi] at \[Infinity] by sampling a MB and a 2 sphere";
+Sample2Sphere::usage = "Point in R3, normalized gives random point on sphere or radius 1";
+Getv\[Chi]atEarth::usage = "sample MB and sphere at \[Infinity] to find trajectories that reach earth with b_E less than earth's radius";
+
+testMCprivaterun::usage = "";
+RunMC::usage = "Run the Monte-Carlo for one particle given a set of initial conditions";
 
 
 (* ::Chapter:: *)
@@ -30,42 +44,6 @@ GetNMaxofd\[Sigma]dERd\[CapitalOmega]::usage = "Numerically solve for the maximu
 
 
 Begin["`Private`"];
-
-
-(* ::Subsubsection:: *)
-(*Propagation to the earth*)
-
-
-(*EK\[Infinity][m\[Chi]_,v\[Infinity]_]:= 1/2 m\[Chi] v\[Infinity]^2;
-E\[Infinity][m\[Chi]_,v\[Infinity]_,r\[Infinity]_,V_]:=EK\[Infinity][m\[Chi],v\[Infinity]]+V[r\[Infinity]];
-(*Vtest[r_]:=G\[Alpha]/r;*)
-vperp[v\[Infinity]_,b\[Infinity]_,r_]:=(b\[Infinity] v\[Infinity])/r;
-vr[m\[Chi]_,v\[Infinity]_,b\[Infinity]_,r\[Infinity]_,V_,r_]:=Sqrt[2/m\[Chi] (E\[Infinity][m\[Chi],v\[Infinity],r\[Infinity],V]-V[r])-vperp[v\[Infinity],b\[Infinity],r]^2];
-br[m\[Chi]_,v\[Infinity]_,b\[Infinity]_,r\[Infinity]_,V_,r_]
-:=b\[Infinity]/Sqrt[1+(V[r\[Infinity]]-V[r])/EK\[Infinity][m\[Chi],v\[Infinity]]];
-Vgrav[r_,m\[Chi]_,] :=- ((m\[Chi] "G""ME")/r);*)
-
-
-(* ::Subsubsection:: *)
-(*Update trajectory*)
-
-
-(*vr[r_,E_,V_,m_,vp_]:=Sqrt[2/m (E-V[r])-vp]
-V[r_]:=("\[Alpha]")/r*)
-
-
-(*Block[{m,r,v={vr,vp1,vp2},l,speed,\[CapitalDelta]t,\[CapitalDelta]r,L,vp,E},
-speed = Sqrt[v . v];
-\[CapitalDelta]t = l/speed;
-\[CapitalDelta]r = \[CapitalDelta]t v[[1]];
-
-E=m/2 speed^2;
-vp = v . DiagonalMatrix[{0,1,1}] . v;
-(*L = m r vp;*)
-v[[1]]=vr[r+\[CapitalDelta]r,E,V,m,vp];
-v
-
-]*)
 
 
 (* ::Subsubsection:: *)
@@ -87,7 +65,7 @@ v\[Chi]natconv="c"/.Constants`SIConstRepl;
 (*Gravitational Potential*)
 
 
-Vgrav[r_]:=Piecewise[{{-(("G" "ME")/r),r>"rE"/. Constants`EarthRepl},{-(("ME" "G")/(2("rE")^3))( 3("rE")^2-r^2),r<"rE"/. Constants`EarthRepl}}]/.Constants`SIConstRepl/.Constants`EarthRepl
+Vgrav[r_]:=Piecewise[{{-(("G" "ME")/r),r>"rE"/. Constants`EarthRepl},{-(("ME" "G")/(2("rE")^3))( 3("rE")^2-r^2),r<"rE"/. Constants`EarthRepl}},-(("G" "ME")/("rE"/. Constants`EarthRepl))]/.Constants`SIConstRepl/.Constants`EarthRepl
 
 
 (* ::Subsubsection:: *)
@@ -144,7 +122,7 @@ n
 
 
 (* ::Subsection:: *)
-(*Interpolation*)
+(*Electronic Scattering *)
 
 
 Interpolate\[Epsilon]euztrunced[m\[Chi]_,params_,uselog_:True,m_:40,n_:40,\[Delta]_:10^-12]:=Module[{v\[Chi]max,\[Omega]min,\[Omega]max,qmin,qmax,umin,umax,zmin,zmax,InterPu,InterPz,Inter\[Epsilon]Table,Inter\[Epsilon]f},
@@ -211,9 +189,194 @@ Errors=If[d\[Sigma]dERd\[CapitalOmega]-NMax> 0,Break[];<|"\[Xi]\[Omega]"->\[Xi]s
 (*GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict_,v\[Chi]_,buffer_:1.1 ]:=Module[{},
 buffer NMaximize[Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]\[Omega],cos\[Theta],v\[Chi],1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]],{\[Xi]\[Omega],cos\[Theta]}\[Element]Rectangle[{\[Epsilon]Dict["\[Delta]"]^(1/4),\[Epsilon]InterpFeOsc2["\[Delta]"]^(1/4)},{1-\[Epsilon]Dict["\[Delta]"]^(1/4),1-\[Epsilon]Dict["\[Delta]"]^(1/4)}]][[1]] 
 ]*)
-GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict_,buffer_:1.1 ]:=Module[{v\[Chi]max},
-v\[Chi]max=10^-3 "c"/.Constants`SIConstRepl;
-buffer NMaximize[Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]\[Omega],cos\[Theta],v\[Chi]max,1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]],{\[Xi]\[Omega],cos\[Theta]}\[Element]Rectangle[{\[Epsilon]Dict["\[Delta]"]^(1/4),\[Epsilon]Dict["\[Delta]"]^(1/4)},{1-\[Epsilon]Dict["\[Delta]"]^(1/4),1-\[Epsilon]Dict["\[Delta]"]^(1/4)}]][[1]] 
+GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict_,v\[Chi]_,buffer_:1.1 ]:=Module[{},
+(*v\[Chi]max=10^-3 "c"/.Constants`SIConstRepl;*)
+buffer NMaximize[Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]\[Omega],cos\[Theta],v\[Chi],1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]],{\[Xi]\[Omega],cos\[Theta]}\[Element]Rectangle[{\[Epsilon]Dict["\[Delta]"]^(1/4),\[Epsilon]Dict["\[Delta]"]^(1/4)},{1-\[Epsilon]Dict["\[Delta]"]^(1/4),1-\[Epsilon]Dict["\[Delta]"]^(1/4)}]][[1]] 
+]
+
+
+(* ::Subsection:: *)
+(*Nuclear Scattering*)
+
+
+d\[Sigma]d\[CapitalOmega]Nuc0[cos\[Theta]_,v\[Chi]_,\[Kappa]_,m\[Chi]_,coeffs_,params_]:=Module[{mN,\[Omega],qpm,\[Xi]\[Theta],Sofq\[Omega],d\[Sigma]d\[CapitalOmega]},
+(* Get d\[Sigma]/(d\[CapitalOmega]) for nuclear scattering at 0 temperature. At 0 temperature there is a delta function which gives \[Omega] in terms of q (and hence cos\[Theta] through q_0)
+  cos\[Theta] \[Epsilon] (0,1) - [] negative disallowed since gas is assumed 0 T: hence no energy can be removed from the nuclei.*)
+mN ="mN"/. coeffs;
+\[Omega]=(2 cos\[Theta]^2 mN m\[Chi]^2 v\[Chi]^2)/((mN+m\[Chi])^2 "\[HBar]")/.params; (*define \[Omega] in terms of cos\[Theta]*)
+qpm={q->(m\[Chi] v\[Chi])/("\[HBar]") (cos\[Theta]-Sqrt[cos\[Theta]^2-(2\[Omega] "\[HBar]")/(m\[Chi] v\[Chi]^2)]),q->(m\[Chi] v\[Chi])/("\[HBar]") (cos\[Theta]+Sqrt[cos\[Theta]^2-(2\[Omega] "\[HBar]")/(m\[Chi] v\[Chi]^2)])}/.params;(*solutions for q to \[Omega]-\[Omega](q,cos\[Theta])=0 in the delta function that arises in the q integral. These must be summed over*)
+\[Xi]\[Theta]=Sqrt[cos\[Theta]^2-(2 "\[HBar]" \[Omega])/(m\[Chi] v\[Chi]^2)]/.params;(*the absolute value of the jacobian of the delta function, evaluated on the roots of q in the argument, for each of the above solutions*)
+
+d\[Sigma]d\[CapitalOmega] =Total@Table[1/(v\[Chi]^2 )  q^2/(("\[HBar]")^2 (2 \[Pi])^3) 1/\[Xi]\[Theta] ((\[Kappa] ("e")^2)/(4 \[Pi] "\[Epsilon]0" q^2))^2 FormFactors`Zeff[q,coeffs]/.qpm[[i]]/.params,{i,2}];
+
+<|"d\[Sigma]d\[CapitalOmega]"->d\[Sigma]d\[CapitalOmega],"\[Omega]"->\[Omega],"cos\[Theta]"->cos\[Theta],"\[Xi]pm"->\[Xi]\[Theta],"qpm"->qpm|>
+]
+
+
+GetNMaxofd\[Sigma]d\[CapitalOmega]Nuc0[v\[Chi]_,m\[Chi]_,coeffs_,params_,buffer_:1.1 ,\[Delta]_:10^-3]:=Module[{},
+(*v\[Chi]max=10^-3 "c"/.Constants`SIConstRepl;*)
+buffer NMaximize[Total@d\[Sigma]d\[CapitalOmega]Nuc0[cos\[Theta],v\[Chi],1,m\[Chi],coeffs,params][["d\[Sigma]d\[CapitalOmega]"]],cos\[Theta]\[Element]Interval[{\[Delta],1-\[Delta]}]][[1]]
+]
+
+
+Get\[Omega]andcos\[Theta]Nuc0[v\[Chi]_,m\[Chi]_,coeffs_,params_,NMax_]:=Module[{nits=0,cos\[Theta],M\[Xi],d\[Sigma]d\[CapitalOmega],\[Omega],Accepted=False,Errors=0},
+While[!Accepted,
+nits+=1;
+cos\[Theta]=Random[];(*assumes 0 temp so cos\[Theta] > 0*)
+M\[Xi]=NMax Random[];
+(*\[Sigma]s=Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]s[[1]],\[Xi]s[[2]],v\[Chi],1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]];*)
+{d\[Sigma]d\[CapitalOmega],\[Omega]}={"d\[Sigma]d\[CapitalOmega]","\[Omega]"}/.d\[Sigma]d\[CapitalOmega]Nuc0[cos\[Theta],v\[Chi],1,m\[Chi],coeffs,params];(*Set \[Kappa] to 1, overall scaling is irrelevant*)
+(*d\[Sigma]d\[CapitalOmega]=Total[d\[Sigma]d\[CapitalOmega]];*)
+Accepted=M\[Xi]<= d\[Sigma]d\[CapitalOmega];
+Errors=If[d\[Sigma]d\[CapitalOmega]-NMax> 0,Break[];True,0];
+];
+<|"\[Omega]"->\[Omega],"cos\[Theta]"->cos\[Theta],"M\[Xi]"->M\[Xi],"d\[Sigma]dERd\[CapitalOmega]"->d\[Sigma]d\[CapitalOmega],"Max"->NMax,"Errors"->Errors,"nits"->nits|>
+]
+
+
+(* ::Subsection:: *)
+(*Initial Conditions*)
+
+
+Getv\[Chi]\[Infinity][m\[Chi]_,\[Beta]D_,maxrat_:Sqrt[50]]:=Module[{fMB,NMax,v\[Chi]Max,v\[Chi]MP,nits=0,v\[Chi],P,M\[Xi],Accepted=False},
+v\[Chi]MP=Sqrt[2/(m\[Chi] \[Beta]D)];(*most probable velocity in MB*)
+v\[Chi]Max = maxrat v\[Chi]MP; (*maximum a simple rescaling of most probable, since higher velocities are exponentially suppressed*)
+fMB=(#^2 E^(-\[Beta]D m\[Chi]/2 #^2))&;
+NMax=2/(E m\[Chi] \[Beta]D);(*value of fMB at v\[Chi] MP*)
+While[!Accepted && nits<30,
+nits+=1;
+v\[Chi]=Random[] v\[Chi]Max;
+(*Print[v\[Chi]];*)
+M\[Xi]=Random[]NMax;
+P=fMB[v\[Chi]];(*fMB of getting velocity v\[Chi]*)
+Accepted=M\[Xi]<= P;
+];
+<|"v\[Chi]"->v\[Chi],"v\[Chi]Max"->v\[Chi]Max,"M\[Xi]"->M\[Xi],"fMB"->P,"Max"->NMax,"nits"->nits|>
+]
+
+
+Sample2Sphere[]:=Module[{x},
+(*Point in R3, normalized gives random point on sphere or radius 1*)
+x=Table[1 - 2Random[],{i,3}];
+x/Sqrt[x . x]
+]
+
+
+Getv\[Chi]atEarth[m\[Chi]_,\[Beta]D_,r\[Infinity]_:10^1 "rE"/.Constants`EarthRepl,V_:Capture`Vgrav]:=Module[{rE,Accepted=False,nits=0,\[Chi]speed\[Infinity],v\[Chi]\[Infinity],vperp\[Infinity],EK\[Infinity],b\[Infinity],bEarth,vrEarth,succeeded=False,v\[Chi],\[Chi]speedEarth},
+
+rE="rE"/.Constants`EarthRepl;
+
+While[!Accepted &&nits<10000,
+nits++;
+\[Chi]speed\[Infinity]="v\[Chi]"/.Getv\[Chi]\[Infinity][m\[Chi],\[Beta]D];
+v\[Chi]\[Infinity]= \[Chi]speed\[Infinity] Sample2Sphere[];
+
+If[v\[Chi]\[Infinity][[1]]>0,Continue[]];(*neglect anything pointed away*)
+
+vperp\[Infinity]=Sqrt[v\[Chi]\[Infinity] . DiagonalMatrix[{0,1,1}] . v\[Chi]\[Infinity]];
+EK\[Infinity]=1/2 m\[Chi] \[Chi]speed\[Infinity]^2;
+b\[Infinity]=r\[Infinity] vperp\[Infinity]/\[Chi]speed\[Infinity];
+bEarth = b\[Infinity]/Sqrt[1 + (m\[Chi](V[r\[Infinity]]-V[rE]))/EK\[Infinity]];
+If[bEarth<rE,succeeded=True;Break[]]
+];
+vrEarth = Sqrt[v\[Chi]\[Infinity][[1]]^2+2(V[r\[Infinity]]-V[rE])];
+Print[v\[Chi]\[Infinity][[1]]^2];
+Print[2(V[r\[Infinity]]-V[rE])];
+v\[Chi]={-vrEarth,v\[Chi]\[Infinity][[2]],v\[Chi]\[Infinity][[3]]};
+\[Chi]speedEarth = Sqrt[v\[Chi] . v\[Chi]];
+<|"v\[Chi]\[Infinity]"->v\[Chi]\[Infinity],"v\[Chi]"->v\[Chi],"\[Chi]speedEarth"->\[Chi]speedEarth,"m\[Chi]"->m\[Chi],"\[Beta]D"->\[Beta]D,"\[Chi]speed\[Infinity]"->\[Chi]speed\[Infinity],"bEarth"->bEarth,"nits"->nits,"succeeded"->succeeded|>
+]
+
+
+(* ::Subsection:: *)
+(*MC PreProcessing*)
+
+
+(*ProcessDataAssemblerElectronic[m\[Chi]_,params_,d\[Sigma]dERd\[CapitalOmega]sampler_,\[Lambda]Dict_,ProcNum_:1,uselog_:True,m_:200,n_:200,\[Delta]_:10^-7]:= Module[{\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Max,d\[Sigma]dERd\[CapitalOmega]sample,\[Sigma]},
+\[Epsilon]Dict= Interpolate\[Epsilon]euztrunced[m\[Chi],params,uselog,m,n,\[Delta]];
+d\[Sigma]dERd\[CapitalOmega]Max = GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict,#]&;
+d\[Sigma]dERd\[CapitalOmega]sample = Get\[Xi]\[Omega]andcos\[Theta][#,\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Max[#]]&;
+\[Sigma]=1/("ne"/.\[Lambda]Dict["fitparams"][[1]]) 10^("f"/.\[Lambda]Dict)[Log10[m\[Chi]],Log10[#]]&;
+<|"ProcNum"->ProcNum,"\[Epsilon]Dict"->\[Epsilon]Dict,"d\[Sigma]dERd\[CapitalOmega]Max"->d\[Sigma]dERd\[CapitalOmega]Max,"d\[Sigma]dERd\[CapitalOmega]sample"->d\[Sigma]dERd\[CapitalOmega]sample,"\[Sigma]"->\[Sigma],"\[Lambda]"->\[Lambda]Dict["f"]|>
+]*)
+ProcessDataAssemblerElectronic[m\[Chi]_,params_,d\[Sigma]dERd\[CapitalOmega]sampler_,\[Lambda]Dict_,Save_:False,fname_:"procdata",ProcNum_:1,uselog_:True,m_:200,n_:200,\[Delta]_:10^-7]:= Module[{\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Maxloglog,d\[Sigma]dERd\[CapitalOmega]Max,d\[Sigma]dERd\[CapitalOmega]sample,\[Sigma],outdict},
+\[Epsilon]Dict= Interpolate\[Epsilon]euztrunced[m\[Chi],params,uselog,m,n,\[Delta]];
+d\[Sigma]dERd\[CapitalOmega]Maxloglog = "Maxf"/.Interpolated\[Sigma]dERd\[Sigma]Max[GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict,#]&];
+d\[Sigma]dERd\[CapitalOmega]Max=(10^d\[Sigma]dERd\[CapitalOmega]Maxloglog[Log10[#]])&;
+d\[Sigma]dERd\[CapitalOmega]sample = Get\[Xi]\[Omega]andcos\[Theta][#,\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Max[#]]&;
+\[Sigma]=1/("ne"/.\[Lambda]Dict["fitparams"][[1]]) 10^("f"/.\[Lambda]Dict)[Log10[m\[Chi]],Log10[#]]&;
+outdict=<|"ProcNum"->ProcNum,"\[Epsilon]Dict"->\[Epsilon]Dict,"d\[Sigma]dERd\[CapitalOmega]Max"->d\[Sigma]dERd\[CapitalOmega]Max,"d\[Sigma]dERd\[CapitalOmega]sample"->d\[Sigma]dERd\[CapitalOmega]sample,"\[Sigma]"->\[Sigma],"\[Lambda]"->\[Lambda]Dict["f"]|>;
+If[Save,Utilities`SaveIt[NotebookDirectory[]<>fname,outdict]];(*Note that we have to save the object internally in the package to use it in the package. It is saved as private so can only be accessed from in here.*)
+outdict 
+]
+
+
+Interpolated\[Sigma]dERd\[Sigma]Max[d\[Sigma]dERd\[CapitalOmega]Maxf_,m_:20,uselog_:True]:=Module[{v\[Chi]Max,v\[Chi]Min,v\[Chi]s,MaxInterTable,MaxInterf},
+v\[Chi]Max = 2 10^-1 "c" /.Constants`SIConstRepl;
+v\[Chi]Min = 1/10 Constants`vescape;
+v\[Chi]s = N@If[uselog,10^Subdivide[Log10[v\[Chi]Min],Log10[v\[Chi]Max],m],Subdivide[v\[Chi]Min,v\[Chi]Max,m]];
+MaxInterTable = Table[{v\[Chi]s[[i]],d\[Sigma]dERd\[CapitalOmega]Maxf[v\[Chi]s[[i]]]},{i,m}];
+MaxInterf=If[uselog,Interpolation[Log10[MaxInterTable],InterpolationOrder->4],Interpolation[MaxInterTable,InterpolationOrder->4]];
+<|"Maxf"->MaxInterf,"MaxTable"->MaxInterTable,"v\[Chi]s"->v\[Chi]s,"v\[Chi]range"->{v\[Chi]Min,v\[Chi]Max}|>
+]
+
+
+(* ::Subsection:: *)
+(*Run MC*)
+
+
+testMCprivaterun[params_,\[Lambda]_,fileloc_]:=Module[{FeDataet},
+FeDataet=ProcessDataAssemblerElectronic[10 "m"/.Constants`SIConstRepl,params,Get\[Xi]\[Omega]andcos\[Theta],\[Lambda]];
+Utilities`SaveIt[fileloc,FeDataet];
+(*FeDataet = Utilities`ReadIt[fileloc];*)
+("d\[Sigma]dERd\[CapitalOmega]sample"/.FeDataet)[10^5];
+(*This is getting convoluted, we might want to just dump all this into a notebook so we don't have to deal with all the scope crap.*)
+RunMC[10 "m"/.Constants`SIConstRepl,10^-6.5,("v\[Chi]"/.Getv\[Chi]atEarth[ 10"m"/.Constants`SIConstRepl,(0.001"JpereV"/.Constants`SIConstRepl)^-1]),{"\[Lambda]"["f"]/.FeDataet},{"\[Sigma]"/.FeDataet},{"d\[Sigma]dERd\[CapitalOmega]Max"/.FeDataet},{"d\[Sigma]dERd\[CapitalOmega]sample"/.FeDataet}]
+]
+
+
+RunMC[m\[Chi]_,\[Kappa]_,v\[Chi]0_,\[Lambda]s_,\[Sigma]s_,d\[Sigma]dERd\[CapitalOmega]Maxes_,d\[Sigma]dERd\[CapitalOmega]sample_,V_:Vgrav]:=Module[{v\[Chi],r,V,nits,ncaptured,nescaped,ProcNum,l,reached,ER,cos\[Theta],\[Phi],q},
+(*
+Psuedo Code
+initialize cross-sections, interaction lengths, and cross-sections for each process
+Get initial conditions: v\[Chi] (with perp and radial components) at earth's radius
+While in the Earth
+	Get interaction length in the Earth
+	Update radius according to interaction length and velocity
+	Update velocity according to potential change 
+	select process - omit for now
+	sample to find \[Omega] and cos\[Theta] 
+	update velocity
+*)
+
+{v\[Chi],r} = {v\[Chi]0,"rE"/.EarthRepl};
+
+nits=0;
+ncaptured=0;
+nescaped=0;
+While[nits<2,
+(*nits<30,*)
+nits++;
+Print["N iterations: ",nits];
+ProcNum=\[Sigma]selector[Table[\[Sigma]s[[i]][Sqrt[v\[Chi] . v\[Chi]]],{i,Length[\[Sigma]s]}]];
+Print["Process number: ",ProcNum];
+(*l = Getl[m\[Chi],Sqrt[v\[Chi].v\[Chi]],\[Kappa],\[Lambda]s[[ProcNum]]["f"]];*)
+l = Getl[m\[Chi],Sqrt[v\[Chi] . v\[Chi]],\[Kappa],\[Lambda]s[[ProcNum]]];
+Print["l is ",l];
+{v\[Chi],r,reached}={"v\[Chi]","r","reached?"}/.Updatev[v\[Chi],m\[Chi],r,l,V];
+Print["v\[Chi] is ",v\[Chi]];
+Print["|v\[Chi]| is ",Sqrt[v\[Chi] . v\[Chi]]];
+Print["r is ",r];
+Print[reached];
+If[r>"rE"/.Constants`EarthRepl  ,nescaped++;Break[]];
+{ER,cos\[Theta]}={"\[HBar]""\[Omega]"/.Constants`SIConstRepl,"cos\[Theta]"}/.d\[Sigma]dERd\[CapitalOmega]sample[[ProcNum]][Sqrt[v\[Chi] . v\[Chi]]];
+\[Phi]=2 \[Pi] Random[];
+q=Sqrt[2 m\[Chi] ER ]/("\[HBar]")/.Constants`SIConstRepl;
+v\[Chi] = Rotatev\[Chi][v\[Chi],cos\[Theta],m\[Chi],\[Phi],q];
+If[Sqrt[v\[Chi] . v\[Chi]]<"vesc"/.Constants`EarthRepl,ncaptured++;Print["Captured with: \!\(\*SubscriptBox[\(v\), \(\[Chi]\)]\)=",Sqrt[v\[Chi] . v\[Chi]]];Break[]];
+(*Print["v\[Chi] after scatter is ",v\[Chi]];*)
+];
+<|"ER"->ER,"v\[Chi]"->v\[Chi],"|v\[Chi]|"->Sqrt[v\[Chi] . v\[Chi]],"\[Phi]"->\[Phi],"l"->l,"cos\[Theta]"->cos\[Theta],"q"->q,"r"->r,"reached?"->reached,"\[Kappa]"->N@\[Kappa],"nits"->nits,"ncaptured"->ncaptured,"nescaped"->nescaped|>
 ]
 
 
