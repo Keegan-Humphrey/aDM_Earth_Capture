@@ -1145,7 +1145,7 @@ Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],Interpolatio
 ]*)
 
 
-Interpolatev\[Chi]and\[Omega]\[Sigma]dERNuc\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,v\[Chi]_:{4 10^-4,10^-2}"c"/.Constants`SIConstRepl,FFcoeffs_,params_,m_:5,n_:60,\[Epsilon]_:10^-4]:=Module[{\[Omega]min,mN,Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f,Inter\[Sigma]Table,Inter\[Sigma]f},
+Interpolatev\[Chi]and\[Omega]\[Sigma]dERNuc\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,FFcoeffs_,params_:Constants`SIConstRepl,v\[Chi]_:{1/10 "vesc",2 10^-1"c"}/.Constants`SIConstRepl/.Constants`EarthRepl,m_:20,n_:60,\[Epsilon]_:10^-4]:=Module[{\[Omega]min,mN,Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f,Inter\[Sigma]Table,Inter\[Sigma]f},
 (*Interpolate over d\[Sigma]dER and \[Sigma] for Nuclear contribution (to avoid doing the integral over momentum transfer at every evaluation and to speed up the numerical integration over it to find the normalization)*)
 
 \[Omega]min=0;
