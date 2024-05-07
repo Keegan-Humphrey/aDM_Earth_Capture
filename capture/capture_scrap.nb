@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[   3896807,      69338]
-NotebookOptionsPosition[   3851214,      68748]
-NotebookOutlinePosition[   3851711,      68767]
-CellTagsIndexPosition[   3851668,      68764]
+NotebookDataLength[   3897083,      69348]
+NotebookOptionsPosition[   3851487,      68758]
+NotebookOutlinePosition[   3851991,      68777]
+CellTagsIndexPosition[   3851948,      68774]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -61505,11 +61505,12 @@ Cell[BoxData["13.479688008888049`"], "Output",
  CellLabel->
   "Out[902]=",ExpressionUUID->"19ea0e56-cf04-4603-b7e4-e04a52505d2d"]
 }, Open  ]]
+}, Closed]]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Get velocity dispersion", "Subsubsection",
+Cell["Get velocity dispersion", "Subsection",
  CellChangeTimes->{{3.923494682407982*^9, 
   3.9234946871376452`*^9}},ExpressionUUID->"9dfbfc4d-083c-4b0c-b97c-\
 712084bfdf17"],
@@ -62122,11 +62123,10 @@ Cell[BoxData[{
    3.9235702137370176`*^9}, {3.923570277520486*^9, 3.9235702910744905`*^9}, {
    3.9235703255353737`*^9, 3.923570378812909*^9}, {3.9236730620617833`*^9, 
    3.923673067313944*^9}},ExpressionUUID->"05d09952-7697-472a-959c-\
-f59f2826a517"]
-}, Open  ]],
+f59f2826a517"],
 
 Cell["", "Subsubsection",ExpressionUUID->"9d269c0b-eb0b-43de-a261-1576201daccb"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -68240,14 +68240,13 @@ Cell[BoxData[
             Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
               Im[$CellContext`vT] Re[$CellContext`v\[Chi]] >= 0, 
              Or[
-             Im[$CellContext`vT] (
-                Im[$CellContext`vT] Im[$CellContext`v\[Chi]] 
-                 Re[$CellContext`vT] + 
+             Im[$CellContext`vT] ((Im[$CellContext`vT] 
+                  Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
                 Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
                   Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) >= 
-              Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-               Im[$CellContext`v\[Chi]] 
-                Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+              Im[$CellContext`vT]^3 
+                Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+                 Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
                  Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2), (
                 Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
                 Re[$CellContext`vT] + Re[$CellContext`v\[Chi]]) <= 0]], 
@@ -68257,37 +68256,39 @@ Cell[BoxData[
              
              Or[(Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
                 Re[$CellContext`vT] + Re[$CellContext`v\[Chi]]) >= 0, 
-              Im[$CellContext`vT] (
-                Im[$CellContext`vT] Im[$CellContext`v\[Chi]] 
-                 Re[$CellContext`vT] + 
+              Im[$CellContext`vT] ((Im[$CellContext`vT] 
+                  Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
                 Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
                   Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) <= 
-              Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-               Im[$CellContext`v\[Chi]] 
-                Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+              Im[$CellContext`vT]^3 
+                Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+                 Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
                  Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)]], (
-              Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
-              Re[$CellContext`vT] + Re[$CellContext`v\[Chi]])/(
-             Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-             Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) == 
-            0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-               2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+              Im[$CellContext`vT] + 
+              Im[$CellContext`v\[Chi]]) ((Re[$CellContext`vT] + 
+               Re[$CellContext`v\[Chi]])/(
+              Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+              Im[$CellContext`vT] Re[$CellContext`v\[Chi]])) == 
+            0, ((2 Im[$CellContext`v\[Chi]]) 
+                Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+                Re[$CellContext`v\[Chi]])^(-1) (
               Im[$CellContext`vT] Re[$CellContext`vT] + 
               Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) == 
             Rational[
              1, 2], (Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-               Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (-
-               Im[$CellContext`vT]^2 Im[$CellContext`v\[Chi]] 
-               Re[$CellContext`vT] + 
-              Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-              Im[$CellContext`v\[Chi]] 
-               Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
-                Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - 
-              Im[$CellContext`vT] 
-              Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
-               Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) == 
-            0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-               2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+               Im[$CellContext`vT] 
+                Re[$CellContext`v\[Chi]])^(-1) (((-Im[$CellContext`vT]^2) 
+                Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
+              Im[$CellContext`vT]^3 
+               Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+                Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
+                Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - (
+               Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) (
+               Im[$CellContext`v\[Chi]]^2 - Re[$CellContext`vT]^2 + 
+               Re[$CellContext`v\[Chi]]^2)) == 
+            0, ((2 Im[$CellContext`v\[Chi]]) 
+                Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+                Re[$CellContext`v\[Chi]])^(-1) (
               Im[$CellContext`vT] Re[$CellContext`vT] + 
               Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) >= 
             Rational[1, 2]], 7], "Tooltip"]& ], "IconizedCustomName", 
@@ -68307,13 +68308,13 @@ Cell[BoxData[
     Or[
      And[Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
        Im[$CellContext`vT] Re[$CellContext`v\[Chi]] >= 0, 
-      Or[Im[$CellContext`vT] (
-         Im[$CellContext`vT] Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+      Or[Im[$CellContext`vT] ((Im[$CellContext`vT] Im[$CellContext`v\[Chi]]) 
+          Re[$CellContext`vT] + 
          Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
            Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) >= 
-       Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-        Im[$CellContext`v\[Chi]] 
-         Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+       Im[$CellContext`vT]^3 
+         Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+          Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
           Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2), (
          Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (Re[$CellContext`vT] + 
          Re[$CellContext`v\[Chi]]) <= 0]], 
@@ -68321,35 +68322,39 @@ Cell[BoxData[
        Im[$CellContext`vT] Re[$CellContext`v\[Chi]] <= 0, 
       Or[(Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
          Re[$CellContext`vT] + Re[$CellContext`v\[Chi]]) >= 0, 
-       Im[$CellContext`vT] (
-         Im[$CellContext`vT] Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+       Im[$CellContext`vT] ((Im[$CellContext`vT] Im[$CellContext`v\[Chi]]) 
+          Re[$CellContext`vT] + 
          Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
            Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) <= 
-       Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-        Im[$CellContext`v\[Chi]] 
-         Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+       Im[$CellContext`vT]^3 
+         Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+          Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
           Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)]], (
-       Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (Re[$CellContext`vT] + 
-       Re[$CellContext`v\[Chi]])/(
-      Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-      Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) == 
-     0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-        2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+       Im[$CellContext`vT] + 
+       Im[$CellContext`v\[Chi]]) ((Re[$CellContext`vT] + 
+        Re[$CellContext`v\[Chi]])/(
+       Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+       Im[$CellContext`vT] Re[$CellContext`v\[Chi]])) == 
+     0, ((2 Im[$CellContext`v\[Chi]]) 
+         Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+         Re[$CellContext`v\[Chi]])^(-1) (
        Im[$CellContext`vT] Re[$CellContext`vT] + 
        Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) == 
      Rational[1, 
        2], (Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-        Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (-
-        Im[$CellContext`vT]^2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-       Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-       Im[$CellContext`v\[Chi]] 
-        Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
-         Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - 
-       Im[$CellContext`vT] 
-       Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
-        Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) == 
-     0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-        2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+        Im[$CellContext`vT] 
+         Re[$CellContext`v\[Chi]])^(-1) (((-Im[$CellContext`vT]^2) 
+         Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
+       Im[$CellContext`vT]^3 
+        Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+         Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
+         Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - (
+        Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) (
+        Im[$CellContext`v\[Chi]]^2 - Re[$CellContext`vT]^2 + 
+        Re[$CellContext`v\[Chi]]^2)) == 
+     0, ((2 Im[$CellContext`v\[Chi]]) 
+         Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+         Re[$CellContext`v\[Chi]])^(-1) (
        Im[$CellContext`vT] Re[$CellContext`vT] + 
        Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) >= Rational[1, 2]], 
     SelectWithContents -> True, Selectable -> False]},
@@ -68626,14 +68631,13 @@ Cell[BoxData[
             Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
               Im[$CellContext`vT] Re[$CellContext`v\[Chi]] >= 0, 
              Or[
-             Im[$CellContext`vT] (
-                Im[$CellContext`vT] Im[$CellContext`v\[Chi]] 
-                 Re[$CellContext`vT] + 
+             Im[$CellContext`vT] ((Im[$CellContext`vT] 
+                  Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
                 Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
                   Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) >= 
-              Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-               Im[$CellContext`v\[Chi]] 
-                Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+              Im[$CellContext`vT]^3 
+                Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+                 Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
                  Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2), (
                 Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
                 Re[$CellContext`vT] + Re[$CellContext`v\[Chi]]) <= 0]], 
@@ -68643,37 +68647,39 @@ Cell[BoxData[
              
              Or[(Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
                 Re[$CellContext`vT] + Re[$CellContext`v\[Chi]]) >= 0, 
-              Im[$CellContext`vT] (
-                Im[$CellContext`vT] Im[$CellContext`v\[Chi]] 
-                 Re[$CellContext`vT] + 
+              Im[$CellContext`vT] ((Im[$CellContext`vT] 
+                  Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
                 Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
                   Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) <= 
-              Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-               Im[$CellContext`v\[Chi]] 
-                Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+              Im[$CellContext`vT]^3 
+                Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+                 Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
                  Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)]], (
-              Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
-              Re[$CellContext`vT] + Re[$CellContext`v\[Chi]])/(
-             Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-             Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) == 
-            0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-               2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+              Im[$CellContext`vT] + 
+              Im[$CellContext`v\[Chi]]) ((Re[$CellContext`vT] + 
+               Re[$CellContext`v\[Chi]])/(
+              Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+              Im[$CellContext`vT] Re[$CellContext`v\[Chi]])) == 
+            0, ((2 Im[$CellContext`v\[Chi]]) 
+                Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+                Re[$CellContext`v\[Chi]])^(-1) (
               Im[$CellContext`vT] Re[$CellContext`vT] + 
               Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) == 
             Rational[
              1, 2], (Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-               Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (-
-               Im[$CellContext`vT]^2 Im[$CellContext`v\[Chi]] 
-               Re[$CellContext`vT] + 
-              Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-              Im[$CellContext`v\[Chi]] 
-               Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
-                Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - 
-              Im[$CellContext`vT] 
-              Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
-               Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) == 
-            0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-               2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+               Im[$CellContext`vT] 
+                Re[$CellContext`v\[Chi]])^(-1) (((-Im[$CellContext`vT]^2) 
+                Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
+              Im[$CellContext`vT]^3 
+               Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+                Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
+                Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - (
+               Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) (
+               Im[$CellContext`v\[Chi]]^2 - Re[$CellContext`vT]^2 + 
+               Re[$CellContext`v\[Chi]]^2)) == 
+            0, ((2 Im[$CellContext`v\[Chi]]) 
+                Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+                Re[$CellContext`v\[Chi]])^(-1) (
               Im[$CellContext`vT] Re[$CellContext`vT] + 
               Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) >= 
             Rational[1, 2]], 7], "Tooltip"]& ], "IconizedCustomName", 
@@ -68693,13 +68699,13 @@ Cell[BoxData[
     Or[
      And[Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
        Im[$CellContext`vT] Re[$CellContext`v\[Chi]] >= 0, 
-      Or[Im[$CellContext`vT] (
-         Im[$CellContext`vT] Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+      Or[Im[$CellContext`vT] ((Im[$CellContext`vT] Im[$CellContext`v\[Chi]]) 
+          Re[$CellContext`vT] + 
          Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
            Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) >= 
-       Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-        Im[$CellContext`v\[Chi]] 
-         Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+       Im[$CellContext`vT]^3 
+         Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+          Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
           Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2), (
          Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (Re[$CellContext`vT] + 
          Re[$CellContext`v\[Chi]]) <= 0]], 
@@ -68707,35 +68713,39 @@ Cell[BoxData[
        Im[$CellContext`vT] Re[$CellContext`v\[Chi]] <= 0, 
       Or[(Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (
          Re[$CellContext`vT] + Re[$CellContext`v\[Chi]]) >= 0, 
-       Im[$CellContext`vT] (
-         Im[$CellContext`vT] Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+       Im[$CellContext`vT] ((Im[$CellContext`vT] Im[$CellContext`v\[Chi]]) 
+          Re[$CellContext`vT] + 
          Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
            Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) <= 
-       Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-        Im[$CellContext`v\[Chi]] 
-         Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
+       Im[$CellContext`vT]^3 
+         Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+          Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
           Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)]], (
-       Im[$CellContext`vT] + Im[$CellContext`v\[Chi]]) (Re[$CellContext`vT] + 
-       Re[$CellContext`v\[Chi]])/(
-      Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-      Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) == 
-     0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-        2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+       Im[$CellContext`vT] + 
+       Im[$CellContext`v\[Chi]]) ((Re[$CellContext`vT] + 
+        Re[$CellContext`v\[Chi]])/(
+       Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
+       Im[$CellContext`vT] Re[$CellContext`v\[Chi]])) == 
+     0, ((2 Im[$CellContext`v\[Chi]]) 
+         Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+         Re[$CellContext`v\[Chi]])^(-1) (
        Im[$CellContext`vT] Re[$CellContext`vT] + 
        Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) == 
      Rational[1, 
        2], (Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-        Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (-
-        Im[$CellContext`vT]^2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-       Im[$CellContext`vT]^3 Re[$CellContext`v\[Chi]] + 
-       Im[$CellContext`v\[Chi]] 
-        Re[$CellContext`vT] (Im[$CellContext`v\[Chi]]^2 - 
-         Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - 
-       Im[$CellContext`vT] 
-       Re[$CellContext`v\[Chi]] (Im[$CellContext`v\[Chi]]^2 - 
-        Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2)) == 
-     0, (2 Im[$CellContext`v\[Chi]] Re[$CellContext`vT] + 
-        2 Im[$CellContext`vT] Re[$CellContext`v\[Chi]])^(-1) (
+        Im[$CellContext`vT] 
+         Re[$CellContext`v\[Chi]])^(-1) (((-Im[$CellContext`vT]^2) 
+         Im[$CellContext`v\[Chi]]) Re[$CellContext`vT] + 
+       Im[$CellContext`vT]^3 
+        Re[$CellContext`v\[Chi]] + (Im[$CellContext`v\[Chi]] 
+         Re[$CellContext`vT]) (Im[$CellContext`v\[Chi]]^2 - 
+         Re[$CellContext`vT]^2 + Re[$CellContext`v\[Chi]]^2) - (
+        Im[$CellContext`vT] Re[$CellContext`v\[Chi]]) (
+        Im[$CellContext`v\[Chi]]^2 - Re[$CellContext`vT]^2 + 
+        Re[$CellContext`v\[Chi]]^2)) == 
+     0, ((2 Im[$CellContext`v\[Chi]]) 
+         Re[$CellContext`vT] + (2 Im[$CellContext`vT]) 
+         Re[$CellContext`v\[Chi]])^(-1) (
        Im[$CellContext`vT] Re[$CellContext`vT] + 
        Im[$CellContext`v\[Chi]] Re[$CellContext`v\[Chi]]) >= Rational[1, 2]], 
     SelectWithContents -> True, Selectable -> False]},
@@ -68747,8 +68757,8 @@ Cell[BoxData[
 }, Open  ]]
 },
 Evaluator->"Local2",
-WindowSize->{538.5, 642.75},
-WindowMargins->{{0, Automatic}, {Automatic, 0}},
+WindowSize->{958., 725.5},
+WindowMargins->{{Automatic, -452.5}, {715.5, Automatic}},
 TaggingRules-><|"TryRealOnly" -> False|>,
 Magnification:>0.9 Inherited,
 FrontEndVersion->"13.2 for Microsoft Windows (64-bit) (January 30, 2023)",
@@ -68775,38 +68785,38 @@ Cell[3858, 107, 177, 2, 28, "Output",ExpressionUUID->"f0ae29b9-2f1f-41c3-ba98-2b
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[4072, 114, 95, 0, 48, "Subsection",ExpressionUUID->"2c4e4290-9725-45c7-82bb-54ce422bee9e"],
-Cell[4170, 116, 7326, 183, 219, "Code",ExpressionUUID->"2222c90e-1e77-4f02-8477-10c2758966d7"],
-Cell[11499, 301, 1477, 39, 93, "Code",ExpressionUUID->"98181566-6823-4080-b5cb-03b0cf51a9f7"],
-Cell[12979, 342, 3668, 91, 235, "Code",ExpressionUUID->"f0d4a4ad-6824-4a0e-9327-954e755cfccc"],
-Cell[16650, 435, 2671, 67, 317, "Input",ExpressionUUID->"549182d7-1df4-4840-912b-bf49eac43720"],
-Cell[19324, 504, 4288, 98, 471, "Input",ExpressionUUID->"64900bc5-d6e2-4a62-81dc-e76c7298ee09"],
+Cell[4170, 116, 7326, 183, 222, "Code",ExpressionUUID->"2222c90e-1e77-4f02-8477-10c2758966d7"],
+Cell[11499, 301, 1477, 39, 94, "Code",ExpressionUUID->"98181566-6823-4080-b5cb-03b0cf51a9f7"],
+Cell[12979, 342, 3668, 91, 236, "Code",ExpressionUUID->"f0d4a4ad-6824-4a0e-9327-954e755cfccc"],
+Cell[16650, 435, 2671, 67, 164, "Input",ExpressionUUID->"549182d7-1df4-4840-912b-bf49eac43720"],
+Cell[19324, 504, 4288, 98, 249, "Input",ExpressionUUID->"64900bc5-d6e2-4a62-81dc-e76c7298ee09"],
 Cell[23615, 604, 219, 4, 31, "Text",ExpressionUUID->"1c6cc648-9fde-483d-92e2-544f4bb605ff"],
 Cell[CellGroupData[{
-Cell[23859, 612, 606, 14, 67, "Input",ExpressionUUID->"e6447ca1-2813-46e1-a375-fe0c79eeff58"],
-Cell[24468, 628, 28216, 622, 211, "Output",ExpressionUUID->"a852f2c5-938d-43f4-a800-fd13853c0ad3"]
+Cell[23859, 612, 606, 14, 29, "Input",ExpressionUUID->"e6447ca1-2813-46e1-a375-fe0c79eeff58"],
+Cell[24468, 628, 28216, 622, 210, "Output",ExpressionUUID->"a852f2c5-938d-43f4-a800-fd13853c0ad3"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[52721, 1255, 676, 15, 67, "Input",ExpressionUUID->"9fbc449e-a0cc-49ea-aab0-993bf2aa406d"],
+Cell[52721, 1255, 676, 15, 29, "Input",ExpressionUUID->"9fbc449e-a0cc-49ea-aab0-993bf2aa406d"],
 Cell[53400, 1272, 20686, 451, 205, "Output",ExpressionUUID->"0779d16b-5169-4217-8e32-71ba62d02ce6"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[74123, 1728, 674, 15, 67, "Input",ExpressionUUID->"8f1adce3-e602-44fb-9ac6-efd137ef5272"],
+Cell[74123, 1728, 674, 15, 29, "Input",ExpressionUUID->"8f1adce3-e602-44fb-9ac6-efd137ef5272"],
 Cell[74800, 1745, 28296, 617, 205, "Output",ExpressionUUID->"19dadba5-1ce6-4a32-a87d-85d18a777891"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[103133, 2367, 675, 15, 27, "Input",ExpressionUUID->"c98f5501-bbf0-4f3c-912d-c843e19696a2"],
+Cell[103133, 2367, 675, 15, 29, "Input",ExpressionUUID->"c98f5501-bbf0-4f3c-912d-c843e19696a2"],
 Cell[103811, 2384, 20094, 443, 205, "Output",ExpressionUUID->"6b95d246-9654-444f-a7c8-8d7cefcfef0d"]
 }, Open  ]],
 Cell[123920, 2830, 173, 3, 31, "Text",ExpressionUUID->"7d91f494-f08e-49b2-8ffc-5c2c0dcac3e1"],
 Cell[CellGroupData[{
-Cell[124118, 2837, 874, 25, 67, "Input",ExpressionUUID->"d78e7666-bc37-4c3f-8325-d879168c5b03"],
-Cell[124995, 2864, 488, 11, 25, "Message",ExpressionUUID->"18f5e363-66e8-4744-952d-259c8ec596df"],
-Cell[125486, 2877, 487, 11, 25, "Message",ExpressionUUID->"c5e658e8-e362-4041-a5a6-fe4dbab81baa"],
-Cell[125976, 2890, 488, 11, 25, "Message",ExpressionUUID->"31ddc314-346b-430b-9d8e-5631f6f5dad9"],
-Cell[126467, 2903, 453, 10, 25, "Message",ExpressionUUID->"ac2e65b9-defe-4ea4-afa0-51c6926cccfd"]
+Cell[124118, 2837, 874, 25, 68, "Input",ExpressionUUID->"d78e7666-bc37-4c3f-8325-d879168c5b03"],
+Cell[124995, 2864, 488, 11, 26, "Message",ExpressionUUID->"18f5e363-66e8-4744-952d-259c8ec596df"],
+Cell[125486, 2877, 487, 11, 26, "Message",ExpressionUUID->"c5e658e8-e362-4041-a5a6-fe4dbab81baa"],
+Cell[125976, 2890, 488, 11, 26, "Message",ExpressionUUID->"31ddc314-346b-430b-9d8e-5631f6f5dad9"],
+Cell[126467, 2903, 453, 10, 26, "Message",ExpressionUUID->"ac2e65b9-defe-4ea4-afa0-51c6926cccfd"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[126957, 2918, 296, 7, 27, "Input",ExpressionUUID->"6e8e7513-b56b-415d-8743-94baadc9e846"],
+Cell[126957, 2918, 296, 7, 29, "Input",ExpressionUUID->"6e8e7513-b56b-415d-8743-94baadc9e846"],
 Cell[127256, 2927, 178, 2, 28, "Output",ExpressionUUID->"ff3b5b9e-260f-41c2-83d4-285fd01c86ba"]
 }, Open  ]],
 Cell[CellGroupData[{
@@ -69215,128 +69225,128 @@ Cell[CellGroupData[{
 Cell[3503724, 61493, 304, 7, 25, "Input",ExpressionUUID->"4c7bda5d-745e-4eda-9ddf-e5a16cd60f8c"],
 Cell[3504031, 61502, 197, 3, 28, "Output",ExpressionUUID->"19ea0e56-cf04-4603-b7e4-e04a52505d2d"]
 }, Open  ]]
+}, Closed]]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[3504277, 61511, 176, 3, 33, "Subsubsection",ExpressionUUID->"9dfbfc4d-083c-4b0c-b97c-712084bfdf17"],
-Cell[3504456, 61516, 205, 4, 25, "Input",ExpressionUUID->"4b86d12a-213e-4745-98ae-c8779fbdb758"],
+Cell[3504289, 61512, 173, 3, 34, "Subsection",ExpressionUUID->"9dfbfc4d-083c-4b0c-b97c-712084bfdf17"],
+Cell[3504465, 61517, 205, 4, 26, "Input",ExpressionUUID->"4b86d12a-213e-4745-98ae-c8779fbdb758"],
 Cell[CellGroupData[{
-Cell[3504686, 61524, 954, 24, 82, "Input",ExpressionUUID->"d06f1949-b3cc-4f16-b158-f8f5f5dd2302"],
-Cell[3505643, 61550, 483, 11, 35, "Output",ExpressionUUID->"dd4ae9d8-8c7b-4874-a772-da1ccc55efae"],
-Cell[3506129, 61563, 600, 16, 67, "Output",ExpressionUUID->"e9452a3f-abde-434b-b02b-624c3b9dbff5"],
-Cell[3506732, 61581, 650, 17, 50, "Output",ExpressionUUID->"99a7ee3f-7f22-4cf4-85ad-56fdd2dae70d"]
+Cell[3504695, 61525, 954, 24, 84, "Input",ExpressionUUID->"d06f1949-b3cc-4f16-b158-f8f5f5dd2302"],
+Cell[3505652, 61551, 483, 11, 37, "Output",ExpressionUUID->"dd4ae9d8-8c7b-4874-a772-da1ccc55efae"],
+Cell[3506138, 61564, 600, 16, 69, "Output",ExpressionUUID->"e9452a3f-abde-434b-b02b-624c3b9dbff5"],
+Cell[3506741, 61582, 650, 17, 52, "Output",ExpressionUUID->"99a7ee3f-7f22-4cf4-85ad-56fdd2dae70d"]
 }, Open  ]],
-Cell[3507397, 61601, 724, 17, 54, "Text",ExpressionUUID->"4ff697d5-28f9-4d60-b40b-efbdea528005"],
+Cell[3507406, 61602, 724, 17, 56, "Text",ExpressionUUID->"4ff697d5-28f9-4d60-b40b-efbdea528005"],
 Cell[CellGroupData[{
-Cell[3508146, 61622, 583, 15, 31, "Input",ExpressionUUID->"6ec7de1b-dc2c-4258-a19a-804e2bf39423"],
-Cell[3508732, 61639, 684, 19, 50, "Output",ExpressionUUID->"9cf8efed-c1b6-46d5-b789-92b34d411258"]
+Cell[3508155, 61623, 583, 15, 33, "Input",ExpressionUUID->"6ec7de1b-dc2c-4258-a19a-804e2bf39423"],
+Cell[3508741, 61640, 684, 19, 52, "Output",ExpressionUUID->"9cf8efed-c1b6-46d5-b789-92b34d411258"]
 }, Open  ]],
-Cell[3509431, 61661, 724, 14, 135, "Text",ExpressionUUID->"ac06ac30-3934-4929-975a-25738241c145"],
+Cell[3509440, 61662, 724, 14, 135, "Text",ExpressionUUID->"ac06ac30-3934-4929-975a-25738241c145"],
 Cell[CellGroupData[{
-Cell[3510180, 61679, 370, 6, 25, "Input",ExpressionUUID->"b81757a0-8c73-4ff9-8b1a-829101a63e05"],
-Cell[3510553, 61687, 702, 20, 35, "Output",ExpressionUUID->"403b01eb-f355-4710-b01f-2e19c00c46e8"]
+Cell[3510189, 61680, 370, 6, 26, "Input",ExpressionUUID->"b81757a0-8c73-4ff9-8b1a-829101a63e05"],
+Cell[3510562, 61688, 702, 20, 37, "Output",ExpressionUUID->"403b01eb-f355-4710-b01f-2e19c00c46e8"]
 }, Open  ]],
-Cell[3511270, 61710, 3111, 85, 264, "Text",ExpressionUUID->"6416d26f-b85c-4b0d-ad9d-902b84634fbd"],
-Cell[3514384, 61797, 3413, 88, 282, "Code",ExpressionUUID->"4713a196-f0fa-4128-ac90-eac66a12b632"],
-Cell[3517800, 61887, 1586, 43, 211, "Input",ExpressionUUID->"0dd6f880-7e51-438c-86fd-de5f4a3ddaa1",
+Cell[3511279, 61711, 3111, 85, 272, "Text",ExpressionUUID->"6416d26f-b85c-4b0d-ad9d-902b84634fbd"],
+Cell[3514393, 61798, 3413, 88, 284, "Code",ExpressionUUID->"4713a196-f0fa-4128-ac90-eac66a12b632"],
+Cell[3517809, 61888, 1586, 43, 212, "Input",ExpressionUUID->"0dd6f880-7e51-438c-86fd-de5f4a3ddaa1",
  InitializationCell->True],
-Cell[3519389, 61932, 1342, 36, 124, "Code",ExpressionUUID->"66dcb390-f729-42bd-93ed-976fb7ec4eff"],
-Cell[3520734, 61970, 6518, 154, 441, "Code",ExpressionUUID->"05d09952-7697-472a-959c-f59f2826a517"]
-}, Open  ]],
-Cell[3527267, 62127, 80, 0, 63, "Subsubsection",ExpressionUUID->"9d269c0b-eb0b-43de-a261-1576201daccb"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[3527384, 62132, 176, 3, 34, "Subsection",ExpressionUUID->"2304bb5f-8974-473d-a7bf-8a7f008be60d"],
-Cell[CellGroupData[{
-Cell[3527585, 62139, 285, 6, 26, "Input",ExpressionUUID->"fad8f756-056e-4fcb-83b8-3b3b5af766b0"],
-Cell[3527873, 62147, 27674, 485, 94, "Output",ExpressionUUID->"aadf3ba5-6c69-4a11-bb6b-43252903d89d"]
+Cell[3519398, 61933, 1342, 36, 125, "Code",ExpressionUUID->"66dcb390-f729-42bd-93ed-976fb7ec4eff"],
+Cell[3520743, 61971, 6518, 154, 442, "Code",ExpressionUUID->"05d09952-7697-472a-959c-f59f2826a517"],
+Cell[3527264, 62127, 80, 0, 40, "Subsubsection",ExpressionUUID->"9d269c0b-eb0b-43de-a261-1576201daccb"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3555584, 62637, 281, 6, 26, "Input",ExpressionUUID->"0a4eeb8e-538e-485a-a32d-e6be6273dd22"],
-Cell[3555868, 62645, 168295, 3064, 269, "Output",ExpressionUUID->"6e38326a-9957-4889-8de4-7a38ac76573a"]
+Cell[3527381, 62132, 176, 3, 48, "Subsection",ExpressionUUID->"2304bb5f-8974-473d-a7bf-8a7f008be60d"],
+Cell[CellGroupData[{
+Cell[3527582, 62139, 285, 6, 26, "Input",ExpressionUUID->"fad8f756-056e-4fcb-83b8-3b3b5af766b0"],
+Cell[3527870, 62147, 27674, 485, 94, "Output",ExpressionUUID->"aadf3ba5-6c69-4a11-bb6b-43252903d89d"]
 }, Open  ]],
-Cell[3724178, 65712, 1241, 36, 58, "Input",ExpressionUUID->"9549d887-b175-4115-b9ac-ed5bd09c090a",
+Cell[CellGroupData[{
+Cell[3555581, 62637, 281, 6, 26, "Input",ExpressionUUID->"0a4eeb8e-538e-485a-a32d-e6be6273dd22"],
+Cell[3555865, 62645, 168295, 3064, 269, "Output",ExpressionUUID->"6e38326a-9957-4889-8de4-7a38ac76573a"]
+}, Open  ]],
+Cell[3724175, 65712, 1241, 36, 75, "Input",ExpressionUUID->"9549d887-b175-4115-b9ac-ed5bd09c090a",
  InitializationCell->True],
-Cell[3725422, 65750, 368, 10, 46, "Input",ExpressionUUID->"ce05fa3e-99b7-4d8f-a257-42fcb02137e8",
+Cell[3725419, 65750, 368, 10, 46, "Input",ExpressionUUID->"ce05fa3e-99b7-4d8f-a257-42fcb02137e8",
  InitializationCell->True],
-Cell[3725793, 65762, 1400, 38, 92, "Input",ExpressionUUID->"76382df6-8458-4226-8f56-078a2406311a",
- InitializationCell->True],
-Cell[CellGroupData[{
-Cell[3727218, 65804, 275, 5, 26, "Input",ExpressionUUID->"0a0dca92-0fb1-4e73-9cab-fd8d8cd293b9"],
-Cell[3727496, 65811, 640, 10, 30, "Output",ExpressionUUID->"591ee6f8-c129-48d8-9028-19cd540c82ed"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[3728173, 65826, 293, 5, 26, "Input",ExpressionUUID->"44775a77-b569-431e-bf62-53fb18c10377"],
-Cell[3728469, 65833, 18121, 342, 57, "Output",ExpressionUUID->"718d819c-b73d-487a-a488-4174a30fb353"]
-}, Open  ]],
-Cell[3746605, 66178, 1015, 27, 113, "Input",ExpressionUUID->"eb8c9a18-af9d-46db-a34e-7113408413a6"],
-Cell[3747623, 66207, 22428, 525, 1333, "Input",ExpressionUUID->"009a10d6-e2eb-4d8b-9de8-6d9e853b8752",
+Cell[3725790, 65762, 1400, 38, 92, "Input",ExpressionUUID->"76382df6-8458-4226-8f56-078a2406311a",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[3770076, 66736, 184, 2, 25, "Input",ExpressionUUID->"20d6d206-5bbe-4d1b-b2d6-427e24f40513"],
-Cell[3770263, 66740, 895, 19, 50, "Output",ExpressionUUID->"dce72210-0119-40a1-9592-247556f81a11"]
-}, Open  ]],
-Cell[3771173, 66762, 2294, 56, 201, "Input",ExpressionUUID->"48ec6d3b-1693-470b-85b0-6d24a3f8c209"],
-Cell[3773470, 66820, 156, 3, 25, "Input",ExpressionUUID->"a24e7ea5-f672-4f1e-8b2b-ce0ad536f0c3"],
-Cell[CellGroupData[{
-Cell[3773651, 66827, 196, 3, 25, "Input",ExpressionUUID->"e488c7f6-0517-4a43-90b8-def083020006"],
-Cell[3773850, 66832, 10845, 271, 218, "Output",ExpressionUUID->"c9f7450d-f798-412b-8ba1-5f78ce5e6b44"]
+Cell[3727215, 65804, 275, 5, 26, "Input",ExpressionUUID->"0a0dca92-0fb1-4e73-9cab-fd8d8cd293b9"],
+Cell[3727493, 65811, 640, 10, 30, "Output",ExpressionUUID->"591ee6f8-c129-48d8-9028-19cd540c82ed"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3784732, 67108, 194, 2, 26, "Input",ExpressionUUID->"1811f24f-3791-445c-a26c-d91de77c0d3e"],
-Cell[3784929, 67112, 821, 15, 51, "Output",ExpressionUUID->"e0dfdfb9-3574-48fa-ae8c-1078e7365bce"]
+Cell[3728170, 65826, 293, 5, 26, "Input",ExpressionUUID->"44775a77-b569-431e-bf62-53fb18c10377"],
+Cell[3728466, 65833, 18121, 342, 57, "Output",ExpressionUUID->"718d819c-b73d-487a-a488-4174a30fb353"]
+}, Open  ]],
+Cell[3746602, 66178, 1015, 27, 113, "Input",ExpressionUUID->"eb8c9a18-af9d-46db-a34e-7113408413a6"],
+Cell[3747620, 66207, 22428, 525, 1350, "Input",ExpressionUUID->"009a10d6-e2eb-4d8b-9de8-6d9e853b8752",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[3770073, 66736, 184, 2, 25, "Input",ExpressionUUID->"20d6d206-5bbe-4d1b-b2d6-427e24f40513"],
+Cell[3770260, 66740, 895, 19, 50, "Output",ExpressionUUID->"dce72210-0119-40a1-9592-247556f81a11"]
+}, Open  ]],
+Cell[3771170, 66762, 2294, 56, 201, "Input",ExpressionUUID->"48ec6d3b-1693-470b-85b0-6d24a3f8c209"],
+Cell[3773467, 66820, 156, 3, 25, "Input",ExpressionUUID->"a24e7ea5-f672-4f1e-8b2b-ce0ad536f0c3"],
+Cell[CellGroupData[{
+Cell[3773648, 66827, 196, 3, 25, "Input",ExpressionUUID->"e488c7f6-0517-4a43-90b8-def083020006"],
+Cell[3773847, 66832, 10845, 271, 238, "Output",ExpressionUUID->"c9f7450d-f798-412b-8ba1-5f78ce5e6b44"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3785787, 67132, 349, 6, 26, "Input",ExpressionUUID->"77ca1ce3-6015-43e6-8e2b-98d4782fa48e"],
+Cell[3784729, 67108, 194, 2, 26, "Input",ExpressionUUID->"1811f24f-3791-445c-a26c-d91de77c0d3e"],
+Cell[3784926, 67112, 821, 15, 51, "Output",ExpressionUUID->"e0dfdfb9-3574-48fa-ae8c-1078e7365bce"]
+}, Open  ]],
 Cell[CellGroupData[{
-Cell[3786161, 67142, 196, 4, 21, "Print",ExpressionUUID->"ef26b6d4-6893-4796-b151-cdae245321ee"],
-Cell[3786360, 67148, 198, 4, 21, "Print",ExpressionUUID->"ef94a096-4d83-4dfe-b8ac-b2143431124b"]
+Cell[3785784, 67132, 349, 6, 26, "Input",ExpressionUUID->"77ca1ce3-6015-43e6-8e2b-98d4782fa48e"],
+Cell[CellGroupData[{
+Cell[3786158, 67142, 196, 4, 21, "Print",ExpressionUUID->"ef26b6d4-6893-4796-b151-cdae245321ee"],
+Cell[3786357, 67148, 198, 4, 21, "Print",ExpressionUUID->"ef94a096-4d83-4dfe-b8ac-b2143431124b"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3786607, 67158, 224, 5, 40, "Subsubsection",ExpressionUUID->"30e8d72c-258a-48a7-b8ca-dabe5b45e141"],
+Cell[3786604, 67158, 224, 5, 40, "Subsubsection",ExpressionUUID->"30e8d72c-258a-48a7-b8ca-dabe5b45e141"],
 Cell[CellGroupData[{
-Cell[3786856, 67167, 989, 27, 81, "Input",ExpressionUUID->"643cf58b-cc0d-45d6-8aa9-fc53d3ba1e87"],
-Cell[3787848, 67196, 408, 10, 50, "Output",ExpressionUUID->"058c0a38-9b76-4dcc-a840-6475f25bfd57"],
-Cell[3788259, 67208, 369, 9, 44, "Output",ExpressionUUID->"bb6a6246-0a4b-4837-99b4-51c66fc87e55"]
+Cell[3786853, 67167, 989, 27, 81, "Input",ExpressionUUID->"643cf58b-cc0d-45d6-8aa9-fc53d3ba1e87"],
+Cell[3787845, 67196, 408, 10, 50, "Output",ExpressionUUID->"058c0a38-9b76-4dcc-a840-6475f25bfd57"],
+Cell[3788256, 67208, 369, 9, 44, "Output",ExpressionUUID->"bb6a6246-0a4b-4837-99b4-51c66fc87e55"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3788665, 67222, 255, 4, 25, "Input",ExpressionUUID->"e435c4f0-1756-4a57-a7a7-b6f1876f05af"],
-Cell[3788923, 67228, 413, 10, 50, "Output",ExpressionUUID->"cfd084f1-9fd6-4710-9bb1-a1ad0e2683f5"],
-Cell[3789339, 67240, 809, 23, 62, "Output",ExpressionUUID->"149899d4-b22b-4421-bdde-e4c689532e29"]
+Cell[3788662, 67222, 255, 4, 25, "Input",ExpressionUUID->"e435c4f0-1756-4a57-a7a7-b6f1876f05af"],
+Cell[3788920, 67228, 413, 10, 50, "Output",ExpressionUUID->"cfd084f1-9fd6-4710-9bb1-a1ad0e2683f5"],
+Cell[3789336, 67240, 809, 23, 62, "Output",ExpressionUUID->"149899d4-b22b-4421-bdde-e4c689532e29"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3790185, 67268, 5688, 140, 394, "Input",ExpressionUUID->"921f2dd7-dad8-4ceb-b877-e4e83186f7ac"],
-Cell[3795876, 67410, 356, 5, 28, "Output",ExpressionUUID->"1b866ce1-01f6-462b-8ad8-8972891a4329"]
+Cell[3790182, 67268, 5688, 140, 411, "Input",ExpressionUUID->"921f2dd7-dad8-4ceb-b877-e4e83186f7ac"],
+Cell[3795873, 67410, 356, 5, 28, "Output",ExpressionUUID->"1b866ce1-01f6-462b-8ad8-8972891a4329"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3796269, 67420, 5220, 135, 604, "Input",ExpressionUUID->"2bccdefd-8111-4bef-8e25-74c1a703aca4"],
+Cell[3796266, 67420, 5220, 135, 411, "Input",ExpressionUUID->"2bccdefd-8111-4bef-8e25-74c1a703aca4"],
 Cell[CellGroupData[{
-Cell[3801514, 67559, 806, 24, 53, "Print",ExpressionUUID->"dceab9bc-8a53-41db-85e4-216b41e00828"],
-Cell[3802323, 67585, 200, 4, 19, "Print",ExpressionUUID->"4be59036-ac31-4075-83c5-1925fbfe1cb6"],
-Cell[3802526, 67591, 198, 4, 19, "Print",ExpressionUUID->"54765ca3-05a6-4d0b-8983-2a3891595b3b"]
+Cell[3801511, 67559, 806, 24, 53, "Print",ExpressionUUID->"dceab9bc-8a53-41db-85e4-216b41e00828"],
+Cell[3802320, 67585, 200, 4, 19, "Print",ExpressionUUID->"4be59036-ac31-4075-83c5-1925fbfe1cb6"],
+Cell[3802523, 67591, 198, 4, 19, "Print",ExpressionUUID->"54765ca3-05a6-4d0b-8983-2a3891595b3b"]
 }, Open  ]],
-Cell[3802739, 67598, 175, 2, 28, "Output",ExpressionUUID->"57bdbe2b-a487-4994-9244-454e7439233d"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[3802951, 67605, 4411, 115, 478, "Input",ExpressionUUID->"477de38c-ff79-4dc8-8750-2f2984f3fd87"],
-Cell[CellGroupData[{
-Cell[3807387, 67724, 1125, 35, 54, "Print",ExpressionUUID->"06048bcc-2337-47fd-b5d1-7305440dc54a"],
-Cell[3808515, 67761, 1464, 45, 80, "Print",ExpressionUUID->"d2301738-1d72-497b-acf5-3b52106a7c94"]
-}, Open  ]],
-Cell[3809994, 67809, 1602, 46, 165, "Output",ExpressionUUID->"52c1c957-be50-42d6-af77-4e8efc9c6cc7"]
+Cell[3802736, 67598, 175, 2, 28, "Output",ExpressionUUID->"57bdbe2b-a487-4994-9244-454e7439233d"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3811633, 67860, 818, 23, 67, "Input",ExpressionUUID->"a2a22d9b-9d82-4b56-a06a-4e57b772f727"],
-Cell[3812454, 67885, 455, 11, 50, "Output",ExpressionUUID->"1f229fab-8aa8-4ef0-983b-e46139af9b66"],
-Cell[3812912, 67898, 1044, 30, 89, "Output",ExpressionUUID->"23b3de93-a22e-415a-97f5-46de9874940d"]
+Cell[3802948, 67605, 4411, 115, 341, "Input",ExpressionUUID->"477de38c-ff79-4dc8-8750-2f2984f3fd87"],
+Cell[CellGroupData[{
+Cell[3807384, 67724, 1125, 35, 54, "Print",ExpressionUUID->"06048bcc-2337-47fd-b5d1-7305440dc54a"],
+Cell[3808512, 67761, 1464, 45, 44, "Print",ExpressionUUID->"d2301738-1d72-497b-acf5-3b52106a7c94"]
+}, Open  ]],
+Cell[3809991, 67809, 1602, 46, 93, "Output",ExpressionUUID->"52c1c957-be50-42d6-af77-4e8efc9c6cc7"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3813993, 67933, 1293, 37, 79, "Input",ExpressionUUID->"ba38e2a3-05aa-4547-9584-33f97623dbb8"],
-Cell[3815289, 67972, 18038, 385, 79, "Output",ExpressionUUID->"dae4c44e-fe72-455f-824e-b84875eb68ea"]
+Cell[3811630, 67860, 818, 23, 67, "Input",ExpressionUUID->"a2a22d9b-9d82-4b56-a06a-4e57b772f727"],
+Cell[3812451, 67885, 455, 11, 50, "Output",ExpressionUUID->"1f229fab-8aa8-4ef0-983b-e46139af9b66"],
+Cell[3812909, 67898, 1044, 30, 89, "Output",ExpressionUUID->"23b3de93-a22e-415a-97f5-46de9874940d"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3833364, 68362, 509, 13, 36, "Input",ExpressionUUID->"665680a0-84a5-48e9-9f23-e622e6a297c8"],
-Cell[3833876, 68377, 17298, 366, 60, "Output",ExpressionUUID->"b41d3bc7-1ca0-45ff-abcd-2ee9cb93f14d"]
+Cell[3813990, 67933, 1293, 37, 47, "Input",ExpressionUUID->"ba38e2a3-05aa-4547-9584-33f97623dbb8"],
+Cell[3815286, 67972, 18176, 390, 55, "Output",ExpressionUUID->"dae4c44e-fe72-455f-824e-b84875eb68ea"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3833499, 68367, 509, 13, 36, "Input",ExpressionUUID->"665680a0-84a5-48e9-9f23-e622e6a297c8"],
+Cell[3834011, 68382, 17436, 371, 60, "Output",ExpressionUUID->"b41d3bc7-1ca0-45ff-abcd-2ee9cb93f14d"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
