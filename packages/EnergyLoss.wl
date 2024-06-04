@@ -1059,7 +1059,7 @@ Interd\[Sigma]f=Interpolation[Interd\[Sigma]Table];
 
 
 \[Omega]maxofv\[Chi][v\[Chi]_,m\[Chi]_,params_]:= 1/(2"\[HBar]") m\[Chi] v\[Chi]^2/.params
-\[Omega]of\[Xi]andv\[Chi][\[Xi]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,params_]:=\[Omega]min + \[Xi] (\[Omega]maxofv\[Chi][v\[Chi],m\[Chi],params] - \[Omega]min)
+\[Omega]of\[Xi]andv\[Chi][\[Xi]_?NumericQ,\[Omega]min_,v\[Chi]_,m\[Chi]_,params_]:=\[Omega]min + \[Xi] (\[Omega]maxofv\[Chi][v\[Chi],m\[Chi],params] - \[Omega]min)
 \[Xi]of\[Omega]andv\[Chi][\[Omega]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,params_]:=(\[Omega]-\[Omega]min )/(\[Omega]maxofv\[Chi][v\[Chi],m\[Chi],params] - \[Omega]min)
 
 
@@ -1133,16 +1133,23 @@ Print@Position[Interpointsv\[Chi],_?(#<10^6&)];
 Print[Position[Interpointsv\[Chi],_?(#<10^6&)][[-1,1]]];
 Print[Interpointsv\[Chi][[Position[Interpointsv\[Chi],_?(#<10^6&)][[-1,1]]]]];*)
 
+(*If[Interpointsv\[Chi][[1]]<10^6,*)
 v\[Chi]maxindexfor\[Sigma]int=If[Truncatev\[Chi],Position[Interpointsv\[Chi],_?(#<10^6&)][[-1,1]],m+1];
+
+Print[v\[Chi]maxindexfor\[Sigma]int];
+Print[Interpointsv\[Chi][[1]]," ",Interpointsv\[Chi][[-1]]];
+Print[Interpointsv\[Chi][[v\[Chi]maxindexfor\[Sigma]int]]];
 
 (*Inter\[Sigma]of\[Xi]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],params]-\[Omega]min)Abs[Re[NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi]and\[Xi][[i,j]][[1]]],Log10[\[Xi]]],{\[Xi],Interpointsv\[Chi]and\[Xi][[i,j]][[2]],1-\[Epsilon]}]]]},{i,m+1},{j,n}]; *)
 Inter\[Sigma]of\[Xi]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],params]-\[Omega]min)Abs[Re[NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi]and\[Xi][[i,j]][[1]]],Log10[\[Xi]]],{\[Xi],Interpointsv\[Chi]and\[Xi][[i,j]][[2]],1-\[Epsilon]}]]]},{i,v\[Chi]maxindexfor\[Sigma]int},{j,n}]; 
 Inter\[Sigma]of\[Xi]f=Interpolation[Flatten[Log10[Inter\[Sigma]of\[Xi]Table],1],InterpolationOrder->4];
 (*Inter\[Sigma]of\[Xi]f=Interpolation[Flatten[Inter\[Sigma]of\[Xi]Table,1],InterpolationOrder->4];*)
 Print["\[Sigma] of \[Xi] interpolation done"];
-
-(* I THINK I AM DOUBLE COUNTING FACTORS OF \[HBar] AND THE JACOBIAN. CHECK THIS CAREFULLYX*)
-
+(*,
+Inter\[Sigma]of\[Xi]Table={{}};
+Inter\[Sigma]of\[Xi]f=0&;
+];
+*)
 (*Inter\[Sigma]Table =Table[{Interpointsv\[Chi][[i]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
 Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table],InterpolationOrder->4];
 Print["\[Sigma] interpolation done"];
@@ -1158,7 +1165,7 @@ Print["\[Sigma] interpolation done"];
 
 
 \[Omega]maxNuc[v\[Chi]_,m\[Chi]_,mN_,params_]:= (2 v\[Chi]^2)/("\[HBar]") (m\[Chi]^2 mN)/(m\[Chi] + mN)^2/.params
-\[Omega]of\[Xi]Nuc[\[Xi]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,mN_,params_]:=\[Omega]min + \[Xi] (\[Omega]maxNuc[v\[Chi],m\[Chi],mN,params] - \[Omega]min)
+\[Omega]of\[Xi]Nuc[\[Xi]_?NumericQ,\[Omega]min_,v\[Chi]_,m\[Chi]_,mN_,params_]:=\[Omega]min + \[Xi] (\[Omega]maxNuc[v\[Chi],m\[Chi],mN,params] - \[Omega]min)
 \[Xi]of\[Omega]Nuc[\[Omega]_,\[Omega]min_,v\[Chi]_,m\[Chi]_,mN_,params_]:=(\[Omega]-\[Omega]min )/(\[Omega]maxNuc[v\[Chi],m\[Chi],mN,params] - \[Omega]min)
 
 
