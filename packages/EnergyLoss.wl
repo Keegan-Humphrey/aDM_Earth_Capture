@@ -173,7 +173,7 @@ uMIntegral[z_?NumberQ,m\[Chi]_?NumberQ,v\[Chi]_?NumberQ,params_] := NIntegrate[u
 zMIntegral[m\[Chi]_?NumberQ,v\[Chi]_?NumberQ,params_] := NIntegrate[z uMIntegral[z,m\[Chi],v\[Chi],params],{z,0,\[Infinity]}]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Using Optical Fits Parameters*)
 
 
@@ -195,7 +195,7 @@ zMIntegralFit[m\[Chi]_?NumberQ, v\[Chi]_?NumberQ, params_] :=
 LossIntegrand[strtotalparams_,q_,\[Omega]_]:=Log10[Sum[( ("Ai")/("JpereV") (("qF" "vF")/("c"))^2 8 /Pi  ("e")^2/(4 \[Pi] "\[Epsilon]0")/.strtotalparams[[i]])Im[(-Dielectrics`uf[q,\[Omega]]Dielectrics`zf[q]/.strtotalparams)/Dielectrics`\[Epsilon]MNum[Dielectrics`uf[q,\[Omega]]/.strtotalparams[[i]],Dielectrics`zf[q]/.strtotalparams[[i]],("\[Nu]i")/(2 "vF" "qF" Dielectrics`zf[q])/.strtotalparams[[i]],strtotalparams[[i]]]],{i,Length[strtotalparams]}]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Using Optical Fits Parameters - With Temperature Enhancement*)
 
 
@@ -1000,7 +1000,6 @@ d\[Sigma]dERNuc0[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_]:= 1/(2 \[Omega] ("
 zb[sign_,\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= ((m\[Chi] v\[Chi] + <|"+"->1,"-"->(-1)|>[[sign]] Sqrt[2 m\[Chi] (1/2 m\[Chi] v\[Chi]^2 - \[Omega] "\[HBar]")])/(2"qF""\[HBar]")) /.params
 
 
-zIntegrald\[Sigma]dER[\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:=Sum[NIntegrate[1/z Im[-("Ai"/.params[[i]]) / Dielectrics`\[Epsilon]MNum[("\[HBar]"\[Omega])/(2"EF"z)/.params[[i]], z, u\[Nu]Fit[z] /. params[[i]], params[[i]]]],{z,zb["-",\[Omega],m\[Chi],v\[Chi],params[[i]]],zb["+",\[Omega],m\[Chi],v\[Chi],params[[i]]]}],{i,Length[params]}] (*taking \[Kappa] = 1*)
 zIntegrald\[Sigma]dER1oscillator[\[Omega]_,m\[Chi]_,v\[Chi]_,paramsi_]:=NIntegrate[1/z Im[-("Ai"/.paramsi) / Dielectrics`\[Epsilon]MNum[("\[HBar]"\[Omega])/(2"EF"z)/.paramsi, z, u\[Nu]Fit[z] /. paramsi, paramsi]],{z,zb["-",\[Omega],m\[Chi],v\[Chi],paramsi],zb["+",\[Omega],m\[Chi],v\[Chi],paramsi]}](*taking \[Kappa] = 1*)
 
 

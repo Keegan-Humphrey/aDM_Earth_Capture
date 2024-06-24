@@ -122,7 +122,17 @@ LinDielectric[q_,\[Omega]_] := uzLinDielectric[uf[q,\[Omega]],zf[q]] (*Lindhard 
 (*Degenerate*)
 
 
-\[Epsilon]M[up_,z_,u\[Nu]_]:= 1 + ((up +I u\[Nu]) ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1))/(up + I u\[Nu]  ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1)/(\[Epsilon]RPA0[z]-1))
+(* ::Text:: *)
+(*\[Epsilon]M has a removable branch point at z=1 (k=2 Subscript[k, F]). So we make it piecewise and evaluate it on the limit there (dielectric debug notebook)*)
+
+
+(*Limit[\[Epsilon]M[u,z,u\[Nu]],z->1]*)
+
+
+(*\[Epsilon]Matbranchpoint[u_,z_,u\[Nu]_]:= 1+(("\[Chi]")^2 (8+4 (-1+u) u\[Nu] (ArcTan[(2-u)/u\[Nu]]+ArcTan[u/u\[Nu]])+4 (1+u) u\[Nu] (ArcTan[u/u\[Nu]]-ArcTan[(2+u)/u\[Nu]])+(-2 u+u^2-u\[Nu]^2) Log[(u^2+u\[Nu]^2)/(4-4 u+u^2+u\[Nu]^2)]-(2 u+u^2-u\[Nu]^2) Log[((2+u)^2+u\[Nu]^2)/(u^2+u\[Nu]^2)]+2 \[ImaginaryI] (-((-2 u+u^2-u\[Nu]^2) (ArcTan[(2-u)/u\[Nu]]+ArcTan[u/u\[Nu]]))+(-2 u-u^2+u\[Nu]^2) (ArcTan[u/u\[Nu]]-ArcTan[(2+u)/u\[Nu]])+(-1+u) u\[Nu] Log[(u^2+u\[Nu]^2)/(4-4 u+u^2+u\[Nu]^2)]-(1+u) u\[Nu] Log[((2+u)^2+u\[Nu]^2)/(u^2+u\[Nu]^2)])))/(2 (8+2 (-2+u+\[ImaginaryI] u\[Nu]) u\[Nu] ArcTan[(2-u)/u\[Nu]]+4 (u+\[ImaginaryI] u\[Nu]) u\[Nu] ArcTan[u/u\[Nu]]-4 u\[Nu] ArcTan[(2+u)/u\[Nu]]-2 u u\[Nu] ArcTan[(2+u)/u\[Nu]]-2 \[ImaginaryI] u\[Nu]^2 ArcTan[(2+u)/u\[Nu]]-2 \[ImaginaryI] u\[Nu] Log[(u^2+u\[Nu]^2)/(4-4 u+u^2+u\[Nu]^2)]+\[ImaginaryI] u u\[Nu] Log[(u^2+u\[Nu]^2)/(4-4 u+u^2+u\[Nu]^2)]-u\[Nu]^2 Log[(u^2+u\[Nu]^2)/(4-4 u+u^2+u\[Nu]^2)]-2 \[ImaginaryI] u\[Nu] Log[((2+u)^2+u\[Nu]^2)/(u^2+u\[Nu]^2)]-\[ImaginaryI] u u\[Nu] Log[((2+u)^2+u\[Nu]^2)/(u^2+u\[Nu]^2)]+u\[Nu]^2 Log[((2+u)^2+u\[Nu]^2)/(u^2+u\[Nu]^2)]))*)
+
+
+\[Epsilon]M[up_,z_,u\[Nu]_]:= 1 + ((up +I u\[Nu]) ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1))/(up + I u\[Nu]  ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1)/(\[Epsilon]RPA0[z]-1))]
 \[Epsilon]M\[Omega]q[\[Omega]_,k_,\[Nu]_,kF_,vF_]:= \[Epsilon]M[\[Omega]/(vF k),k/(2 kF),\[Nu]/(vF k)] 
 
 
@@ -131,7 +141,7 @@ LinDielectric[q_,\[Omega]_] := uzLinDielectric[uf[q,\[Omega]],zf[q]] (*Lindhard 
 \[Epsilon]M\[Omega]qNum[\[Omega]_?NumberQ,k_?NumberQ,\[Nu]_?NumberQ,params_]:= \[Epsilon]M\[Omega]q[\[Omega],k,\[Nu],"qF","vF"] /. params
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Optical Dielectrics*)
 
 
@@ -162,6 +172,9 @@ Solve[%==0,\[Omega]]
 
 
 \[Omega]i[\[Omega]exti_,\[Nu]i_]:=Sqrt[Sqrt[\[Nu]i^2 \[Omega]exti^2 + 4 \[Omega]exti^4] - \[Omega]exti^2]
+
+
+AbsoluteTiming[\[Epsilon]RPAC[1,2,1]]
 
 
 (* ::Section::Closed:: *)
