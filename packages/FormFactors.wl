@@ -57,9 +57,26 @@ Begin["`Private`"];
 	Sum[coeffs[["a"]][[i]] Exp[-coeffs[["b"]][[i]] ((10^5 q)/(4 \[Pi]))^2],{i,4}]+coeffs[["c"]]
 ]*)
 
-AFF[q_,coeffs_]:=Module[{},
-	(*assumes q is in [m^-1]]*)
-	Sum[coeffs[["a"]][[i]] Exp[-coeffs[["b"]][[i]] ((10^-10  q)/(4 \[Pi]))^2],{i,4}]+coeffs[["c"]]
+(*testflag= True;*)
+
+AFF[q_?NumericQ,coeffs_]:=Module[{},
+	(*assumes q is in [m^-1]] coefficients are given in angstrom*)
+	
+	(*exparglist = coeffs[["b"]]((10^-10  q)/(4 \[Pi]))^2;
+	testflag=False;
+	If[!NumericQ@exparglist,testflag=True];
+	If[testflag, Print[q];];
+	If[testflag, Print[Max[exparglist]];];
+	If[testflag, Print[exparglist];testflag=False];
+	If[Max[exparglist]<500,Sum[coeffs[["a"]][[i]] Exp[-exparglist[[i]]],{i,4}]+coeffs[["c"]],0]*)
+	
+	(*Print[Max@Table[coeffs[["b"]][[i]]((10^-10  q)/(4 \[Pi]))^2,{i,4}]];*)
+	
+	If[((Max@coeffs[["b"]])((10^-10  q)/(4 \[Pi]))^2>500),Return[coeffs[["c"]],Module]];
+	
+	(*Print[Max@coeffs[["b"]]((10^-10  q)/(4 \[Pi]))^2];*)
+	
+	Sum[coeffs[["a"]][[i]] Exp[-coeffs[["b"]][[i]]((10^-10  q)/(4 \[Pi]))^2],{i,4}]+coeffs[["c"]]
 ]
 
 
@@ -85,14 +102,15 @@ sH = 0.9  10^-15; (*[m] skin depth*)
 (*define Helm FF in momentum space*)
 
 
-HFF[q_,coeffs_]:= 3 BesselJ[1,q coeffs[["rn"]]]/(q coeffs[["rn"]]) E^(-(q sH)^2/2)
+HFF[q_,coeffs_]:= If[(q sH)^2<10^3, 3 BesselJ[1,q coeffs[["rn"]]]/(q coeffs[["rn"]]) E^(-(q sH)^2/2),0]
 
 
 (* ::Subsubsection:: *)
 (*Define total Subscript[Z, eff](q)*)
 
 
-Zeff[q_,coeffs_]:= (coeffs[["Z"]]-AFF[q,coeffs])HFF[q,coeffs]
+Zeff[q_?NumericQ,coeffs_]:= (coeffs[["Z"]]-AFF[q,coeffs])HFF[q,coeffs]
+(*Zeff[q_,coeffs_]:= AFF[q,coeffs]*)
 
 
 (* ::Subsubsection:: *)
