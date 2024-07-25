@@ -182,7 +182,8 @@ rcore = REarth - 2.885 10^6; (*[m]*)
 
 
 T0=0;  (*[K] 0 temperature*)
-Tcrust=290;  (*[K] ambient temperature*)
+(*Tcrust=290;  (*[K] ambient temperature*)*)
+Tcrust=273 + (1000 + 3700)/2;(* average temperature in the Mantle https://education.nationalgeographic.org/resource/mantle/ *)
 Tcore=5470;  (*[K] core temperature*)
 
 
