@@ -91,6 +91,8 @@ Usage:
 	lkB = 1.381 10^-23;(*[J K^-1]*)
 	lJpereV = 1.602 10^-19;
 	
+	leVm = N[200 10^-15 10^6]; (*[eV m]*)
+	
 	l\[Beta] = 1/(TK lkB);  (*[J^-1]*)
 	
 	lne = neSI; (*[m^-3]*)
@@ -105,7 +107,7 @@ Usage:
 	l\[Chi] = Sqrt[le^2/(Pi lhbar lvF ) 1/(4 \[Pi] l\[Epsilon]0)]; 
 	lD = l\[Beta] l\[Mu];
 	(*{hbar->lhbar,c->lc,m->lm,e-> le,\[Beta]->l\[Beta],ne->lne,qF->lqF,vF->lvF,\[Mu]->l\[Mu],\[Omega]p->l\[Omega]p,\[Alpha]->l\[Alpha],\[Chi]->l\[Chi],\[Epsilon]0->l\[Epsilon]0,JpereV->lJpereV,D->lD}*)
-	{"hbar"->lhbar,"\[HBar]"->lhbar,"c"->lc,"m"->lm,"e"-> le,"\[Beta]"->l\[Beta],"ne"->lne,"qF"->lqF,"vF"->lvF,"\[Mu]"->l\[Mu],"\[Omega]p"->l\[Omega]p,"\[Alpha]"->l\[Alpha],"\[Chi]"->l\[Chi],"\[Epsilon]0"->l\[Epsilon]0,"JpereV"->lJpereV,"kB"->lkB,"D"->lD,"nI"->lnI,"Z"->nconduction,"M"->lM,"EF"->lEF}
+	{"hbar"->lhbar,"\[HBar]"->lhbar,"c"->lc,"m"->lm,"e"-> le,"eVm"->leVm,"\[Beta]"->l\[Beta],"ne"->lne,"qF"->lqF,"vF"->lvF,"\[Mu]"->l\[Mu],"\[Omega]p"->l\[Omega]p,"\[Alpha]"->l\[Alpha],"\[Chi]"->l\[Chi],"\[Epsilon]0"->l\[Epsilon]0,"JpereV"->lJpereV,"kB"->lkB,"D"->lD,"nI"->lnI,"Z"->nconduction,"M"->lM,"EF"->lEF}
 	]
 
 
@@ -211,8 +213,8 @@ SIcoreparams = SIParams[Tcore,neSIIron[\[Rho]core,8],8];
 SIcrustparams = SIParams[Tcrust,neSIIron[\[Rho]crust,8],8];
 
 
-SIConsts={"e","m","hbar","c","\[Alpha]","\[Epsilon]0","JpereV","kB"}/.SIcoreparams;
-SIConstRepl={"e"->SIConsts[[1]],"m"->SIConsts[[2]],"hbar"->SIConsts[[3]],"\[HBar]"->SIConsts[[3]],"c"->SIConsts[[4]],"\[Alpha]"->SIConsts[[5]],"\[Epsilon]0"->SIConsts[[6]],"JpereV"->SIConsts[[7]],"kB"->SIConsts[[8]],"G"->6.67 10^-11};
+SIConsts={"e","m","hbar","c","\[Alpha]","\[Epsilon]0","JpereV","kB","eVm"}/.SIcoreparams;
+SIConstRepl={"e"->SIConsts[[1]],"m"->SIConsts[[2]],"hbar"->SIConsts[[3]],"\[HBar]"->SIConsts[[3]],"c"->SIConsts[[4]],"\[Alpha]"->SIConsts[[5]],"\[Epsilon]0"->SIConsts[[6]],"JpereV"->SIConsts[[7]],"kB"->SIConsts[[8]],"eVm"->SIConsts[[9]],"G"->6.67 10^-11};
 
 
 \[Beta]crust = 1/(Tcrust "kB")/.SIConstRepl;
