@@ -109,7 +109,8 @@ HFF[q_,coeffs_]:= If[(q sH)^2<10^3, 3 BesselJ[1,q coeffs[["rn"]]]/(q coeffs[["rn
 (*Define total Subscript[Z, eff](q)*)
 
 
-Zeff[q_?NumericQ,coeffs_]:= (coeffs[["Z"]]-AFF[q,coeffs])HFF[q,coeffs]
+(*Zeff[q_?NumericQ,coeffs_]:= (coeffs[["Z"]]-AFF[q,coeffs])HFF[q,coeffs]*)
+Zeff[q_?NumericQ,coeffs_]:= coeffs[["Z"]] (*Turn off form factors*)
 (*Zeff[q_,coeffs_]:= AFF[q,coeffs]*)
 
 
