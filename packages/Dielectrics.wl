@@ -194,11 +194,6 @@ Series[%,{z,\[Infinity],6}]//Simplify*)
 \[Epsilon]Mlargeuandz[u_,z_,u\[Nu]_]:=1+(("\[Chi]")^2 (u+I u\[Nu]))/(3 z^4 (u-(4 I u\[Nu])/(3 z^2 (-2+z Log[z/Abs[1-z]]))));
 
 
-(*Refine[Series[\[Epsilon]M[u,z,u\[Nu]],{z,\[Infinity],6}],Assumptions->{1<u+z,(1-u+z)/(1+u-z)<0,z>1}]
-Refine[Im[-1/%//Normal]//Simplify,Assumptions->Element[z,Reals]]//Simplify*)
-(*Refine[Series[\[Epsilon]M[u,z,u\[Nu]],{u,\[Infinity],4}],Assumptions->{!(Abs[z-u]<1<u+z),u+z>1}]*)
-
-
 (*\[Epsilon]M[up_,z_,u\[Nu]_]:= Piecewise[{{\[Epsilon]Matbranchcut[up,z,u\[Nu]],z==1},{\[Epsilon]Mlargez[up,z,u\[Nu]],z>10^6&&up<10^6},{\[Epsilon]Mlargeu[up,z,u\[Nu]],z<10^6&&up>10^6},{\[Epsilon]Mlargeuandz[up,z,u\[Nu]],z>10^6&&up>10^6}},1 + ((up +I u\[Nu]) ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1))/(up + I u\[Nu]  ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1)/(\[Epsilon]RPA0[z]-1))]*)
 (*\[Epsilon]M[up_,z_,u\[Nu]_]:= Piecewise[{{\[Epsilon]Matbranchcut[up,z,u\[Nu]],z==1},{\[Epsilon]Mlargez[up,z,u\[Nu]],z>10^7},{\[Epsilon]Mlargeu[up,z,u\[Nu]],z<10^7&&up>10^7}},1 + ((up +I u\[Nu]) ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1))/(up + I u\[Nu]  ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1)/(\[Epsilon]RPA0[z]-1))]*)
 (*\[Epsilon]M[up_,z_,u\[Nu]_]:= Piecewise[{{\[Epsilon]Matbranchcut[up,z,u\[Nu]],z==1},{\[Epsilon]Mlargez[up,z,u\[Nu]],z>10^7||up>10^7}},1 + ((up +I u\[Nu]) ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1))/(up + I u\[Nu]  ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1)/(\[Epsilon]RPA0[z]-1))]*)
@@ -285,12 +280,12 @@ zIntegranduz1osc[u_,z_?NumberQ,params_,cut_:4]:=(*\[Omega] = (4 kF vF u z) *)Abs
 (*Interpolate Structure Function*)
 
 
-Clear[Interpolate\[Epsilon]]
-InterpolateStruc[]:=Module[{mmax,vmax,\[Omega]max,kmax,\[Omega]maxminrat,kmaxminrat,gridsize=200,Interpoints\[Omega],Interpointsk,Interpoints\[Omega]andk,Interpoints\[Epsilon],Inter\[Epsilon]f},
+Clear[InterpolateStruc]
+InterpolateStruc[params_]:=Module[{mmax,vmax,\[Omega]max,kmax,\[Omega]maxminrat,kmaxminrat,gridsize=200,Interpoints\[Omega],Interpointsk,Interpoints\[Omega]andk,Interpoints\[Epsilon],Inter\[Epsilon]f},
 mmax = 10^15 ("JpereV")/("c")^2/.Constants`SIConstRepl;
 vmax = 0.2 "c"/.Constants`SIConstRepl;
-kmax = (mmax vmax)/("\[HBar]")/.SIConstRepl;
-\[Omega]max= (mmax vmax^2)/(2 "\[HBar]")/.SIConstRepl;
+kmax = (mmax vmax)/("\[HBar]")/.Constants`SIConstRepl;
+\[Omega]max= (mmax vmax^2)/(2 "\[HBar]")/.Constants`SIConstRepl;
 \[Omega]maxminrat = 10^-30;
 kmaxminrat = 10^-20;
 
@@ -299,7 +294,7 @@ Interpointsk=10^Subdivide[Log10[kmaxminrat kmax],Log10[kmax],gridsize];
 
 Interpoints\[Omega]andk =Table[ Table[{Interpointsk[[i]],Interpoints\[Omega][[j]]},{i,gridsize}],{j,gridsize}];
 
-Interpoints\[Epsilon]=Table[ Table[{{Interpointsk[[i]],Interpoints\[Omega][[j]]},10^-60+StructureFunction[Interpointsk[[i]],Interpoints\[Omega][[j]],mmax,vmax,FeTotalparams,0,False]},{i,gridsize}],{j,gridsize}];
+Interpoints\[Epsilon]=Table[ Table[{{Interpointsk[[i]],Interpoints\[Omega][[j]]},10^-60+StructureFunction[Interpointsk[[i]],Interpoints\[Omega][[j]],mmax,vmax,params,0,False]},{i,gridsize}],{j,gridsize}];
 
 (*\[Epsilon][k,\[Omega]]*)
 Inter\[Epsilon]f=Interpolation[Flatten[Log10[Interpoints\[Epsilon]],1],InterpolationOrder->3];
