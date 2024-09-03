@@ -51,6 +51,14 @@ ELFM0::usage = "Loss function constructed out of \[Epsilon]Mq0";
 
 
 (* ::Text:: *)
+(*Electron Evaporation*)
+
+
+\[Epsilon]nd::usage = "1st correction to degenerate limit to RPA dielectric, used to compute the evaporation rate from electronic scattering in the nearly degenerate case.";
+\[Epsilon]Mnd::usage = "1st correction to degenerate limit to RTA dielectric, used to compute the evaporation rate from electronic scattering in the nearly degenerate case.";
+
+
+(* ::Text:: *)
 (*Structure Function*)
 
 
@@ -119,7 +127,7 @@ LinDielectric[q_,\[Omega]_] := uzLinDielectric[uf[q,\[Omega]],zf[q]] (*Lindhard 
 (*Mermin Dielectric (Random Time Approximation) Private Definitions*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Subscript[\[Epsilon], RPA](\[Omega] +I \[Nu])*)
 
 
@@ -241,7 +249,7 @@ Solve[%==0,\[Omega]]
 \[Omega]i[\[Omega]exti_,\[Nu]i_]:=Sqrt[Sqrt[\[Nu]i^2 \[Omega]exti^2 + 4 \[Omega]exti^4] - \[Omega]exti^2]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Structure Function*)
 
 
@@ -276,7 +284,7 @@ StructureFunctionuz1osc[u_,z_?NumberQ,params_,cut_:4]:=(*\[Omega] = (4 kF vF u z
 zIntegranduz1osc[u_,z_?NumberQ,params_,cut_:4]:=(*\[Omega] = (4 kF vF u z) *)Abs@( (2(If[4 >#,If[#>0.01,1/(1-E^(- #)),1/#-1/2],1]&["\[Beta]" "\[HBar]" (4 "qF" "vF" u z)])/.params) 1/z Im[-("Ai"/.params) / Dielectrics`\[Epsilon]MNum[u, z,("\[Nu]i"/(2 "vF" "qF" z))/.params,params]]/.params)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Interpolate Structure Function*)
 
 
@@ -373,6 +381,46 @@ Inter\[Epsilon]f=Table[{Interpolation[Flatten[Log10[Interpoints\[Epsilon][[osc]]
 
 Inter\[Epsilon]f
 ]
+
+
+(* ::Subsection:: *)
+(*RTA in the nearly degenerate case *)
+
+
+(* ::Subsubsection:: *)
+(*\[Epsilon]nd*)
+
+
+h[a_,u\[Nu]_]:= 1/2 Log[((1+a)^2+u\[Nu]^2)/((1-a)^2+u\[Nu]^2)] - I (ArcTan[(1-a)/u\[Nu]]+ArcTan[(1+a)/u\[Nu]]) 
+\[Epsilon]nd[u_,z_,u\[Nu]_]:= 1 + ("\[Chi]")^2/(4 z^3) (1/("D")-z)(h[u+z,u\[Nu]]-h[u-z,u\[Nu]])
+
+
+(* ::Subsubsection:: *)
+(*\[Epsilon]nd(k,0)*)
+
+
+\[Epsilon]nd0[z_]:=Module[{h1},
+	(*
+		Input:
+		z - [] q/(2 qF)
+		u - [] \[Omega]/(q qF)
+	
+	Output:
+		\[Epsilon]^Lin - [] Lindhard dielectric function at 0 temperature
+	*)
+	(*\[Chi] = Sqrt["e"^2/(Pi "hbar" "vF") 1/(4 \[Pi] "\[Epsilon]0")];*)
+	h1= Log[Abs[(1+z)/(1-z)]];
+	
+	1 + "\[Chi]"^2/(4 z^3)(1/("D")-z) (2 h1 )
+]
+
+
+(* ::Subsubsection:: *)
+(*Mermin \[Epsilon]nd*)
+
+
+\[Epsilon]Mnd[up_,z_,u\[Nu]_]:= 1 + ((up +I u\[Nu]) ( \[Epsilon]nd[up,z,u\[Nu]]-1))/(up + I u\[Nu]  (\[Epsilon]nd[up,z,u\[Nu]]-1)/(\[Epsilon]nd0[z]-1))
+(*Piecewise[{{\[Epsilon]Matbranchcut[up,z,u\[Nu]],z==1}},1 + ((up +I u\[Nu]) ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1))/(up + I u\[Nu]  ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1)/(\[Epsilon]RPA0[z]-1))]*)
 
 
 (* ::Section::Closed:: *)
