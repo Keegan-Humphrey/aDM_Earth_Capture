@@ -54,8 +54,12 @@ ELFM0::usage = "Loss function constructed out of \[Epsilon]Mq0";
 (*Electron Evaporation*)
 
 
+fnd::usage = "distribution function used for \[Epsilon]nds."
+\[Zeta]m::usage = "\!\(\*SubscriptBox[\(\[Zeta]\), \(-\)]\)";
+\[Zeta]p::usage = "\!\(\*SubscriptBox[\(\[Zeta]\), \(+\)]\)";
 \[Epsilon]nd::usage = "1st correction to degenerate limit to RPA dielectric, used to compute the evaporation rate from electronic scattering in the nearly degenerate case.";
 \[Epsilon]Mnd::usage = "1st correction to degenerate limit to RTA dielectric, used to compute the evaporation rate from electronic scattering in the nearly degenerate case.";
+\[Epsilon]MndNum::usage = "1st correction to degenerate limit to RTA dielectric, used to compute the evaporation rate from electronic scattering in the nearly degenerate case. Numerical arguments.";
 
 
 (* ::Text:: *)
@@ -388,6 +392,19 @@ Inter\[Epsilon]f
 
 
 (* ::Subsubsection:: *)
+(*Distribution Fn*)
+
+
+FOccnD\[Zeta] = 1/(1+\!\(\*SuperscriptBox[\(\[ExponentialE]\), \("\<D\>"\ \((\(-1\) + 
+\*SuperscriptBox[\(\[Zeta]\), \(2\)])\)\)]\));
+(*FOccnD\[Zeta]nearkF=Series[FOccnD\[Zeta],{\[Zeta],1,1}]//Normal//FullSimplify;*)
+Clear[fnd]
+fnd[\[Zeta]_]:=1/2 (1+"D"-"D" \[Zeta]);(*Series[FOccnD\[Zeta],{\[Zeta],1,1}]//Normal//FullSimplify*)
+\[Zeta]m = \[Zeta]/.Solve[fnd[\[Zeta]]==1,\[Zeta]][[1]]//Simplify;
+\[Zeta]p = \[Zeta]/.Solve[fnd[\[Zeta]]==0,\[Zeta]][[1]]//Simplify;
+
+
+(* ::Subsubsection:: *)
 (*\[Epsilon]nd*)
 
 
@@ -420,6 +437,7 @@ h[a_,u\[Nu]_]:= 1/2 Log[((1+a)^2+u\[Nu]^2)/((1-a)^2+u\[Nu]^2)] - I (ArcTan[(1-a)
 
 
 \[Epsilon]Mnd[up_,z_,u\[Nu]_]:= 1 + ((up +I u\[Nu]) ( \[Epsilon]nd[up,z,u\[Nu]]-1))/(up + I u\[Nu]  (\[Epsilon]nd[up,z,u\[Nu]]-1)/(\[Epsilon]nd0[z]-1))
+\[Epsilon]MndNum[up_?NumberQ,z_?NumberQ,u\[Nu]_?NumberQ,params_]:= Quiet@N[\[Epsilon]Mnd[up,z,u\[Nu]]/.params,50]
 (*Piecewise[{{\[Epsilon]Matbranchcut[up,z,u\[Nu]],z==1}},1 + ((up +I u\[Nu]) ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1))/(up + I u\[Nu]  ({1,I} . \[Epsilon]RPAC[up,z,u\[Nu]]-1)/(\[Epsilon]RPA0[z]-1))]*)
 
 
