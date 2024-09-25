@@ -395,13 +395,14 @@ Inter\[Epsilon]f
 (*Distribution Fn*)
 
 
-FOccnD\[Zeta] = 1/(1+\!\(\*SuperscriptBox[\(\[ExponentialE]\), \("\<D\>"\ \((\(-1\) + 
-\*SuperscriptBox[\(\[Zeta]\), \(2\)])\)\)]\));
+(*FOccnD\[Zeta] = 1/(1+\[ExponentialE]^("D" (-1+\[Zeta]^2)));*)
 (*FOccnD\[Zeta]nearkF=Series[FOccnD\[Zeta],{\[Zeta],1,1}]//Normal//FullSimplify;*)
 Clear[fnd]
-fnd[\[Zeta]_]:=1/2 (1+"D"-"D" \[Zeta]);(*Series[FOccnD\[Zeta],{\[Zeta],1,1}]//Normal//FullSimplify*)
-\[Zeta]m = \[Zeta]/.Solve[fnd[\[Zeta]]==1,\[Zeta]][[1]]//Simplify;
-\[Zeta]p = \[Zeta]/.Solve[fnd[\[Zeta]]==0,\[Zeta]][[1]]//Simplify;
+fnd[\[Zeta]_]:=1/2 +("D")/4 (1-\[Zeta]^2);(*Series[FOccnD\[Zeta],{\[Zeta]^2,1,1}]//Normal//FullSimplify*)
+(*\[Zeta]m = \[Zeta]/.Solve[fnd[\[Zeta]]==1,\[Zeta]][[1]]//Simplify;
+\[Zeta]p = \[Zeta]/.Solve[fnd[\[Zeta]]==0,\[Zeta]][[1]]//Simplify;*)
+\[Zeta]p=1+1/("D");
+\[Zeta]m=1-1/("D");
 
 
 (* ::Subsubsection:: *)
