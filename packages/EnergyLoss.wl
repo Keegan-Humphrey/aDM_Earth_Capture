@@ -965,9 +965,16 @@ d\[Sigma]dERNuc0[\[Omega]_,m\[Chi]_,v\[Chi]_,coeffs_,params_]:= 1/(2 \[Omega] ("
 zb[sign_,\[Omega]_,m\[Chi]_,v\[Chi]_,params_]:= ((m\[Chi] v\[Chi] + <|"+"->1,"-"->(-1)|>[[sign]] Sqrt[2 m\[Chi] (1/2 m\[Chi] v\[Chi]^2 - \[Omega] "\[HBar]")])/(2"qF""\[HBar]")) /.params
 
 
-zIntegrald\[Sigma]dER1oscillatorfnofbounds[\[Omega]_,m\[Chi]_,v\[Chi]_,paramsi_,lb_,ub_]:=NIntegrate[1/z Im[-("Ai"/.paramsi) / Dielectrics`\[Epsilon]MNum[(("\[HBar]"\[Omega])/(2"EF"z)/.paramsi), z, (u\[Nu]Fit[z] /. paramsi), paramsi]],{z,lb,ub},Method->{"LocalAdaptive"},MaxRecursion->12,PrecisionGoal->3,AccuracyGoal->3]
+zIntegrald\[Sigma]dER1oscillatorfnofbounds[\[Omega]_,m\[Chi]_,v\[Chi]_,paramsi_,lb_,ub_]:= Abs@NIntegrate[1/z Im[-("Ai"/.paramsi) / Dielectrics`\[Epsilon]MNum[(("\[HBar]"\[Omega])/(2"EF"z)/.paramsi), z, (u\[Nu]Fit[z] /. paramsi), paramsi]],{z,lb,ub},Method->{"LocalAdaptive"},MaxRecursion->12,PrecisionGoal->3,AccuracyGoal->3] (*analytically should never go negative*)
 
-zIntegrald\[Sigma]dER1oscillator[\[Omega]_,m\[Chi]_,v\[Chi]_,paramsi_]:=zIntegrald\[Sigma]dER1oscillatorfnofbounds[\[Omega],m\[Chi],v\[Chi],paramsi,zb["-",\[Omega],m\[Chi],v\[Chi],paramsi],zb["+",\[Omega],m\[Chi],v\[Chi],paramsi]](*taking \[Kappa] = 1*)
+(*zIntegrald\[Sigma]dER1oscillator[\[Omega]_,m\[Chi]_,v\[Chi]_,paramsi_]:=zIntegrald\[Sigma]dER1oscillatorfnofbounds[\[Omega],m\[Chi],v\[Chi],paramsi,zb["-",\[Omega],m\[Chi],v\[Chi],paramsi],zb["+",\[Omega],m\[Chi],v\[Chi],paramsi]](*taking \[Kappa] = 1*)*)
+zIntegrald\[Sigma]dER1oscillator[\[Omega]_,m\[Chi]_,v\[Chi]_,paramsi_,c0_:9]:=Module[{zm,zp,\[CapitalDelta]z},
+(*divides up the integration region so that mathematica doesn't miss dominant region when integrating over many orders of magnitude.*)
+zm=zb["-",\[Omega],m\[Chi],v\[Chi],paramsi];
+zp=zb["+",\[Omega],m\[Chi],v\[Chi],paramsi];
+\[CapitalDelta]z=zp-zm;
+Sum[zIntegrald\[Sigma]dER1oscillatorfnofbounds[\[Omega],m\[Chi],v\[Chi],paramsi,zm+If[c==-c0,0,1]10^(c-1) \[CapitalDelta]z,zm+If[c==-c0,0,1]10^c \[CapitalDelta]z],{c,-c0,0}](*taking \[Kappa] = 1*)
+]
 
 
 dPd\[Omega]e[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,cut_:4]:= Sum[( ("e")^2/(v\[Chi] "\[HBar]" (2 \[Pi])^2 "\[Epsilon]0") If[4 >#,If[#>0.01,1/(1-E^(- #)),1/#-1/2],1]&[ "\[Beta]" "\[HBar]" \[Omega]]/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
@@ -977,7 +984,8 @@ dPd\[Omega]eNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,cut_:4]:= Sum[( ("e"
 
 
 (*d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,cut_:4]:= Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[cut - "\[Beta]" "\[HBar]" \[Omega]](1/(1-E^(- "\[Beta]" "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]*)
-d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_,cut_:4]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") If[4 >#,If[#>0.01,1/(1-E^(- #)),1/#-1/2],1]&[ "\[Beta]" "\[HBar]" \[Omega]]/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+d\[Sigma]dERe[\[Omega]_,m\[Chi]_,v\[Chi]_,params_,\[Beta]_,cut_:4]:=Sum[(2 ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") If[4 >#,If[#>0.01,1/(1-E^(- #)),1/#-1/2],1]&[ "\[Beta]" "\[HBar]" \[Omega]]/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
+
 
 d\[Sigma]dEReInterp[\[Omega]_,m\[Chi]_,v\[Chi]_,StrucTable_]:= Module[{params,func},
 
@@ -987,7 +995,7 @@ Sum[(("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0")/.StrucTabl
 d\[Sigma]dEReNum[\[Omega]_?NumberQ,m\[Chi]_,v\[Chi]_,params_,\[Beta]_]:=Sum[( ("e")^2/(v\[Chi]^2 ("\[HBar]")^2 "ne" (2 \[Pi])^2 "\[Epsilon]0") (1+HeavisideTheta[4 - \[Beta] "\[HBar]" \[Omega]](1/(1-E^(-\[Beta] "\[HBar]" \[Omega]))-1))/.params[[i]])zIntegrald\[Sigma]dER1oscillator[\[Omega],m\[Chi],v\[Chi],params[[i]]],{i,Length[params]}]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*electronic - evaporation*)
 
 
@@ -1210,15 +1218,22 @@ Interd\[Sigma]f=Interpolation[Interd\[Sigma]Table];
 (*Interpolate over the v\[Chi] as well - Electronic*)
 
 
-Getv\[Chi]and\[Xi]List[v\[Chi]_,n_:20,\[Epsilon]_:10^-4,uselog_:False]:=Module[{Interpoints\[Xi]},
+Getv\[Chi]and\[Xi]List[v\[Chi]_,n_:60,\[Epsilon]_:10^-4,uselog_:True]:=Module[{Interpoints\[Xi]},
 Interpoints\[Xi]=If[uselog,10^Subdivide[Log10[\[Epsilon]],Log10[1-\[Epsilon]],n],Subdivide[\[Epsilon],1-\[Epsilon],n]];(*move slightly away from the boundaries so we can do a log-log interpolation (d\[Sigma]/Subscript[dE, R]->0 at Subscript[\[Omega], max], and \[Xi]->0 at Subscript[\[Omega], min])*)
 (*Interpoints\[Xi]=10^Subdivide[Log10[\[Epsilon]],Log10[1-\[Epsilon]],n];*)
 (*Interpoints\[Xi]=Subdivide[\[Epsilon],1-\[Epsilon],n];*)(*move slightly away from the boundaries so we can do a log-log interpolation (d\[Sigma]/Subscript[dE, R]->0 at Subscript[\[Omega], max], and \[Xi]->0 at Subscript[\[Omega], min])*)
 Table[{v\[Chi],Interpoints\[Xi][[i]]},{i,n+1}]
 ]
 
+Getv\[Chi]and\[Xi]Listminmax[v\[Chi]_,n_:60,\[Xi]min_,\[Xi]max_,uselog_:True]:=Module[{Interpoints\[Xi]},
+Interpoints\[Xi]=If[uselog,10^Subdivide[Log10[\[Xi]min],Log10[\[Xi]max],n],Subdivide[\[Xi]min,\[Xi]max,n]];(*move slightly away from the boundaries so we can do a log-log interpolation (d\[Sigma]/Subscript[dE, R]->0 at Subscript[\[Omega], max], and \[Xi]->0 at Subscript[\[Omega], min])*)
+(*Interpoints\[Xi]=10^Subdivide[Log10[\[Epsilon]],Log10[1-\[Epsilon]],n];*)
+(*Interpoints\[Xi]=Subdivide[\[Epsilon],1-\[Epsilon],n];*)(*move slightly away from the boundaries so we can do a log-log interpolation (d\[Sigma]/Subscript[dE, R]->0 at Subscript[\[Omega], max], and \[Xi]->0 at Subscript[\[Omega], min])*)
+Table[{v\[Chi],Interpoints\[Xi][[i]]},{i,n+1}]
+]
 
-Interpolatev\[Chi]and\[Omega]\[Sigma]dERe\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,params_,m_:5,n_:60,\[Epsilon]_:10^-6,cut_:4,uselog_:False,get\[Sigma]too_,regionindex_:1,materialname_:"material",Truncatev\[Chi]_:False]:=Module[{\[Omega]min,v\[Chi],Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f,Inter\[Sigma]Table,Inter\[Sigma]f,InterdEdlTable,InterdEdlf,Inter\[Sigma]of\[Xi]Table,Inter\[Sigma]of\[Xi]f,v\[Chi]maxindexfor\[Sigma]int},
+
+Interpolatev\[Chi]and\[Omega]\[Sigma]dERe\[Xi][m\[Chi]_:0.5 10^6 ("JpereV")/("c")^2/.Constants`SIConstRepl,params_,m_:10,n_:60,\[Epsilon]_:10^-6,cut_:4,uselog_:True,get\[Sigma]too_,regionindex_:1,materialname_:"material",Truncatev\[Chi]_:False,c\[Xi]_:15]:=Module[{\[Omega]min,v\[Chi],\[Xi]range,Interpointsv\[Chi],Interpointsv\[Chi]and\[Xi],Interd\[Sigma]Table,Interd\[Sigma]f,Inter\[Sigma]Table,Inter\[Sigma]f,InterdEdlTable,InterdEdlf,Inter\[Sigma]of\[Xi]Table,Inter\[Sigma]of\[Xi]f,v\[Chi]maxindexfor\[Sigma]int},
 (*Interpolate over d\[Sigma]dER for electronic contribution (to avoid doing the integral over momentum transfer at every evaluation and to speed up the numerical integration over it to find the normalization)*)
 
 \[Omega]min= "\[Omega]edgei"/.params; (*the cutoff used in the data fitting*)
@@ -1227,30 +1242,40 @@ v\[Chi] = {3Sqrt[("\[HBar]" \[Omega]min)/(2 m\[Chi])], 2 10^-1 "c"}/.Constants`S
 
 If[v\[Chi][[1]]>v\[Chi][[2]],Print["minimum energy requires relativistic probes, we won't consider these"];Return["NA",Module]];
 
+\[Xi]range = {(\[Epsilon] \[Omega]min)/(\[Omega]maxofv\[Chi][v\[Chi][[2]],m\[Chi],params]-\[Omega]min),1-(\[Epsilon] \[Omega]maxofv\[Chi][v\[Chi][[2]],m\[Chi],params])/(\[Omega]maxofv\[Chi][v\[Chi][[2]],m\[Chi],params]-\[Omega]min)};
+
 Interpointsv\[Chi]=10^Subdivide[Log10[v\[Chi][[1]]],Log10[v\[Chi][[2]]],m];
-Interpointsv\[Chi]and\[Xi]=SortBy[Table[Getv\[Chi]and\[Xi]List[Interpointsv\[Chi][[i]],n,\[Epsilon],uselog],{i,m+1}],Last];
+(*Interpointsv\[Chi]and\[Xi]=SortBy[Table[Getv\[Chi]and\[Xi]List[Interpointsv\[Chi][[i]],n,\[Epsilon],uselog],{i,m+1}],Last];*)
+Interpointsv\[Chi]and\[Xi]=SortBy[Table[Getv\[Chi]and\[Xi]Listminmax[Interpointsv\[Chi][[i]],n,\[Xi]range[[1]],\[Xi]range[[2]],uselog],{i,m+1}],Last];
 
 (*Interpolate to get d\[Sigma]/dER*)
 Interd\[Sigma]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],d\[Sigma]dERe[\[Omega]of\[Xi][Interpointsv\[Chi]and\[Xi][[i,j]][[2]],\[Omega]min,\[Omega]maxofv\[Chi][Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],params]],m\[Chi],Interpointsv\[Chi]and\[Xi][[i,j]][[1]],{params},"\[Beta]"/.params,cut]},{i,m+1},{j,n+1}];
-Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],InterpolationOrder->4];
+(*Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],InterpolationOrder->4];*)
+Interd\[Sigma]f=Interpolation[Flatten[Log10[Interd\[Sigma]Table],1],InterpolationOrder->1];
 Print["d\[Sigma] interpolation done"];
 
-Inter\[Sigma]Table =Table[{Interpointsv\[Chi][[i]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]},Method->{"LocalAdaptive"}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
-Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table],InterpolationOrder->4];
+(*Inter\[Sigma]Table =Table[{Interpointsv\[Chi][[i]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]},Method->{"LocalAdaptive"}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)*)
+Inter\[Sigma]Table =Table[{Interpointsv\[Chi][[i]],("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Xi]range[[1]],\[Xi]range[[2]]},Method->{"LocalAdaptive"}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
+(*Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table],InterpolationOrder->4];*)
+Inter\[Sigma]f = Interpolation[Log10[Inter\[Sigma]Table],InterpolationOrder->1];
 Print["\[Sigma] interpolation done"];
 
-InterdEdlTable =Table[{Interpointsv\[Chi][[i]],("ne"/.params)("\[HBar]"/.params)^2 (\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[\[Omega]of\[Xi]andv\[Chi][\[Xi],\[Omega]min,Interpointsv\[Chi][[i]],m\[Chi],params] 10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]},Method->{"LocalAdaptive"}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
-InterdEdlf= Interpolation[Log10[InterdEdlTable],InterpolationOrder->4];
+(*InterdEdlTable =Table[{Interpointsv\[Chi][[i]],("ne"/.params)("\[HBar]"/.params)^2 (\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[\[Omega]of\[Xi]andv\[Chi][\[Xi],\[Omega]min,Interpointsv\[Chi][[i]],m\[Chi],params] 10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Epsilon],1-\[Epsilon]},Method->{"LocalAdaptive"}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)*)
+(*InterdEdlTable =Table[{Interpointsv\[Chi][[i]],("ne"/.params)("\[HBar]"/.params)^2 (\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)NIntegrate[\[Omega]of\[Xi]andv\[Chi][\[Xi],\[Omega]min,Interpointsv\[Chi][[i]],m\[Chi],params] 10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Xi]range[[1]],\[Xi]range[[2]]},Method->{"LocalAdaptive"}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)*)
+InterdEdlTable =Table[{Interpointsv\[Chi][[i]],("ne"/.params)("\[HBar]"/.params)^2 (\[Omega]maxofv\[Chi][Interpointsv\[Chi][[i]],m\[Chi],params]-\[Omega]min)Sum[NIntegrate[\[Omega]of\[Xi]andv\[Chi][\[Xi],\[Omega]min,Interpointsv\[Chi][[i]],m\[Chi],params] 10^Interd\[Sigma]f[Log10[Interpointsv\[Chi][[i]]],Log10[\[Xi]]],{\[Xi],\[Xi]range[[1]]+If[c==-c\[Xi],0,1]10^(c-1) (\[Xi]range[[2]]-\[Xi]range[[1]]),10^c (\[Xi]range[[2]]-\[Xi]range[[1]])\[Xi]range[[2]]},Method->{"LocalAdaptive"}],{c,-c\[Xi],0}]},{i,m+1}]; (*The prefactor on the Integral is the Jacobian of the transformation E_R -> \[Xi]*)
+(*InterdEdlf= Interpolation[Log10[InterdEdlTable],InterpolationOrder->4];*)
+InterdEdlf= Interpolation[Log10[InterdEdlTable],InterpolationOrder->1];
 Print["dEdlf interpolation done"];
 
 v\[Chi]maxindexfor\[Sigma]int=If[Truncatev\[Chi],Position[Interpointsv\[Chi],_?(#<10^6&)][[-1,1]],m+1];
 
-Inter\[Sigma]of\[Xi]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],10^-49+("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],params]-\[Omega]min)Abs[Re[NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi]and\[Xi][[i,j]][[1]]],Log10[\[Xi]]],{\[Xi],Interpointsv\[Chi]and\[Xi][[i,j]][[2]],1-\[Epsilon]},Method->{"LocalAdaptive"},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3]]]},{i,v\[Chi]maxindexfor\[Sigma]int},{j,n+1}]; 
-Inter\[Sigma]of\[Xi]f=Interpolation[Flatten[Log10[Inter\[Sigma]of\[Xi]Table],1],InterpolationOrder->4];
+Inter\[Sigma]of\[Xi]Table=Table[{Interpointsv\[Chi]and\[Xi][[i,j]],10^-49+("\[HBar]"/.params)(\[Omega]maxofv\[Chi][Interpointsv\[Chi]and\[Xi][[i,j]][[1]],m\[Chi],params]-\[Omega]min)Abs[Re[NIntegrate[10^Interd\[Sigma]f[Log10[Interpointsv\[Chi]and\[Xi][[i,j]][[1]]],Log10[\[Xi]]],{\[Xi],Interpointsv\[Chi]and\[Xi][[i,j]][[2]],\[Xi]range[[2]]},Method->{"LocalAdaptive"},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3]]]},{i,v\[Chi]maxindexfor\[Sigma]int},{j,n+1}]; 
+(*Inter\[Sigma]of\[Xi]f=Interpolation[Flatten[Log10[Inter\[Sigma]of\[Xi]Table],1],InterpolationOrder->4];*)
+Inter\[Sigma]of\[Xi]f=Interpolation[Flatten[Log10[Inter\[Sigma]of\[Xi]Table],1],InterpolationOrder->1];
 
 Print["\[Sigma] of \[Xi] interpolation done"];
 
-<|"d\[Sigma]f"->Interd\[Sigma]f,"Interpoints"->Interpointsv\[Chi]and\[Xi],"Interpointsv\[Chi]"->Interpointsv\[Chi],"\[Sigma]f"->Inter\[Sigma]f,"dEdlf"->InterdEdlf,"\[Sigma]of\[Xi]f"->Inter\[Sigma]of\[Xi]f,"\[Sigma]of\[Xi]table"->Inter\[Sigma]of\[Xi]Table,"m\[Chi]"->m\[Chi],"v\[Chi]"->Log10[v\[Chi]],"\[Xi]"->Log10[{\[Epsilon],1-\[Epsilon]}],"params"->params,"\[Omega]min"->\[Omega]min,"regionindex"->regionindex,"materialname"->materialname|>
+<|"d\[Sigma]f"->Interd\[Sigma]f,"Interpoints"->Interpointsv\[Chi]and\[Xi],"Interpointsv\[Chi]"->Interpointsv\[Chi],"\[Sigma]f"->Inter\[Sigma]f,"dEdlf"->InterdEdlf,"\[Sigma]of\[Xi]f"->Inter\[Sigma]of\[Xi]f,"\[Sigma]of\[Xi]table"->Inter\[Sigma]of\[Xi]Table,"m\[Chi]"->m\[Chi],"v\[Chi]"->Log10[v\[Chi]],"\[Xi]"->Log10[{\[Xi]range[[1]],\[Xi]range[[2]]}],"params"->params,"\[Omega]min"->\[Omega]min,"regionindex"->regionindex,"materialname"->materialname|>
 ]
 
 
