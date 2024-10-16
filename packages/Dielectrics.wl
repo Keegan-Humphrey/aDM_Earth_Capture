@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-$MinPrecision=100;
+(*$MinPrecision=100;*)
 BeginPackage["Dielectrics`"];
 
 
