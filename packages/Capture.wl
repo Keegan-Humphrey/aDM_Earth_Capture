@@ -6,44 +6,163 @@ Needs["Constants`"]
 BeginPackage["Capture`"];
 
 
-(* ::Subsubsection::Closed:: *)
-(*Public Declarations - old*)
-
-
-Getl::usage = "Get interaction length from the sampling formula [m]";
-Vgrav::usage = "Gravitational potential for the earth assuming constant density [SI]";
-
-Updatev::usage = "update velocity according to passed velocity mass and interaction length";
-Rotatev\[Chi]::usage = "Rotate v\[Chi] about an axis orthogonal to it, and parallel to it";
-RotateuAboutvby\[Phi]::usage = "Rotate a vector about another by an angle using Rodrigues formula";
-
-\[Sigma]selector::usage = "Sample to find the interaction process that occurred using the cross-sections of possible processes";
-
-Interpolate\[Epsilon]euztrunced::usage = "Interpolate \[Epsilon] to speed up function evaluation time for the Monte-Carlo";
-d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon]::usage = "define d\[Sigma]dERd\[CapitalOmega] for electronic scattering";
-Get\[Xi]\[Omega]andcos\[Theta]::usage = "Sample the distribution of d\[Sigma]dERd\[CapitalOmega] for \[Xi]\[Omega] and cos\[Theta]";
-GetNMaxofd\[Sigma]dERd\[CapitalOmega]::usage = "Numerically solve for the maximum of d\[Sigma]dERd\[CapitalOmega] slightly away from the boundaries, and with a small rescaling buffer (for use with the rejection method)";
-
-d\[Sigma]d\[CapitalOmega]Nuc0::usage = "define d\[Sigma]d\[CapitalOmega] for 0 temperature nuclear scattering";
-GetNMaxofd\[Sigma]d\[CapitalOmega]Nuc0::usage = "Numerically solve for the maximum of d\[Sigma]dERd\[CapitalOmega] slightly away from the boundaries, and with a small rescaling buffer (for use with the rejection method)";
-Get\[Omega]andcos\[Theta]Nuc0::usage = "Sample the distribution of d\[Sigma]dERd\[CapitalOmega] for \[Xi]\[Omega] and cos\[Theta]";
-
-ProcessDataAssemblerElectronic::usage = "take data of a electronic material / process and format it for the MC. Also does interpolation of \[Epsilon].";
-Interpolated\[Sigma]dERd\[Sigma]Max::usage = "Interpolate the maximum of d\[Sigma]dERd\[CapitalOmega] as a function of v\[Chi]";
-
-Getv\[Chi]\[Infinity]::usage = "Get the initial v\[Chi] at \[Infinity] by sampling a MB and a 2 sphere";
-Sample2Sphere::usage = "Point in R3, normalized gives random point on sphere or radius 1";
-Getv\[Chi]atEarth::usage = "sample MB and sphere at \[Infinity] to find trajectories that reach earth with b_E less than earth's radius";
-
-testMCprivaterun::usage = "";
-RunMC::usage = "Run the Monte-Carlo for one particle given a set of initial conditions";
+(* ::Subsection:: *)
+(*Public Declarations*)
 
 
 (* ::Subsubsection:: *)
-(*Public Declarations - new*)
+(*Utilities*)
 
 
-GetTotalNucWeakCaptureInteractionLength::usage = "Capture Interaction Length from Nuclear Scattering";
+Profiler::usage = "";
+
+
+v0to\[Beta]D::usage = "";
+
+
+CrustOrCore::usage = "";
+SortProcessesByRegion::usage = "";
+Region\[CapitalTheta]::usage = "";
+ltor::usage = "";
+
+
+ExportToDir::usage = "";
+
+
+PlotPDist::usage = "";
+PlotPDistwPf::usage = "";
+
+
+PlotKEchange::usage = "";
+PlotKEchange\[Kappa]Contour::usage = "";
+
+
+PlotNc\[Kappa]Contour::usage = "";
+
+
+PlotCaptureRate\[Kappa]Contour::usage = "";
+
+
+PlotEvaporationRate\[Kappa]Contour::usage = "";
+
+
+PlotELfrac::usage = "";
+PlotELNucoverE::usage = "";
+
+
+PlotCaptureRateComparison::usage = "";
+
+
+(* ::Subsubsection:: *)
+(*MC Processes*)
+
+
+Vgrav::usage = "";
+
+
+dc::usage = "";
+dE::usage = "";
+dM::usage = "";
+GetTotalELFunction::usage = "";
+GeteELFunction::usage = "";
+GetNucELFunction::usage = "";
+EK::usage = "";
+\[CapitalDelta]rTotby\[Kappa]squared::usage = "";
+
+
+GetWeakCaptureTrajectoryinv::usage = "";
+GetWeakCaptureTrajectoryinvFE::usage = "";
+
+
+(* ::Subsubsection:: *)
+(*Weak Capture Probability*)
+
+
+GetWeakCaptureProbabilityfromv::usage = "";
+
+
+GetWeakCaptureProbabilityNucfromv::usage = "";
+
+
+GetWeakCaptureInteractionLength::usage = "";
+GetTotaleWeakCaptureInteractionLength::usage = "";
+
+
+GetWeakCaptureInteractionLengthNuc::usage = "";
+GetTotalNucWeakCaptureInteractionLength::usage = "";
+
+
+(* ::Subsubsection:: *)
+(*Initial Conditions*)
+
+
+Getv\[Chi]Max::usage = "";
+
+
+Getv\[Chi]atEarth::usage = "";
+
+
+(* ::Subsubsection:: *)
+(*Get Capture Probability*)
+
+
+GetCaptureProbability::usage = "";
+IterateGetCaptureProbability::usage = "";
+
+
+GetCaptureRate::usage = "";
+IterateGetCaptureRate::usage = "";
+
+
+InterpolatePc::usage = "";
+
+
+(* ::Subsubsection:: *)
+(*Get Total Capture Rate*)
+
+
+nD0\[CapitalLambda]CDM::usage = "";
+naDM::usage = "";
+
+
+GetNcMax::usage = "";
+
+
+GetEvaporationRate::usage = "";
+IterateGetEvaporationRate::usage = "";
+
+
+GetEvaporationRateend::usage = "";
+IterateGetEvaporationRateend::usage = "";
+
+
+GetPenetrationDepth::usage = "";
+EvaporationwMFP::usage = "";
+
+
+GetinvMFT::usage = "";
+GetTotalinvMFT::usage = "";
+GetPejection::usage = "";
+GetAppendixEvaporationRate::usage = "";
+GetTotalAppendixEvaporationRate::usage = "";
+
+
+GetNc::usage = "";
+
+
+ScanGetCaptureRateandGetNc::usage = "";
+
+
+ScanGetCapture::usage = "";
+
+
+(* ::Subsubsection:: *)
+(*Get Significant Capture Regimes*)
+
+
+VCoulombE::usage = "";
+KEchange::usage = "";
+IterateKEchange::usage = "";
 
 
 (* ::Chapter:: *)
@@ -53,349 +172,7 @@ GetTotalNucWeakCaptureInteractionLength::usage = "Capture Interaction Length fro
 Begin["`Private`"];
 
 
-(* ::Section::Closed:: *)
-(*Old Algorithm*)
-
-
-(* ::Subsubsection::Closed:: *)
-(*Get interaction length*)
-
-
-Getl[m\[Chi]_,v\[Chi]_,\[Kappa]_,f_,Natural_:False] := Module[{\[Lambda],m\[Chi]natconv,v\[Chi]natconv},
-(*f is a log log function from kinematic variables to the inverse interaction length
-\[Kappa] is kinetic mixing
-Natural == True is for natural units for kinematic variables ([eV] for mass and [c] for speed])*)
-m\[Chi]natconv=("JpereV")/("c")^2/.Constants`SIConstRepl;
-v\[Chi]natconv="c"/.Constants`SIConstRepl;
-\[Lambda]=If[Natural,10^-f[Log10[m\[Chi] m\[Chi]natconv],Log10[v\[Chi] v\[Chi]natconv]],10^-f[Log10[m\[Chi]],Log10[v\[Chi]]]];
--(\[Lambda]/\[Kappa]^2)Log[1-Random[]]
-]
-
-
-(* ::Subsubsection::Closed:: *)
-(*Gravitational Potential*)
-
-
-Vgrav[r_]:=Piecewise[{{-(("G" "ME")/r),r>"rE"/. Constants`EarthRepl},{-(("ME" "G")/(2("rE")^3))( 3("rE")^2-r^2),r<"rE"/. Constants`EarthRepl}},-(("G" "ME")/("rE"/. Constants`EarthRepl))]/.Constants`SIConstRepl/.Constants`EarthRepl
-
-
-(* ::Subsubsection::Closed:: *)
-(*Update velocity according to interaction length and direction of propagation*)
-
-
-Updatev[v\[Chi]_,m\[Chi]_,r_,l_,V_]:=Module[{speed,\[CapitalDelta]t,\[CapitalDelta]r,vr,L,vp,E,reached},
-speed = \[Sqrt](v\[Chi] . v\[Chi]);
-\[CapitalDelta]t = l/speed;
-\[CapitalDelta]r = \[CapitalDelta]t v\[Chi][[1]];
-E=(m\[Chi]/2)speed^2+m\[Chi] V[r];
-vp = \[Sqrt](v\[Chi] . DiagonalMatrix[{0,1,1}] . v\[Chi]); (*Subscript[v, \[Perpendicular]]^2*)
-(*vr=Sqrt[(Simplify[(2/m\[Chi])E]-2(V[Abs[r+\[CapitalDelta]r]]-V[r])-vp^2)];(*updated radial velocity*)*)
-vr=-Sqrt[((2/m\[Chi])(E-m\[Chi] (V[r]+V[Abs[r+\[CapitalDelta]r]]))-vp^2)];(*updated radial velocity*)
-reached=(1/2)speed^2-(1/2)vp^2+V[r] >V[Abs[r+\[CapitalDelta]r]];(*check that Energy is high enough to reach r+\[CapitalDelta]r*)
-<|"v\[Chi]"->If[reached,{vr,v\[Chi][[2]],v\[Chi][[3]]},{-v\[Chi][[1]],v\[Chi][[2]],v\[Chi][[3]]}],"r"->Abs[r+\[CapitalDelta]r],"vr"->vr,"reached?"->reached,"E"->E,"vp"->vp,"\[CapitalDelta]r"->\[CapitalDelta]r,"V[r]"->V[r],"V[|r+\[CapitalDelta]r|]"->V[Abs[r+\[CapitalDelta]r]],"l"->l,"vr0"->v\[Chi][[1]],"m\[Chi]"->N[m\[Chi]]|>
-]
-
-
-RotateuAboutvby\[Phi][u_,v_,\[Phi]_]:= u Cos[\[Phi]] + v (u . v) (1-Cos[\[Phi]]) - Cross[u,v] Sin[\[Phi]](*Rodrigues formula for rotation of u about v (unit vector) by \[Phi]*)
-
-
-Rotatev\[Chi][v\[Chi]_,cos\[Theta]_,m\[Chi]_,\[Phi]_,q_]:=Module[{v\[Chi]hat, w,\[CapitalDelta]v\[Chi],v\[Chi]p},
-v\[Chi]hat=v\[Chi]/Sqrt[v\[Chi] . v\[Chi]];
-w=Cross[v\[Chi]hat,{0,1,0}];
-w=w/Sqrt[w . w];
-(*Print[w];*)
-(*Print[v\[Chi]hat];*)
-\[CapitalDelta]v\[Chi]=("\[HBar]" q )/m\[Chi] (w Sqrt[1-cos\[Theta]^2] + v\[Chi]hat cos\[Theta])/.Constants`SIConstRepl;
-(*Print[\[CapitalDelta]v\[Chi]];*)
-
-(*Rotate about v\[Chi] by \[Phi]*)
-v\[Chi]p = v\[Chi] - RotateuAboutvby\[Phi][\[CapitalDelta]v\[Chi],v\[Chi]hat,\[Phi]]
-]
-
-
-(* ::Subsubsection::Closed:: *)
-(*Select Interaction Process*)
-
-
-\[Sigma]selector[\[Sigma]s_]:=Module[{\[Xi]2,Ps,Psums,N\[Sigma],n},
-
-\[Xi]2 = Random[];
-
-N\[Sigma]=Length[\[Sigma]s];
-Ps=\[Sigma]s/Total[\[Sigma]s];
-Psums=Table[Sum[Ps[[i]],{i,j}],{j,Length[Ps]}];
-
-n=0;
-Do[If[ \[Xi]2<=Psums[[i]],n=i;Break[]],{i,1,N\[Sigma]}];
-(*{n,\[Xi]2,N[Psums]}*)
-n
-]
-
-
-(* ::Subsection::Closed:: *)
-(*Electronic Scattering *)
-
-
-Interpolate\[Epsilon]euztrunced[m\[Chi]_,params_,uselog_:True,m_:40,n_:40,\[Delta]_:10^-12]:=Module[{v\[Chi]max,\[Omega]min,\[Omega]max,qmin,qmax,umin,umax,zmin,zmax,InterPu,InterPz,Inter\[Epsilon]Table,Inter\[Epsilon]f},
-(*Interpolate over \[Epsilon] for electronic contribution to reduce time for a function evaluation of \[Epsilon]. We do it over the range we will be probing in the Monte-Carlo*)
-
-(*Find the range over which we are interpolating*)
-v\[Chi]max=2 10^-2 "c"/.params; (*nonrelativistic limit*)
-\[Omega]min= \[Delta] "\[Omega]edgei"/.params;
-\[Omega]max = 1/(2"\[HBar]") m\[Chi] v\[Chi]max^2/.params;
-qmax=1/("\[HBar]") m\[Chi] v\[Chi]max/.params;
-qmin=\[Delta] qmax;(*\[Delta] = Subscript[q, max]/Subscript[q, min] - necessary since the \[Epsilon] has a removable singularity at q=0*)
-
-(*Now convert to u and z variables*)
-umin = \[Omega]min/( qmax "vF")/.params;
-umax = Min[\[Omega]max/(qmin "vF")/.params,10^3];(*Truncate u at a large value of \[Omega] (where we get numerical instabilities)*)
-zmin = qmin/(2 "qF")/.params;
-zmax = qmax/(2 "qF")/.params;
-
-(*Log Subdivide the intervals*)
-     InterPu= If[uselog,10^Subdivide[Log10[umin],Log10[umax],m],Subdivide[umin,umax,m]];
-InterPz= If[uselog,10^Subdivide[Log10[zmin],Log10[zmax],n],Subdivide[zmin,zmax,n]];
-
-Inter\[Epsilon]Table=Table[{{InterPu[[i]],InterPz[[j]]},Abs[Im[-1/Dielectrics`\[Epsilon]M[InterPu[[i]],InterPz[[j]],("\[Nu]i")/(2 "qF""vF"InterPz[[j]] )]]/.params]},{i,m+1},{j,n+1}];
-Inter\[Epsilon]f=If[uselog,Interpolation[Flatten[Log10[Inter\[Epsilon]Table],1],InterpolationOrder->4],Interpolation[Flatten[Inter\[Epsilon]Table,1],InterpolationOrder->4]];
-
-<|"\[Epsilon]f"->Inter\[Epsilon]f,"\[Epsilon]Table"->Inter\[Epsilon]Table,"m\[Chi]"->m\[Chi],"v\[Chi]max"->v\[Chi]max,"us"->InterPu,"zs"->InterPz,"\[Omega]range"->{\[Omega]min,\[Omega]max},"qrange"->{qmin,qmax},"urange"->{umin,umax},"zrange"->{zmin,zmax},"params"->params,"Npoints"->{m,n},"\[Delta]"->\[Delta]|>
-]
-
-
-d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]\[Omega]_,cos\[Theta]_,v\[Chi]_,\[Kappa]_,\[Epsilon]Dict_]:=Module[{m\[Chi],\[Omega]max,\[Omega],qpm,\[Xi]\[Theta],prefactor,d\[Sigma]dERd\[CapitalOmega],loguzs},
-(* Get d\[Sigma]/(Subscript[dE, R]d\[CapitalOmega]) given an interpolated \[Epsilon] dictionary. Do this as a function of dimensionless variables which will be sampled.
-   \[Xi]\[Omega] \[Element] (0,1) - []
-  cos\[Theta] \[Epsilon] (0,1) - [] negative disallowed since gas is assumed degenerate: hence no energy can be removed from the Fermi sphere.*)
-m\[Chi]=\[Epsilon]Dict["m\[Chi]"];
-\[Omega]max =(m\[Chi] v\[Chi]^2)/(2 "\[HBar]")/.\[Epsilon]Dict["params"];
-\[Omega]= (\[Epsilon]Dict["\[Omega]range"][[1]]+(cos\[Theta]^2 \[Omega]max-\[Epsilon]Dict["\[Omega]range"][[1]])\[Xi]\[Omega]); (*define \[Omega] in terms of \[Xi]\[Omega]*)
-qpm={q->(m\[Chi] v\[Chi])/("\[HBar]") (cos\[Theta]-Sqrt[cos\[Theta]^2-(2\[Omega] "\[HBar]")/(m\[Chi] v\[Chi]^2)]),q->(m\[Chi] v\[Chi])/("\[HBar]") (cos\[Theta]+Sqrt[cos\[Theta]^2-(2\[Omega] "\[HBar]")/(m\[Chi] v\[Chi]^2)])}/.\[Epsilon]Dict["params"];(*solutions for q to \[Omega]-\[Omega](q,cos\[Theta])=0 in the delta function that arises in the q integral. These must be summed over*)
-\[Xi]\[Theta]=Sqrt[cos\[Theta]^2-(2 "\[HBar]" \[Omega])/(m\[Chi] v\[Chi]^2)]/.\[Epsilon]Dict["params"];(*the absolute value of the jacobian of the delta function, evaluated on the solution of q, for each of the above solutions*)
-
-loguzs=Table[{Log10[\[Omega]/("vF"q )/.\[Epsilon]Dict["params"]],Log10[q/(2"qF")/.\[Epsilon]Dict["params"]]}/.qpm[[i]]/.\[Epsilon]Dict["params"],{i,2}];
-prefactor=( 1/(v\[Chi]^2 "ne") 1/(("\[HBar]")^2 (2 \[Pi])^3) 1/\[Xi]\[Theta] (\[Kappa]^2 ("e")^2)/(4 \[Pi] "\[Epsilon]0") 2/(1-E^(-"\[Beta]" "\[HBar]" \[Omega])))/.\[Epsilon]Dict["params"];
-
-d\[Sigma]dERd\[CapitalOmega] =prefactor Table[10^\[Epsilon]Dict["\[Epsilon]f"][loguzs[[i,1]],loguzs[[i,2]]],{i,2}];
-
-<|"d\[Sigma]dERd\[CapitalOmega]"->d\[Sigma]dERd\[CapitalOmega],"\[Omega]"->\[Omega],"\[Omega]max"->\[Omega]max,"cos\[Theta]"->cos\[Theta],"\[Xi]pm"->\[Xi]\[Theta],"qpm"->qpm,"loguzs"->loguzs,"prefactor"->prefactor|>
-]
-
-
-Get\[Xi]\[Omega]andcos\[Theta][v\[Chi]_,\[Epsilon]Dict_,NMax_]:=Module[{nits=0,\[Xi]s,M\[Xi],d\[Sigma]dERd\[CapitalOmega],\[Omega],Accepted=False,Errors=0},
-While[!Accepted,
-nits+=1;
-\[Xi]s={Random[],Random[]};
-M\[Xi]=NMax Random[];
-(*\[Sigma]s=Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]s[[1]],\[Xi]s[[2]],v\[Chi],1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]];*)
-{d\[Sigma]dERd\[CapitalOmega],\[Omega]}={"d\[Sigma]dERd\[CapitalOmega]","\[Omega]"}/.d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]s[[1]],\[Xi]s[[2]],v\[Chi],1,\[Epsilon]Dict];(*Set \[Kappa] to 1, overall scaling is irrelevant*)
-d\[Sigma]dERd\[CapitalOmega]=Total[d\[Sigma]dERd\[CapitalOmega]];
-Accepted=M\[Xi]<= d\[Sigma]dERd\[CapitalOmega];
-Errors=If[d\[Sigma]dERd\[CapitalOmega]-NMax> 0,Break[];<|"\[Xi]\[Omega]"->\[Xi]s[[1]],"cos\[Theta]"->\[Xi]s[[2]],"M\[Xi]"->M\[Xi],"\[Sigma]s"->d\[Sigma]dERd\[CapitalOmega]|>,0];
-];
-<|"\[Xi]\[Omega]"->\[Xi]s[[1]],"\[Omega]"->\[Omega],"cos\[Theta]"->\[Xi]s[[2]],"M\[Xi]"->M\[Xi],"d\[Sigma]dERd\[CapitalOmega]"->d\[Sigma]dERd\[CapitalOmega],"Max"->NMax,"Errors"->Errors,"nits"->nits|>
-]
-
-
-(*GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict_,v\[Chi]_,buffer_:1.1 ]:=Module[{},
-buffer NMaximize[Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]\[Omega],cos\[Theta],v\[Chi],1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]],{\[Xi]\[Omega],cos\[Theta]}\[Element]Rectangle[{\[Epsilon]Dict["\[Delta]"]^(1/4),\[Epsilon]InterpFeOsc2["\[Delta]"]^(1/4)},{1-\[Epsilon]Dict["\[Delta]"]^(1/4),1-\[Epsilon]Dict["\[Delta]"]^(1/4)}]][[1]] 
-]*)
-GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict_,v\[Chi]_,buffer_:1.1 ]:=Module[{},
-(*v\[Chi]max=10^-3 "c"/.Constants`SIConstRepl;*)
-buffer NMaximize[Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]\[Omega],cos\[Theta],v\[Chi],1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]],{\[Xi]\[Omega],cos\[Theta]}\[Element]Rectangle[{\[Epsilon]Dict["\[Delta]"]^(1/4),\[Epsilon]Dict["\[Delta]"]^(1/4)},{1-\[Epsilon]Dict["\[Delta]"]^(1/4),1-\[Epsilon]Dict["\[Delta]"]^(1/4)}]][[1]] 
-]
-
-
-(* ::Subsection::Closed:: *)
-(*Nuclear Scattering*)
-
-
-d\[Sigma]d\[CapitalOmega]Nuc0[cos\[Theta]_,v\[Chi]_,\[Kappa]_,m\[Chi]_,coeffs_,params_]:=Module[{mN,\[Omega],qpm,\[Xi]\[Theta],Sofq\[Omega],d\[Sigma]d\[CapitalOmega]},
-(* Get d\[Sigma]/(d\[CapitalOmega]) for nuclear scattering at 0 temperature. At 0 temperature there is a delta function which gives \[Omega] in terms of q (and hence cos\[Theta] through q_0)
-  cos\[Theta] \[Epsilon] (0,1) - [] negative disallowed since gas is assumed 0 T: hence no energy can be removed from the nuclei.*)
-mN ="mN"/. coeffs;
-\[Omega]=(2 cos\[Theta]^2 mN m\[Chi]^2 v\[Chi]^2)/((mN+m\[Chi])^2 "\[HBar]")/.params; (*define \[Omega] in terms of cos\[Theta]*)
-qpm={q->(m\[Chi] v\[Chi])/("\[HBar]") (cos\[Theta]-Sqrt[cos\[Theta]^2-(2\[Omega] "\[HBar]")/(m\[Chi] v\[Chi]^2)]),q->(m\[Chi] v\[Chi])/("\[HBar]") (cos\[Theta]+Sqrt[cos\[Theta]^2-(2\[Omega] "\[HBar]")/(m\[Chi] v\[Chi]^2)])}/.params;(*solutions for q to \[Omega]-\[Omega](q,cos\[Theta])=0 in the delta function that arises in the q integral. These must be summed over*)
-\[Xi]\[Theta]=Sqrt[cos\[Theta]^2-(2 "\[HBar]" \[Omega])/(m\[Chi] v\[Chi]^2)]/.params;(*the absolute value of the jacobian of the delta function, evaluated on the roots of q in the argument, for each of the above solutions*)
-
-d\[Sigma]d\[CapitalOmega] =Total@Table[1/(v\[Chi]^2 )  q^2/(("\[HBar]")^2 (2 \[Pi])^3) 1/\[Xi]\[Theta] ((\[Kappa] ("e")^2)/(4 \[Pi] "\[Epsilon]0" q^2))^2 FormFactors`Zeff[q,coeffs]/.qpm[[i]]/.params,{i,2}];
-
-<|"d\[Sigma]d\[CapitalOmega]"->d\[Sigma]d\[CapitalOmega],"\[Omega]"->\[Omega],"cos\[Theta]"->cos\[Theta],"\[Xi]pm"->\[Xi]\[Theta],"qpm"->qpm|>
-]
-
-
-GetNMaxofd\[Sigma]d\[CapitalOmega]Nuc0[v\[Chi]_,m\[Chi]_,coeffs_,params_,buffer_:1.1 ,\[Delta]_:10^-3]:=Module[{},
-(*v\[Chi]max=10^-3 "c"/.Constants`SIConstRepl;*)
-buffer NMaximize[Total@d\[Sigma]d\[CapitalOmega]Nuc0[cos\[Theta],v\[Chi],1,m\[Chi],coeffs,params][["d\[Sigma]d\[CapitalOmega]"]],cos\[Theta]\[Element]Interval[{\[Delta],1-\[Delta]}]][[1]]
-]
-
-
-Get\[Omega]andcos\[Theta]Nuc0[v\[Chi]_,m\[Chi]_,coeffs_,params_,NMax_]:=Module[{nits=0,cos\[Theta],M\[Xi],d\[Sigma]d\[CapitalOmega],\[Omega],Accepted=False,Errors=0},
-While[!Accepted,
-nits+=1;
-cos\[Theta]=Random[];(*assumes 0 temp so cos\[Theta] > 0*)
-M\[Xi]=NMax Random[];
-(*\[Sigma]s=Total[d\[Sigma]dERd\[CapitalOmega]eofv\[Chi]and\[Epsilon][\[Xi]s[[1]],\[Xi]s[[2]],v\[Chi],1,\[Epsilon]Dict][["d\[Sigma]dERd\[CapitalOmega]"]]];*)
-{d\[Sigma]d\[CapitalOmega],\[Omega]}={"d\[Sigma]d\[CapitalOmega]","\[Omega]"}/.d\[Sigma]d\[CapitalOmega]Nuc0[cos\[Theta],v\[Chi],1,m\[Chi],coeffs,params];(*Set \[Kappa] to 1, overall scaling is irrelevant*)
-(*d\[Sigma]d\[CapitalOmega]=Total[d\[Sigma]d\[CapitalOmega]];*)
-Accepted=M\[Xi]<= d\[Sigma]d\[CapitalOmega];
-Errors=If[d\[Sigma]d\[CapitalOmega]-NMax> 0,Break[];True,0];
-];
-<|"\[Omega]"->\[Omega],"cos\[Theta]"->cos\[Theta],"M\[Xi]"->M\[Xi],"d\[Sigma]dERd\[CapitalOmega]"->d\[Sigma]d\[CapitalOmega],"Max"->NMax,"Errors"->Errors,"nits"->nits|>
-]
-
-
-(* ::Subsection::Closed:: *)
-(*Initial Conditions*)
-
-
-Getv\[Chi]\[Infinity][m\[Chi]_,\[Beta]D_,maxrat_:Sqrt[50]]:=Module[{fMB,NMax,v\[Chi]Max,v\[Chi]MP,nits=0,v\[Chi],P,M\[Xi],Accepted=False},
-v\[Chi]MP=Sqrt[2/(m\[Chi] \[Beta]D)];(*most probable velocity in MB*)
-v\[Chi]Max = maxrat v\[Chi]MP; (*maximum a simple rescaling of most probable, since higher velocities are exponentially suppressed*)
-fMB=(#^2 E^(-\[Beta]D m\[Chi]/2 #^2))&;
-NMax=2/(E m\[Chi] \[Beta]D);(*value of fMB at v\[Chi] MP*)
-While[!Accepted && nits<30,
-nits+=1;
-v\[Chi]=Random[] v\[Chi]Max;
-(*Print[v\[Chi]];*)
-M\[Xi]=Random[]NMax;
-P=fMB[v\[Chi]];(*fMB of getting velocity v\[Chi]*)
-Accepted=M\[Xi]<= P;
-];
-<|"v\[Chi]"->v\[Chi],"v\[Chi]Max"->v\[Chi]Max,"M\[Xi]"->M\[Xi],"fMB"->P,"Max"->NMax,"nits"->nits|>
-]
-
-
-Sample2Sphere[]:=Module[{x},
-(*Point in R3, normalized gives random point on sphere or radius 1*)
-x=Table[1 - 2Random[],{i,3}];
-x/Sqrt[x . x]
-]
-
-
-Getv\[Chi]atEarth[m\[Chi]_,\[Beta]D_,r\[Infinity]_:10^1 "rE"/.Constants`EarthRepl,V_:Capture`Vgrav]:=Module[{rE,Accepted=False,nits=0,\[Chi]speed\[Infinity],v\[Chi]\[Infinity],vperp\[Infinity],EK\[Infinity],b\[Infinity],bEarth,vrEarth,succeeded=False,v\[Chi],\[Chi]speedEarth},
-
-rE="rE"/.Constants`EarthRepl;
-
-While[!Accepted &&nits<10000,
-nits++;
-\[Chi]speed\[Infinity]="v\[Chi]"/.Getv\[Chi]\[Infinity][m\[Chi],\[Beta]D];
-v\[Chi]\[Infinity]= \[Chi]speed\[Infinity] Sample2Sphere[];
-
-If[v\[Chi]\[Infinity][[1]]>0,Continue[]];(*neglect anything pointed away*)
-
-vperp\[Infinity]=Sqrt[v\[Chi]\[Infinity] . DiagonalMatrix[{0,1,1}] . v\[Chi]\[Infinity]];
-EK\[Infinity]=1/2 m\[Chi] \[Chi]speed\[Infinity]^2;
-b\[Infinity]=r\[Infinity] vperp\[Infinity]/\[Chi]speed\[Infinity];
-bEarth = b\[Infinity]/Sqrt[1 + (m\[Chi](V[r\[Infinity]]-V[rE]))/EK\[Infinity]];
-If[bEarth<rE,succeeded=True;Break[]]
-];
-vrEarth = Sqrt[v\[Chi]\[Infinity][[1]]^2+2(V[r\[Infinity]]-V[rE])];
-Print[v\[Chi]\[Infinity][[1]]^2];
-Print[2(V[r\[Infinity]]-V[rE])];
-v\[Chi]={-vrEarth,v\[Chi]\[Infinity][[2]],v\[Chi]\[Infinity][[3]]};
-\[Chi]speedEarth = Sqrt[v\[Chi] . v\[Chi]];
-<|"v\[Chi]\[Infinity]"->v\[Chi]\[Infinity],"v\[Chi]"->v\[Chi],"\[Chi]speedEarth"->\[Chi]speedEarth,"m\[Chi]"->m\[Chi],"\[Beta]D"->\[Beta]D,"\[Chi]speed\[Infinity]"->\[Chi]speed\[Infinity],"bEarth"->bEarth,"nits"->nits,"succeeded"->succeeded|>
-]
-
-
-(* ::Subsection::Closed:: *)
-(*MC PreProcessing*)
-
-
-(*ProcessDataAssemblerElectronic[m\[Chi]_,params_,d\[Sigma]dERd\[CapitalOmega]sampler_,\[Lambda]Dict_,ProcNum_:1,uselog_:True,m_:200,n_:200,\[Delta]_:10^-7]:= Module[{\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Max,d\[Sigma]dERd\[CapitalOmega]sample,\[Sigma]},
-\[Epsilon]Dict= Interpolate\[Epsilon]euztrunced[m\[Chi],params,uselog,m,n,\[Delta]];
-d\[Sigma]dERd\[CapitalOmega]Max = GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict,#]&;
-d\[Sigma]dERd\[CapitalOmega]sample = Get\[Xi]\[Omega]andcos\[Theta][#,\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Max[#]]&;
-\[Sigma]=1/("ne"/.\[Lambda]Dict["fitparams"][[1]]) 10^("f"/.\[Lambda]Dict)[Log10[m\[Chi]],Log10[#]]&;
-<|"ProcNum"->ProcNum,"\[Epsilon]Dict"->\[Epsilon]Dict,"d\[Sigma]dERd\[CapitalOmega]Max"->d\[Sigma]dERd\[CapitalOmega]Max,"d\[Sigma]dERd\[CapitalOmega]sample"->d\[Sigma]dERd\[CapitalOmega]sample,"\[Sigma]"->\[Sigma],"\[Lambda]"->\[Lambda]Dict["f"]|>
-]*)
-ProcessDataAssemblerElectronic[m\[Chi]_,params_,d\[Sigma]dERd\[CapitalOmega]sampler_,\[Lambda]Dict_,Save_:False,fname_:"procdata",ProcNum_:1,uselog_:True,m_:200,n_:200,\[Delta]_:10^-7]:= Module[{\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Maxloglog,d\[Sigma]dERd\[CapitalOmega]Max,d\[Sigma]dERd\[CapitalOmega]sample,\[Sigma],outdict},
-\[Epsilon]Dict= Interpolate\[Epsilon]euztrunced[m\[Chi],params,uselog,m,n,\[Delta]];
-d\[Sigma]dERd\[CapitalOmega]Maxloglog = "Maxf"/.Interpolated\[Sigma]dERd\[Sigma]Max[GetNMaxofd\[Sigma]dERd\[CapitalOmega][\[Epsilon]Dict,#]&];
-d\[Sigma]dERd\[CapitalOmega]Max=(10^d\[Sigma]dERd\[CapitalOmega]Maxloglog[Log10[#]])&;
-d\[Sigma]dERd\[CapitalOmega]sample = Get\[Xi]\[Omega]andcos\[Theta][#,\[Epsilon]Dict,d\[Sigma]dERd\[CapitalOmega]Max[#]]&;
-\[Sigma]=1/("ne"/.\[Lambda]Dict["fitparams"][[1]]) 10^("f"/.\[Lambda]Dict)[Log10[m\[Chi]],Log10[#]]&;
-outdict=<|"ProcNum"->ProcNum,"\[Epsilon]Dict"->\[Epsilon]Dict,"d\[Sigma]dERd\[CapitalOmega]Max"->d\[Sigma]dERd\[CapitalOmega]Max,"d\[Sigma]dERd\[CapitalOmega]sample"->d\[Sigma]dERd\[CapitalOmega]sample,"\[Sigma]"->\[Sigma],"\[Lambda]"->\[Lambda]Dict["f"]|>;
-If[Save,Utilities`SaveIt[NotebookDirectory[]<>fname,outdict]];(*Note that we have to save the object internally in the package to use it in the package. It is saved as private so can only be accessed from in here.*)
-outdict 
-]
-
-
-Interpolated\[Sigma]dERd\[Sigma]Max[d\[Sigma]dERd\[CapitalOmega]Maxf_,m_:20,uselog_:True]:=Module[{v\[Chi]Max,v\[Chi]Min,v\[Chi]s,MaxInterTable,MaxInterf},
-v\[Chi]Max = 2 10^-1 "c" /.Constants`SIConstRepl;
-v\[Chi]Min = 1/10 Constants`vescape;
-v\[Chi]s = N@If[uselog,10^Subdivide[Log10[v\[Chi]Min],Log10[v\[Chi]Max],m],Subdivide[v\[Chi]Min,v\[Chi]Max,m]];
-MaxInterTable = Table[{v\[Chi]s[[i]],d\[Sigma]dERd\[CapitalOmega]Maxf[v\[Chi]s[[i]]]},{i,m}];
-MaxInterf=If[uselog,Interpolation[Log10[MaxInterTable],InterpolationOrder->4],Interpolation[MaxInterTable,InterpolationOrder->4]];
-<|"Maxf"->MaxInterf,"MaxTable"->MaxInterTable,"v\[Chi]s"->v\[Chi]s,"v\[Chi]range"->{v\[Chi]Min,v\[Chi]Max}|>
-]
-
-
-(* ::Subsection::Closed:: *)
-(*Run MC*)
-
-
-testMCprivaterun[params_,\[Lambda]_,fileloc_]:=Module[{FeDataet},
-FeDataet=ProcessDataAssemblerElectronic[10 "m"/.Constants`SIConstRepl,params,Get\[Xi]\[Omega]andcos\[Theta],\[Lambda]];
-Utilities`SaveIt[fileloc,FeDataet];
-(*FeDataet = Utilities`ReadIt[fileloc];*)
-("d\[Sigma]dERd\[CapitalOmega]sample"/.FeDataet)[10^5];
-(*This is getting convoluted, we might want to just dump all this into a notebook so we don't have to deal with all the scope crap.*)
-RunMC[10 "m"/.Constants`SIConstRepl,10^-6.5,("v\[Chi]"/.Getv\[Chi]atEarth[ 10"m"/.Constants`SIConstRepl,(0.001"JpereV"/.Constants`SIConstRepl)^-1]),{"\[Lambda]"["f"]/.FeDataet},{"\[Sigma]"/.FeDataet},{"d\[Sigma]dERd\[CapitalOmega]Max"/.FeDataet},{"d\[Sigma]dERd\[CapitalOmega]sample"/.FeDataet}]
-]
-
-
-RunMC[m\[Chi]_,\[Kappa]_,v\[Chi]0_,\[Lambda]s_,\[Sigma]s_,d\[Sigma]dERd\[CapitalOmega]Maxes_,d\[Sigma]dERd\[CapitalOmega]sample_,V_:Vgrav]:=Module[{v\[Chi],r,V,nits,ncaptured,nescaped,ProcNum,l,reached,ER,cos\[Theta],\[Phi],q},
-(*
-Psuedo Code
-initialize cross-sections, interaction lengths, and cross-sections for each process
-Get initial conditions: v\[Chi] (with perp and radial components) at earth's radius
-While in the Earth
-	Get interaction length in the Earth
-	Update radius according to interaction length and velocity
-	Update velocity according to potential change 
-	select process - omit for now
-	sample to find \[Omega] and cos\[Theta] 
-	update velocity
-*)
-
-{v\[Chi],r} = {v\[Chi]0,"rE"/.EarthRepl};
-
-nits=0;
-ncaptured=0;
-nescaped=0;
-While[nits<2,
-(*nits<30,*)
-nits++;
-Print["N iterations: ",nits];
-ProcNum=\[Sigma]selector[Table[\[Sigma]s[[i]][Sqrt[v\[Chi] . v\[Chi]]],{i,Length[\[Sigma]s]}]];
-Print["Process number: ",ProcNum];
-(*l = Getl[m\[Chi],Sqrt[v\[Chi].v\[Chi]],\[Kappa],\[Lambda]s[[ProcNum]]["f"]];*)
-l = Getl[m\[Chi],Sqrt[v\[Chi] . v\[Chi]],\[Kappa],\[Lambda]s[[ProcNum]]];
-Print["l is ",l];
-{v\[Chi],r,reached}={"v\[Chi]","r","reached?"}/.Updatev[v\[Chi],m\[Chi],r,l,V];
-Print["v\[Chi] is ",v\[Chi]];
-Print["|v\[Chi]| is ",Sqrt[v\[Chi] . v\[Chi]]];
-Print["r is ",r];
-Print[reached];
-If[r>"rE"/.Constants`EarthRepl  ,nescaped++;Break[]];
-{ER,cos\[Theta]}={"\[HBar]""\[Omega]"/.Constants`SIConstRepl,"cos\[Theta]"}/.d\[Sigma]dERd\[CapitalOmega]sample[[ProcNum]][Sqrt[v\[Chi] . v\[Chi]]];
-\[Phi]=2 \[Pi] Random[];
-q=Sqrt[2 m\[Chi] ER ]/("\[HBar]")/.Constants`SIConstRepl;
-v\[Chi] = Rotatev\[Chi][v\[Chi],cos\[Theta],m\[Chi],\[Phi],q];
-If[Sqrt[v\[Chi] . v\[Chi]]<"vesc"/.Constants`EarthRepl,ncaptured++;Print["Captured with: \!\(\*SubscriptBox[\(v\), \(\[Chi]\)]\)=",Sqrt[v\[Chi] . v\[Chi]]];Break[]];
-(*Print["v\[Chi] after scatter is ",v\[Chi]];*)
-];
-<|"ER"->ER,"v\[Chi]"->v\[Chi],"|v\[Chi]|"->Sqrt[v\[Chi] . v\[Chi]],"\[Phi]"->\[Phi],"l"->l,"cos\[Theta]"->cos\[Theta],"q"->q,"r"->r,"reached?"->reached,"\[Kappa]"->N@\[Kappa],"nits"->nits,"ncaptured"->ncaptured,"nescaped"->nescaped|>
-]
-
-
-(* ::Section:: *)
-(*Fast Algorithm*)
-
-
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Utilities*)
 
 
@@ -746,7 +523,7 @@ Print[Show[{ListDensityPlot[Table[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIC
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Plot Evaporation Rate*)
 
 
@@ -765,14 +542,22 @@ meDovermpD=Union["meD"/"mpD"/.AllbutMassand\[Kappa]Fixed[[j]]][[1]];
 
 (*plotname=("Subscript[\[CapitalGamma], evap] [s^-1]- "<>" Subscript[v, 0]"<>ToString[StringForm["= ``",N@(v0/1000)]]<>"[kms^-1]"<>",  Subscript[Log, 10]Subscript[m, Subscript[e, D]]/Subscript[m, Subscript[p, D]]="<>ToString[Log10@meDovermpD]);*)
 
-plotname=("\!\(\*SubscriptBox[\(\[CapitalGamma]\), \(evap\)]\) [\!\(\*SuperscriptBox[\(s\), \(-1\)]\)]");
-
 VEarth=((4\[Pi])/3)("rE")^3/.Constants`EarthRepl;
 
 (*Print[ListDensityPlot[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIConstRepl),Log10@"\[Kappa]",Log10["\[CapitalGamma]total"("\[Kappa]")^2]}/.AllbutMassand\[Kappa]Fixed[[j]]/.AllbutMassand\[Kappa]Fixed[[j]],FrameLabel->{"Subscript[Log, 10]mpD [eV]","\[Kappa] [ ]"},PlotLabel->plotname,PlotLegends->Automatic]];*)
 Do[With[{k=i,l=j},AssociateTo[AllbutMassand\[Kappa]Fixed[[l,k]],"\[CapitalGamma]total"->(AllbutMassand\[Kappa]Fixed[[l,k]]["\[CapitalGamma]total"]/.AllbutMassand\[Kappa]Fixed[[l,k]])]],{i,Length[AllbutMassand\[Kappa]Fixed[[j]]]}];
 
+plotname=("\!\(\*SubscriptBox[\(\[CapitalGamma]\), \(evap\)]\) [\!\(\*SuperscriptBox[\(s\), \(-1\)]\)]");
+
 Print[Show[{ListDensityPlot[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIConstRepl),Log10@"\[Kappa]",Log10["\[CapitalGamma]total" ("\[Kappa]")^2]}/.AllbutMassand\[Kappa]Fixed[[j]],FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)mpD [eV]","\[Kappa] [ ]"},PlotLabel->plotname,PlotLegends->Automatic],ListContourPlot[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIConstRepl),Log10@"\[Kappa]",Log10["\[CapitalGamma]total" ("\[Kappa]")^2]}/.AllbutMassand\[Kappa]Fixed[[j]],ContourShading->False,ContourLabels->True,Contours->{4,2,0,-2,-4,-6,-8,-10,-12,-14,-20,-30,-40,-50}]}]];
+
+plotname=("\!\(\*SubscriptBox[\(\[CapitalGamma]\), \(evap, e\)]\) [\!\(\*SuperscriptBox[\(s\), \(-1\)]\)]");
+
+Print[Show[{ListDensityPlot[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIConstRepl),Log10@"\[Kappa]",Log10["\[CapitalGamma]totale" ("\[Kappa]")^2]}/.AllbutMassand\[Kappa]Fixed[[j]],FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)mpD [eV]","\[Kappa] [ ]"},PlotLabel->plotname,PlotLegends->Automatic],ListContourPlot[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIConstRepl),Log10@"\[Kappa]",Log10["\[CapitalGamma]totale" ("\[Kappa]")^2]}/.AllbutMassand\[Kappa]Fixed[[j]],ContourShading->False,ContourLabels->True,Contours->{4,2,0,-2,-4,-6,-8,-10,-12,-14,-20,-30,-40,-50}]}]];
+
+plotname=("\!\(\*SubscriptBox[\(\[CapitalGamma]\), \(evap, Nuc\)]\) [\!\(\*SuperscriptBox[\(s\), \(-1\)]\)]");
+
+Print[Show[{ListDensityPlot[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIConstRepl),Log10@"\[Kappa]",Log10["\[CapitalGamma]totalNuc" ("\[Kappa]")^2]}/.AllbutMassand\[Kappa]Fixed[[j]],FrameLabel->{"\!\(\*SubscriptBox[\(Log\), \(10\)]\)mpD [eV]","\[Kappa] [ ]"},PlotLabel->plotname,PlotLegends->Automatic],ListContourPlot[{Log10@("mpD"(("c")^2/"JpereV")/.Constants`SIConstRepl),Log10@"\[Kappa]",Log10["\[CapitalGamma]totalNuc" ("\[Kappa]")^2]}/.AllbutMassand\[Kappa]Fixed[[j]],ContourShading->False,ContourLabels->True,Contours->{4,2,0,-2,-4,-6,-8,-10,-12,-14,-20,-30,-40,-50}]}]];
 
 ,{j,Length@AllbutMassand\[Kappa]Fixed}];
 (*,{j,1}];*)
@@ -2521,7 +2306,7 @@ mDMtot - [kg] sum of masses of DM species *)
 
 (*Print[n0];*)
 
-\[Rho]DM = 0.3 GeV cm^-3/.cm->10^-2/.GeV->10^9 ("JpereV")/("c")^2/.Constants`SIConstRepl;  (*[kg m^-3] proton / electron number density today*)
+\[Rho]DM = 0.3 GeV cm^-3/.cm->10^-2/.GeV->10^9 ("JpereV")/("c")^2/.Constants`SIConstRepl;  (*[kg m^-3] Local DM number density today*)
 
 \[Rho]DM/mDMtot fD
 ]
@@ -2727,7 +2512,7 @@ AppendTo[\[CapitalGamma]list,GetEvaporationRate[Nuclear\[Sigma]Dicts[[n]]]],
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Evaporation Rate Electronic*)
 
 
@@ -2820,7 +2605,8 @@ RegionVolume =  4\[Pi] Integrate[r^2 Region\[CapitalTheta][r,regionindex],{r,0,"
 EarthVolume =  (4\[Pi])/3 ("rE"/.Constants`EarthRepl)^3;
 \[CapitalGamma]evappercapturedparticle=\[CapitalOmega]evapperparticlewvT RegionVolume/EarthVolume; (*\[CapitalGamma]\[Kappa]^2 corresponds to Revp in appendix*)(*Assumes homogeneously distributed aDM in the Earth*)
 
-\[CapitalGamma]evappercapturedparticle
+(*\[CapitalGamma]evappercapturedparticle*)
+<|"\[CapitalGamma]"->\[CapitalGamma]evappercapturedparticle,"regionindex"->regionindex|>
 ]
 
 
@@ -2834,7 +2620,8 @@ AppendTo[\[CapitalGamma]list,GetEvaporationRateend[Electronic\[Sigma]Dicts[[n]]]
 {n,Length[Electronic\[Sigma]Dicts]}
 ];
 (*,n];*)
-\[CapitalGamma]Total=Total[\[CapitalGamma]list];
+(*\[CapitalGamma]Total=Total[\[CapitalGamma]list];*)
+\[CapitalGamma]Total=Total[\[CapitalGamma]list[[;;,1]]];
 <|"\[CapitalGamma]Total"->\[CapitalGamma]Total,"\[CapitalGamma]s"->\[CapitalGamma]list|>
 ]
 
@@ -2850,7 +2637,7 @@ GetPenetrationDepth[Electronic\[Sigma]Dicts_,Nuclear\[Sigma]Dicts_,vesc_:"vesc"/
 (* *\[Sigma]Dicts should be a single list format (ie. for 1 mass) *)
 
 m\[Chi]=Union@Join["m\[Chi]"/.Electronic\[Sigma]Dicts,"m\[Chi]"/.Nuclear\[Sigma]Dicts];
-If[Length[m\[Chi]]>1,Print["Masses in all \[Sigma]Dicts must be equal."];Return[<|"N/A"->Null|>,Module]];
+If[Length[m\[Chi]]>1,Print["Masses in all \[Sigma]Dicts must be equal."];Return[<|"N/A"->Null|>,Module](*,m\[Chi]=m\[Chi][[1]]*)];
 
 {\[Beta]C,\[Beta]M}={"\[Beta]core","\[Beta]crust"}/.Constants`EarthRepl;
 
@@ -2878,13 +2665,16 @@ Print[\[Lambda]inve];*)
 
 (* ::Input::Initialization:: *)
 Clear[EvaporationwMFP]
-EvaporationwMFP[\[CapitalGamma]total_,\[Lambda]MFPs_,\[Kappa]_,regionindex_]:=Module[{rC,\[Lambda]eff,EvaporationVolume,RegionVolume},
+EvaporationwMFP[\[CapitalGamma]total_,\[Lambda]MFPs_,\[Kappa]_,regionindex_]:=Module[{rC,rE,\[Lambda]eff,EvaporationVolume,RegionVolume},
 
 rC = "rcore"/.Constants`EarthRepl;
+rE="rE"/.Constants`EarthRepl;
 
-\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]<rC,\[Lambda]MFPs["\[Lambda]M"],rC + \[Lambda]MFPs["\[Lambda]C"]];
+(*\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]<rC,\[Lambda]MFPs["\[Lambda]M"],rC + \[Lambda]MFPs["\[Lambda]C"]];*)
+\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2<rC,\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2,rC + \[Lambda]MFPs["\[Lambda]C"]/\[Kappa]^2];
 
-EvaporationVolume =  4\[Pi] Integrate[r^2 Region\[CapitalTheta][r,regionindex],{r,Max["rE"-\[Lambda]eff/\[Kappa]^2/.Constants`EarthRepl,0],"rE"/.Constants`EarthRepl}]; 
+(*EvaporationVolume =  4\[Pi] Integrate[r^2Region\[CapitalTheta][r,regionindex],{r,Max[rE-\[Lambda]eff/\[Kappa]^2,0],rE}];*)
+EvaporationVolume =  4\[Pi] Integrate[r^2 Region\[CapitalTheta][r,regionindex],{r,Max[rE-\[Lambda]eff,0],rE}]; 
 
 RegionVolume =  4\[Pi] Integrate[r^2 Region\[CapitalTheta][r,regionindex],{r,0,"rE"/.Constants`EarthRepl}]; 
 
@@ -3023,11 +2813,14 @@ NcDicts
 
 (* ::Input::Initialization:: *)
 Clear[GetNc]
-GetNc[NcMaxDictList_,Nuc\[Sigma]Dict_,Electronic\[Sigma]Dicts_,keys_:{"Pf"}]:=Module[{\[CapitalGamma]Dict,indexforcapturethreshold,\[Kappa],UseMFP=True,m\[Chi],eind,Nucind,\[Lambda]MFPs,\[CapitalGamma]totalMFP,regionindex,NcMax,dNcMaxdt,\[CapitalGamma]total,namesepchar,keysuffix,tE,timeenoughforequil,Nc,timeenoughforequilMFP, NcMFP,tempNcDict={},NcDicts={}},
+GetNc[NcMaxDictList_,Nuc\[Sigma]Dict_,Electronic\[Sigma]Dicts_,ElectronicEvapDict_,keys_:{"Pf"}]:=Module[{\[CapitalGamma]DictNuc,\[CapitalGamma]Dicte,\[CapitalGamma]total,\[CapitalGamma]totalNuc,\[CapitalGamma]totale,indexforcapturethreshold,\[Kappa],UseMFP=True,m\[Chi],eind,Nucind,\[Lambda]MFPs,\[CapitalGamma]totalMFP,regionindex,NcMax,dNcMaxdt,namesepchar,keysuffix,tE,timeenoughforequil,Nc,timeenoughforequilMFP, NcMFP,tempNcDict={},NcDicts={}},
 
-\[CapitalGamma]Dict=IterateGetEvaporationRate[Nuc\[Sigma]Dict]; 
+\[CapitalGamma]DictNuc=IterateGetEvaporationRate[Nuc\[Sigma]Dict];
+(*\[CapitalGamma]Dicte=IterateGetEvaporationRateend[Electronic\[Sigma]Dicts]; *)
+\[CapitalGamma]Dicte=IterateGetEvaporationRateend[ElectronicEvapDict]; 
 
-\[CapitalGamma]total="\[CapitalGamma]Total"/.\[CapitalGamma]Dict;(*evaporation rate per captured particle assuming homogeneous distribution in the Earth - Conservative: it is dominated by the core, the lower g there will reduce the number density*)
+\[CapitalGamma]totalNuc="\[CapitalGamma]Total"/.\[CapitalGamma]DictNuc;
+\[CapitalGamma]totale="\[CapitalGamma]Total"/.\[CapitalGamma]Dicte;(*evaporation rate per captured particle assuming homogeneous distribution in the Earth - Conservative: it is dominated by the core, the lower g there will reduce the number density*)
 
 keysuffix =If[keys=={"Pf"},"",StringJoin[Table["_"<>keys[[k]],{k,Length[keys]}]]];
 
@@ -3043,8 +2836,11 @@ tE=NcMax/dNcMaxdt;(*[s] age of the Earth*)
 If[UseMFP,
 regionindex = "regionindex"/.NcMaxDictList[[i]];
 \[Lambda]MFPs = GetPenetrationDepth[Electronic\[Sigma]Dicts,Nuc\[Sigma]Dict]; 
-\[CapitalGamma]total =Total@Table[EvaporationwMFP[("\[CapitalGamma]s"/.\[CapitalGamma]Dict)[[i]]["\[CapitalGamma]"],\[Lambda]MFPs,\[Kappa],("\[CapitalGamma]s"/.\[CapitalGamma]Dict)[[i]]["regionindex"]],{i,Length[("\[CapitalGamma]s"/.\[CapitalGamma]Dict)]}];
+\[CapitalGamma]totalNuc =Total@Table[EvaporationwMFP[("\[CapitalGamma]s"/.\[CapitalGamma]DictNuc)[[i]]["\[CapitalGamma]"],\[Lambda]MFPs,\[Kappa],("\[CapitalGamma]s"/.\[CapitalGamma]DictNuc)[[i]]["regionindex"]],{i,Length[("\[CapitalGamma]s"/.\[CapitalGamma]DictNuc)]}];
+\[CapitalGamma]totale=Total@Table[EvaporationwMFP[("\[CapitalGamma]s"/.\[CapitalGamma]Dicte)[[i]]["\[CapitalGamma]"],\[Lambda]MFPs,\[Kappa],("\[CapitalGamma]s"/.\[CapitalGamma]Dicte)[[i]]["regionindex"]],{i,Length[("\[CapitalGamma]s"/.\[CapitalGamma]Dicte)]}]
 ];
+
+\[CapitalGamma]total = \[CapitalGamma]totalNuc+\[CapitalGamma]totale;
 
 (*Print["\[Kappa] :",N@Log10@\[Kappa]];
 Print[\[Kappa]^2\[CapitalGamma]total];*)
@@ -3054,7 +2850,7 @@ Nc=If[timeenoughforequil,dNcMaxdt/(\[Kappa]^2 \[CapitalGamma]total),NcMax ];
 (*timeenoughforequilMFP=1/tE<(\[Kappa]^2 \[CapitalGamma]totalMFP);
 NcMFP=If[timeenoughforequilMFP,dNcMaxdt/(\[Kappa]^2 \[CapitalGamma]totalMFP),NcMax ];*)
 
-tempNcDict = Append[NcMaxDictList[[i]] ,{"timeenoughforequil"<>keysuffix->timeenoughforequil,"Nc"<>keysuffix->Nc,"\[CapitalGamma]total"->\[CapitalGamma]total}];
+tempNcDict = Append[NcMaxDictList[[i]] ,{"timeenoughforequil"<>keysuffix->timeenoughforequil,"Nc"<>keysuffix->Nc,"\[CapitalGamma]total"->\[CapitalGamma]total,"\[CapitalGamma]totalNuc"->\[CapitalGamma]totalNuc,"\[CapitalGamma]totale"->\[CapitalGamma]totale}];
 AppendTo[NcDicts,tempNcDict];
 
 ,{i,Length[NcMaxDictList]}];
@@ -3105,8 +2901,8 @@ ScanDictList
 
 (* ::Input::Initialization:: *)
 Clear[ScanGetCapture]
-ScanGetCapture[meDratios_,\[Kappa]s_,v0s_,Electronic\[Sigma]Dicsts_,Nuclear\[Sigma]Dicts_,mpDcap_:True]:=Module[{PDictList,InterPDicts,PDictLists={},ScanDictList={},meDratio,v0,mpD,meD,m\[Chi],\[Beta]D,NcMaxDict,NcDict},
-m\[Chi]= "m\[Chi]"/.Electronic\[Sigma]Dicsts[[1]];
+ScanGetCapture[meDratios_,\[Kappa]s_,v0s_,Electronic\[Sigma]Dicts_,Nuclear\[Sigma]Dicts_,mpDcap_:True,ElectronicEvapDict_:<|"NA"->Null|>]:=Module[{PDictList,InterPDicts,PDictLists={},ScanDictList={},meDratio,v0,mpD,meD,m\[Chi],\[Beta]D,NcMaxDict,NcDict},
+m\[Chi]= "m\[Chi]"/.Electronic\[Sigma]Dicts[[1]];
 
 (*Print["m\[Chi]: ",m\[Chi]( ("JpereV")/("c")^2)^-1/.Constants`SIConstRepl];*)
 Do[
@@ -3125,7 +2921,7 @@ Print["mpD: ",mpD( ("JpereV")/("c")^2)^-1/.Constants`SIConstRepl];
 (*Print["v0: ",v0];
 Print["\[Beta]D: ",\[Beta]D];*)
 
-PDictList=IterateGetCaptureProbability[meDratio,\[Kappa]s,v0,Electronic\[Sigma]Dicsts,Nuclear\[Sigma]Dicts,mpDcap];(*uses Forward Euler*)
+PDictList=IterateGetCaptureProbability[meDratio,\[Kappa]s,v0,Electronic\[Sigma]Dicts,Nuclear\[Sigma]Dicts,mpDcap];(*uses Forward Euler*)
 
 PlotPDist[PDictList];
 
@@ -3133,7 +2929,7 @@ InterPDicts=InterpolatePc[PDictList];
 
 NcMaxDict=GetNcMax[InterPDicts];
 
-NcDict=GetNc[NcMaxDict,Nuclear\[Sigma]Dicts,Electronic\[Sigma]Dicts];(*need to pass both nuclear and electronic \[Sigma]dicts. They will be used both for penetration depth, and for nuclear and electronic evaporation.*)
+NcDict=GetNc[NcMaxDict,Nuclear\[Sigma]Dicts,Electronic\[Sigma]Dicts,ElectronicEvapDict];(*need to pass both nuclear and electronic \[Sigma]dicts. They will be used both for penetration depth, and for nuclear and electronic evaporation.*)
 
 AppendTo[ScanDictList, NcDict];
 
