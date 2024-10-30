@@ -136,8 +136,10 @@ GetEvaporationRateend::usage = "";
 IterateGetEvaporationRateend::usage = "";
 
 
+GetPenetrationDepthfnofv::usage = "";
 GetPenetrationDepth::usage = "";
 EvaporationwMFP::usage = "";
+EvaporationVolume::usage = "";
 
 
 GetinvMFT::usage = "";
@@ -172,7 +174,7 @@ IterateKEchange::usage = "";
 Begin["`Private`"];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Utilities*)
 
 
@@ -824,7 +826,7 @@ EK[m\[Chi]_,v\[Chi]_] :=1/2 m\[Chi] v\[Chi]^2
 
 
 (* ::Subsubsection::Closed:: *)
-(*Weak Capture Regime Trajectory*)
+(*Weak Capture Regime Trajectory - Linear*)
 
 
 (* ::Input::Initialization:: *)
@@ -871,7 +873,9 @@ vofls=Table[{h s-RE/2,0},{s,N}];
 vofls[[1,2]]=v\[Chi]E;
 
 Do[
-vofls[[s+1,2]]=vofls[[s,2]]-h (\[Kappa]^2 ("JpereV"/.Constants`SIConstRepl))/(m\[Chi] vofls[[s,2]]) ELfunc[Sqrt[bE^2+vofls[[s,1]]^2],vofls[[s,2]]];If[vofls[[s+1,2]]<="vesc"/.Constants`EarthRepl,Break[]];
+(*vofls[[s+1,2]]=vofls[[s,2]]-h(\[Kappa]^2("JpereV"/.Constants`SIConstRepl))/(m\[Chi] vofls[[s,2]])ELfunc[Sqrt[bE^2+vofls[[s,1]]^2],vofls[[s,2]]];*)(*I don't think this JpereV should be there.*)
+vofls[[s+1,2]]=vofls[[s,2]]-h \[Kappa]^2/(m\[Chi] vofls[[s,2]]) ELfunc[Sqrt[bE^2+vofls[[s,1]]^2],vofls[[s,2]]];
+If[vofls[[s+1,2]]<="vesc"/.Constants`EarthRepl,Break[]];
 ,{s,N-1}]; (*forward euler for dv/dl=-1/(Subscript[m, \[Chi]]v)dE/dl - (ie. from energy conservation / Raleigh-Lagrange Formalism)*)
 
 vsol=Interpolation[vofls]; (*Solution for trajectory of particle along a straight line through the earth parallel to it's velocity as a function of length.*)
@@ -881,6 +885,251 @@ ldom=vsol["Domain"][[1]];
 
 <|"v(l)"->vsol,"domain"->ldom,"RE"->RE,"\[Kappa]"->\[Kappa],"bE"->bE,"m\[Chi]"->m\[Chi]|>
 ]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Weak Capture Regime Trajectory - w Potential - Forward Euler*)
+
+
+(* ::Input::Initialization:: *)
+Clear[GetWeakCaptureTrajectoryinvFEPotential]
+GetWeakCaptureTrajectoryinvFEPotential[m\[Chi]_,v\[Chi]E_,bE_,\[Kappa]_,ELfunc_,N_:50,Vofr_:Vgrav]:=Module[{rE,\[CapitalDelta]l,E0,L0,steps,traj,ti,l,r,v,vr,\[CapitalDelta]E,L,Log\[CapitalDelta]L,vsol,ldom,voft},
+(*Forward Euler solution for trajectory*)
+
+rE="rE"/.Constants`EarthRepl;
+\[CapitalDelta]l=rE/N; (*\[CapitalDelta]l*)
+
+E0 = m\[Chi]/2 v\[Chi]E^2 +m\[Chi] Vofr[rE];
+L0 = m\[Chi] v\[Chi]E bE;
+
+traj={<|"l"->0,"r"->rE,"v"->v\[Chi]E,"vr"->-v\[Chi]E Sqrt[1 - (bE/rE)^2],"\[CapitalDelta]E"->0,"V"->m\[Chi] Vofr[rE],"L"->L0,"Log\[CapitalDelta]L"->0|>};
+(*initialize list of points along trajectory at Earth's surface
+	l - Path length
+	r - Distance from Earth's centre
+	v\[Chi] - aDM speed
+	vr - radial aDM speed (initially pointing inward)
+	\[CapitalDelta]E - Energy lost from dissipation
+	L - Angular Momentum
+	Log\[CapitalDelta]L - Log of time dependent part of L 
+*)
+
+steps = 0;
+Do[
+steps++;
+ti = traj[[-1]];(*current trajectory point*)
+
+l = ti["l"]+\[CapitalDelta]l;
+r = ti["r"]+\[CapitalDelta]l ti["vr"]/ti["v"];
+
+If[E0- m\[Chi] Vofr[r]-ti["\[CapitalDelta]E"]< 0,Break[]];
+v = Sqrt[(2/m\[Chi]) (E0 - m\[Chi] Vofr[r] - ti["\[CapitalDelta]E"]) ];
+\[CapitalDelta]E = ti["\[CapitalDelta]E"] + \[CapitalDelta]l \[Kappa]^2 ELfunc[ti["r"],ti["v"]];
+vr = ti["vr"] + \[CapitalDelta]l ((ti["v"]^2-ti["vr"]^2)/(ti["r"]ti["v"]) - (m\[Chi] Vofr'[r])/(m\[Chi] ti["v"])-ti["vr"]/(m\[Chi] ti["v"]^2) \[Kappa]^2 ELfunc[ti["r"],ti["v"]]);(*assumes ELfunc > 0, so we include - for dissipation*)
+L=m\[Chi] ti["r"]Sqrt[ti["v"]^2-ti["vr"]^2];
+Log\[CapitalDelta]L = ti["Log\[CapitalDelta]L"]+\[CapitalDelta]l   (\[Kappa]^2 ELfunc[ti["r"],ti["v"]])/(m\[Chi] ti["v"]^2);
+
+
+AppendTo[traj,<|"l"->l,"r"->r,"v"->v,"vr"->vr,"\[CapitalDelta]E"->\[CapitalDelta]E,"V"->m\[Chi] Vofr[r],"L"->L,"Log\[CapitalDelta]L"->Log\[CapitalDelta]L|>];
+
+(*If[Abs@vr<="vesc"/.Constants`EarthRepl,Break[]];*)
+If[r>rE,Break[]];
+,{s,3N}];(*will break once reaches surface (<~ 2 N) this is just a buffer*)
+
+vsol=Interpolation[{"l","v"}/.traj]; 
+ldom=vsol["Domain"][[1]];
+
+<|"v(l)"->vsol,"domain"->ldom,"traj"->traj,"\[Kappa]"->\[Kappa],"bE"->bE,"m\[Chi]"->m\[Chi],"v\[Chi]E"->v\[Chi]E,"E0"->E0,"L0"->L0,"steps"->steps |>
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Weak Capture Regime Trajectory - w Potential - Runga Kutta (ish)*)
+
+
+(* ::Input::Initialization:: *)
+Clear[GetWeakCaptureTrajectoryinvRK2wPotential]
+GetWeakCaptureTrajectoryinvRK2wPotential[m\[Chi]_,v\[Chi]E_,bE_,\[Kappa]_,ELfunc_,N_:70,Vofr_:Vgrav]:=Module[{rE,\[CapitalDelta]l,E0,L0,steps,traj,ti,l,r,v,vr,\[CapitalDelta]E,L,Log\[CapitalDelta]L,Lcomped,vsol,ldom,lsol,rdom,voft,rfinal(*,vfinal,vesc*),lMC1,lMC2,lMC},
+(*slightly better than FW for conserved quantities, not quite an actual RK2*)
+(*
+ELfunc - dE/dl
+Vofr - (V(r))/m\[Chi]
+*)
+
+rE="rE"/.Constants`EarthRepl;
+\[CapitalDelta]l=rE/N; (*\[CapitalDelta]l*)
+
+E0 = m\[Chi]/2 v\[Chi]E^2 +m\[Chi] Vofr[rE];
+L0 = m\[Chi] v\[Chi]E bE;
+
+traj={<|"l"->0,"r"->rE,"v"->v\[Chi]E,"vr"->-v\[Chi]E Sqrt[1 - (bE/rE)^2],"\[CapitalDelta]E"->0,"V"->m\[Chi] Vofr[rE],"L"->L0,"Log\[CapitalDelta]L"->0(*,"Lcomped"->L0*)|>};
+(*initialize list of points along trajectory at Earth's surface
+	l - Path length
+	r - Distance from Earth's centre
+	v\[Chi] - aDM speed
+	vr - radial aDM speed (initially pointing inward)
+	\[CapitalDelta]E - Energy lost from dissipation
+	L - Angular Momentum
+	Log\[CapitalDelta]L - Log of time dependent part of L 
+*)
+
+steps = 0;
+Do[
+steps++;
+ti = traj[[-1]];(*current trajectory point*)
+
+l = ti["l"]+\[CapitalDelta]l;
+r = ti["r"]+\[CapitalDelta]l ti["vr"]/ti["v"];
+
+If[E0- m\[Chi] Vofr[r]-ti["\[CapitalDelta]E"]< 0,Break[]]; (*numerical, weaker than the below - will be satisfied when v<0, above will be when v<vesc*)
+v = \[Sqrt](2/m\[Chi] (E0 - m\[Chi] Vofr[r] - ti["\[CapitalDelta]E"]) );(*this choice of incrementation, preserves energy but wildly violates L conservation / behaviour*)
+(*v =ti["v"]+\[CapitalDelta]l (-(( m\[Chi] ti["vr"])/(m\[Chi] ti["v"]^2))Vofr'[r] - 1/(m\[Chi] ti["v"])\[Kappa]^2ELfunc[r,ti["v"]]);*)
+\[CapitalDelta]E = ti["\[CapitalDelta]E"] + \[CapitalDelta]l \[Kappa]^2 ELfunc[r,v];
+
+
+vr = ti["vr"] + \[CapitalDelta]l ((v^2-ti["vr"]^2)/(r v) - (m\[Chi] Vofr'[r])/(m\[Chi] v)-ti["vr"]/(m\[Chi] v^2) \[Kappa]^2 ELfunc[r,v]);(*assumes ELfunc > 0, so we include - for dissipation*)
+(*vr = ti["vr"] + \[CapitalDelta]l (L^2/(m\[Chi]^2 r^3 v) - (m\[Chi] Vofr'[r])/(m\[Chi] v)-ti["vr"]/(m\[Chi] v^2)\[Kappa]^2ELfunc[r,v]);*)
+
+L=m\[Chi] r Sqrt[v^2-vr^2];(*this choice of incrementation, preserves energy but wildly violates L conservation / behaviour*)
+(*L=m\[Chi] ti["r"]Sqrt[ti["v"]^2-ti["vr"]^2];*)
+(*Lcomped = ti["Lcomped"] (1-\[CapitalDelta]l (\[Kappa]^2ELfunc[r,v])/(m\[Chi] v^2));*)
+(*L = ti["L"] (1-\[CapitalDelta]l (\[Kappa]^2ELfunc[r,v])/(m\[Chi] v^2));*)
+
+(*Log\[CapitalDelta]L = ti["Log\[CapitalDelta]L"]+\[CapitalDelta]l   (\[Kappa]^2ELfunc[r,v])/(m\[Chi] v^2);*)
+Log\[CapitalDelta]L = ti["Log\[CapitalDelta]L"]+ (\[CapitalDelta]l \[Kappa]^2 ELfunc[r,v])/(m\[Chi] v^2);
+
+
+AppendTo[traj,<|"l"->l,"r"->r,"v"->v,"vr"->vr,"\[CapitalDelta]E"->\[CapitalDelta]E,"V"->m\[Chi] Vofr[r],"L"->L,"Log\[CapitalDelta]L"->Log\[CapitalDelta]L(*,"Lcomped"->Lcomped*)|>];
+
+If[m\[Chi]/2 v^2+ m\[Chi] Vofr[r]< 0,Break[]];(*particle is captured, ie. bound to the earth, placed after the append statement so that at least one additional point is added. This is needed for the captured condition used further down the pipeline in the case where initial conditions already imply the particle is bound.*)
+
+(*If[Abs@vr<="vesc"/.Constants`EarthRepl,Break[]];*)
+If[r>rE,Break[]];
+,{s,3N}];(*will break once reaches surface (<~ 2 N) this is just a buffer*)
+
+If[Max[Abs[(("m\[Chi]")/2 ("v")^2+"V"+"\[CapitalDelta]E")/E0-1]/.traj]>0.20,Print["Energy conservation has been violated by more than 20% in Forward Euler: ",Max@Abs[(("m\[Chi]")/2 ("v")^2+"V"+"\[CapitalDelta]E")/E0-1]/.traj]];
+(*If[Max[Abs[("L"Exp["Log\[CapitalDelta]L"])/L0-1]/.traj]>0.20,Print["Angular Momentum conservation has been violated by more than 20% in Forward Euler: ",Max[Abs[("L"Exp["Log\[CapitalDelta]L"])/L0-1]/.traj]]];*)
+
+(*vfinal =  traj[[-1]]["v"];
+vesc = Sqrt[(2 Abs@traj[[-1]]["V"])/m\[Chi]]; (*vesc(V(Subscript[r, final]))*)*)
+
+vsol=Quiet@Interpolation[{"l","v"}/.traj]; 
+ldom=vsol["Domain"][[1]];
+
+lsol = Quiet@Interpolation[{"l","r"}/.traj];
+rdom = lsol["Domain"][[1]];
+
+rfinal = "r"/.traj[[-1]]; (*this is the capture condition - if we stop before we reach the surface, we are captured, otherwise we have left the Earth with E>0 so motion is unbounded. *)
+
+(*values of l where particle crosses mantle-core boundary*)
+If[rfinal>"rE"/.Constants`EarthRepl,
+(*passes completely through the earth, so approximately symmetric about the l domain. *)
+If[Min["r"/.traj]<"rcore"/.Constants`EarthRepl,
+(*particle passes through the core*)
+(*lMC1 = l/.Check[FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,rdom[[2]]/4,rdom[[1]],rdom[[2]]/2}],Print[{m\[Chi],v\[Chi]E,bE,\[Kappa]}];(*{l->"broken"}*)FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,rdom[[2]]/4,rdom[[1]],rdom[[2]]/2}]];
+lMC2 = l/.Check[FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,(3rdom[[2]])/4,rdom[[2]]/2,rdom[[2]]}],Print[{m\[Chi],v\[Chi]E,bE,\[Kappa]}];(*{l->"broken"}*)FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,(3rdom[[2]])/4,rdom[[2]]/2,rdom[[2]]}]];
+lMC=If[lMC1=="broken"||lMC2=="broken",{"Cap"},{lMC1,lMC2}];,*)
+lMC1 = l/.Quiet@FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,rdom[[2]]/4,rdom[[1]],rdom[[2]]/2}];
+lMC2 = l/.Quiet@FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,(3rdom[[2]])/4,rdom[[2]]/2,rdom[[2]]}];
+lMC={lMC1,lMC2};,
+(*doesn't pass through the core (No Core)*)
+lMC={"NC"}
+],
+(*It's captured somewhere, so we won't need to distinguish between crust and core for hard capture.*)
+lMC = {"Cap"}
+];
+
+(*,"vfinal"->vfinal,"vesc"->vesc*)
+<|"v(l)"->vsol,"domain"->ldom,"r(l)"->lsol,"rdom"->rdom,"traj"->traj,"\[Kappa]"->\[Kappa],"bE"->bE,"m\[Chi]"->m\[Chi],"v\[Chi]E"->v\[Chi]E,"E0"->E0,"L0"->L0,"steps"->steps,"rfinal"->rfinal,"lMCs"->lMC|>
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*unit test w FE*)
+
+
+(* ::Input::Initialization:: *)
+(*Clear[GetWeakCaptureTrajectoryinvRK2wPotential]
+GetWeakCaptureTrajectoryinvRK2wPotential[m\[Chi]_,v\[Chi]E_,bE_,\[Kappa]_,ELfunc_,N_:30,Vofr_:Vgrav]:=Module[{rE,\[CapitalDelta]l,E0,L0,steps,traj,ti,l,r,v,vr,\[CapitalDelta]E,L,Log\[CapitalDelta]L,Lcomped,vsol,ldom,lsol,rdom,voft,rfinal(*,vfinal,vesc*),lMC1,lMC2,lMC},
+(*slightly better than FW for conserved quantities, not quite an actual RK2*)
+(*
+ELfunc - dE/dl
+Vofr - (V(r))/m\[Chi]
+*)
+
+rE="rE"/.Constants`EarthRepl;
+\[CapitalDelta]l=rE/N; (*\[CapitalDelta]l*)
+
+E0 = m\[Chi]/2v\[Chi]E^2 +m\[Chi] Vofr[rE];
+L0 = m\[Chi] v\[Chi]E bE;
+
+traj={<|"l"->0,"r"->rE,"v"->v\[Chi]E,"vr"->-v\[Chi]E Sqrt[1 - (bE/rE)^2],"\[CapitalDelta]E"->0,"V"->m\[Chi] Vofr[rE],"L"->L0,"Log\[CapitalDelta]L"->0,"Lcomped"->L0|>};
+(*initialize list of points along trajectory at Earth's surface
+	l - Path length
+	r - Distance from Earth's centre
+	v\[Chi] - aDM speed
+	vr - radial aDM speed (initially pointing inward)
+	\[CapitalDelta]E - Energy lost from dissipation
+	L - Angular Momentum
+	Log\[CapitalDelta]L - Log of time dependent part of L 
+*)
+
+steps = 0;
+Do[
+steps++;
+ti = traj[[-1]];(*current trajectory point*)
+
+l = ti["l"]+\[CapitalDelta]l;
+r = ti["r"]+\[CapitalDelta]l ti["vr"]/ti["v"];
+
+If[E0- m\[Chi] Vofr[ ti["r"]]-ti["\[CapitalDelta]E"]< 0,Break[]]; (*numerical, weaker than the below - will be satisfied when v<0, above will be when v<vesc*)
+v = \[Sqrt](2/m\[Chi](E0 - m\[Chi] Vofr[ti["r"]] - ti["\[CapitalDelta]E"]) );
+\[CapitalDelta]E = ti["\[CapitalDelta]E"] + \[CapitalDelta]l \[Kappa]^2ELfunc[ti["r"],ti["v"]];
+vr = ti["vr"] + \[CapitalDelta]l ((ti["v"]^2-ti["vr"]^2)/(ti["r"]ti["v"]) - (m\[Chi] Vofr'[ti["r"]])/(m\[Chi] ti["v"])-ti["vr"]/(m\[Chi] ti["v"]^2)\[Kappa]^2ELfunc[ti["r"],ti["v"]]);(*assumes ELfunc > 0, so we include - for dissipation*)
+L=m\[Chi] ti["r"]Sqrt[ti["v"]^2-ti["vr"]^2];
+(*Log\[CapitalDelta]L = ti["Log\[CapitalDelta]L"]+\[CapitalDelta]l   (\[Kappa]^2ELfunc[r,v])/(m\[Chi] v^2);*)
+Log\[CapitalDelta]L = ti["Log\[CapitalDelta]L"]+ (\[CapitalDelta]l \[Kappa]^2ELfunc[ti["r"],ti["v"]])/(m\[Chi] ti["v"]^2);
+Lcomped = ti["Lcomped"] (1-\[CapitalDelta]l (\[Kappa]^2ELfunc[ti["r"],ti["v"]])/(m\[Chi] ti["v"]^2));
+
+AppendTo[traj,<|"l"->l,"r"->r,"v"->v,"vr"->vr,"\[CapitalDelta]E"->\[CapitalDelta]E,"V"->m\[Chi] Vofr[r],"L"->L,"Log\[CapitalDelta]L"->Log\[CapitalDelta]L,"Lcomped"->Lcomped|>];
+
+If[m\[Chi]/2v^2+ m\[Chi] Vofr[r]< 0,Break[]];(*particle is captured, ie. bound to the earth, placed after the append statement so that at least one additional point is added. This is needed for the captured condition used further down the pipeline in the case where initial conditions already imply the particle is bound.*)
+
+(*If[Abs@vr<="vesc"/.Constants`EarthRepl,Break[]];*)
+If[r>rE,Break[]];
+,{s,3N}];(*will break once reaches surface (<~ 2 N) this is just a buffer*)
+
+If[Max[Abs[(("m\[Chi]")/2("v")^2+"V"+"\[CapitalDelta]E")/E0-1]/.traj]>0.20,Print["Energy conservation has been violated by more than 20% in Forward Euler: ",Max@Abs[(("m\[Chi]")/2("v")^2+"V"+"\[CapitalDelta]E")/E0-1]/.traj]];
+(*If[Max[Abs[("L"Exp["Log\[CapitalDelta]L"])/L0-1]/.traj]>0.20,Print["Angular Momentum conservation has been violated by more than 20% in Forward Euler: ",Max[Abs[("L"Exp["Log\[CapitalDelta]L"])/L0-1]/.traj]]];*)
+
+(*vfinal =  traj[[-1]]["v"];
+vesc = Sqrt[(2 Abs@traj[[-1]]["V"])/m\[Chi]]; (*vesc(V(Subscript[r, final]))*)*)
+
+vsol=Quiet@Interpolation[{"l","v"}/.traj]; 
+ldom=vsol["Domain"][[1]];
+
+lsol = Quiet@Interpolation[{"l","r"}/.traj];
+rdom = lsol["Domain"][[1]];
+
+rfinal = "r"/.traj[[-1]]; (*this is the capture condition - if we stop before we reach the surface, we are captured, otherwise we have left the Earth with E>0 so motion is unbounded. *)
+
+(*values of l where particle crosses mantle-core boundary*)
+If[rfinal>"rE"/.Constants`EarthRepl,
+(*passes completely through the earth, so approximately symmetric about the l domain. *)
+If[Min["r"/.traj]<"rcore"/.Constants`EarthRepl,
+(*particle passes through the core*)
+lMC1 = l/.Check[FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,rdom[[2]]/4,rdom[[1]],rdom[[2]]/2}],Print[{m\[Chi],v\[Chi]E,bE,\[Kappa]}];(*{l->"broken"}*)FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,rdom[[2]]/4,rdom[[1]],rdom[[2]]/2}]];
+lMC2 = l/.Check[FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,(3rdom[[2]])/4,rdom[[2]]/2,rdom[[2]]}],Print[{m\[Chi],v\[Chi]E,bE,\[Kappa]}];(*{l->"broken"}*)FindRoot[lsol[l]-"rcore"/.Constants`EarthRepl,{l,(3rdom[[2]])/4,rdom[[2]]/2,rdom[[2]]}]];
+lMC=If[lMC1=="broken"||lMC2=="broken",{"Cap"},{lMC1,lMC2}];,
+(*doesn't pass through the core (No Core)*)
+lMC={"NC"}
+],
+(*It's captured somewhere, so we won't need to distinguish between crust and core for hard capture.*)
+lMC = {"Cap"}
+];
+
+(*,"vfinal"->vfinal,"vesc"->vesc*)
+<|"v(l)"->vsol,"domain"->ldom,"r(l)"->lsol,"rdom"->rdom,"traj"->traj,"\[Kappa]"->\[Kappa],"bE"->bE,"m\[Chi]"->m\[Chi],"v\[Chi]E"->v\[Chi]E,"E0"->E0,"L0"->L0,"steps"->steps,"rfinal"->rfinal,"lMCs"->lMC|>
+]*)
 
 
 (* ::Subsection:: *)
@@ -1697,6 +1946,8 @@ Return[integralof\[Lambda]invwrtr,Module];
 (*If both of these are false, then the material is in the crust, and the trajectory does not pass through the core. So integration region is continuous*)
 
 
+(*THESE NEED TO BE REWRITTEN. THEY ASSUME A LINEAR TRAJECTORY. Maybe include the l values where you pass through the mantle / core boundary*)
+
 integralof\[Lambda]invwrtr=NIntegrate[\[Lambda]integrand[l],{l,ldom[[1]],ldom[[2]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3];
 
 integralof\[Lambda]invwrtr
@@ -1833,7 +2084,171 @@ Total@Table[GetWeakCaptureInteractionLengthNuc[\[Sigma]Dicts[[i]]][#],{i,Length[
 ]
 
 
-(* ::Subsection:: *)
+(* ::Subsubsection::Closed:: *)
+(*Weak Capture Regime Capture Probability - w Potential - e*)
+
+
+(* ::Input::Initialization:: *)
+Clear[GetWeakCaptureProbabilitywPot]
+GetWeakCaptureProbabilitywPot[vDict_,\[Sigma]Dict_]:= Module[{v\[Chi]min,v\[Chi]raw,v\[Chi],\[Chi]traj,bE,m\[Chi],\[Omega]min,params,ldom,\[Kappa],regionindex,\[Sigma]dom,\[Omega]capture,\[Delta]\[Xi],\[Xi]of\[Omega]andl,\[Omega]maxofl,d\[Sigma]dERoftand\[Omega],\[Sigma]oftand\[Omega]min,rCore,rE,lcore,lcrust,\[Lambda]invoft,\[Lambda]integrand,integralof\[Lambda]invwrtr},
+\[Omega]min="\[Omega]min"/.\[Sigma]Dict;
+params=\[Sigma]Dict["params"];
+\[Delta]\[Xi]=(10^"\[Xi]"/.\[Sigma]Dict)[[1]];
+m\[Chi]=("m\[Chi]"/.vDict);
+ldom = "domain"/.vDict;
+\[Kappa]=("\[Kappa]"/.vDict);
+regionindex = "regionindex"/.\[Sigma]Dict; (*1 in crust, 2 in core*)
+\[Sigma]dom=("\[Sigma]of\[Xi]f"/.\[Sigma]Dict)["Domain"];
+
+v\[Chi]min=Max[3Sqrt[("\[HBar]" \[Omega]min)/(2 m\[Chi])]/.params,"vesc"/.Constants`EarthRepl];(*minimum allowable velocity given the lower bound on energy transfer, times an O(1) fudge factor for numerical stability (3) *)
+v\[Chi]raw=("v(l)"/.vDict);
+v\[Chi]=If[v\[Chi]raw[#]>v\[Chi]min,("v(l)"/.vDict)[#],0]&;
+(*\[Chi]traj=("l(t)"/.vDict);*)
+bE=("bE"/.vDict);(*impact parameter*)
+
+(*\[Xi]of\[Omega]andl=Abs[EnergyLoss`\[Xi]of\[Omega]andv\[Chi][#1,\[Omega]min,("v(l)"/.vDict)[#2],m\[Chi],params]-\[Delta]\[Xi]]&;*)
+(*\[Xi]of\[Omega]andl=Abs[EnergyLoss`\[Xi]of\[Omega]andv\[Chi][#1,\[Omega]min,("v(l)"/.vDict)[#2],m\[Chi],params]]&;*)
+\[Xi]of\[Omega]andl=EnergyLoss`\[Xi]of\[Omega]andv\[Chi][#1,\[Omega]min,("v(l)"/.vDict)[#2],m\[Chi],params]&;
+\[Omega]maxofl=EnergyLoss`\[Omega]maxofv\[Chi][("v(l)"/.vDict)[#1],m\[Chi],params]&;
+
+(*d\[Sigma]dERoftand\[Omega]=10^Re@("d\[Sigma]f"/.\[Sigma]Dict)[Log10@v\[Chi][#1],Log10@\[Xi]of\[Omega]andt[#2,#1]]&; (*not currently used*)*)
+
+\[Sigma]oftand\[Omega]min=10^(Re[("\[Sigma]of\[Xi]f"/.\[Sigma]Dict)[Log10@v\[Chi][#1],Log10@\[Xi]of\[Omega]andl[#2,#1]]])&;
+
+(*Post \[Omega]capture*)
+\[Omega]capture = 1/(2 ("\[HBar]"/.params)) m\[Chi] (v\[Chi][#]^2 - ("vesc"/.Constants`EarthRepl)^2)&;
+
+
+\[Lambda]invoft=If[v\[Chi]raw[#]>v\[Chi]min && \[Omega]maxofl[#]>\[Omega]capture[#]&&(\[Xi]of\[Omega]andl[\[Omega]capture[#],#])>10^\[Sigma]dom[[2,1]],\[Kappa]^2 ("ne"/.params)\[Sigma]oftand\[Omega]min[#,\[Omega]capture[#]],0]&;
+
+rCore="rcore"/.Constants`EarthRepl;
+rE = "rE"/.Constants`EarthRepl;
+
+\[Lambda]integrand[l_?NumericQ]:=\[Lambda]invoft[l];
+
+
+If[vDict["lMCs"]=={ "NC"},
+(*Doesn't pass through the core, just integrate*)
+If[regionindex==2,
+(*material is in the core, return 0*)
+Return[0,Module],
+(*material is in the mantle, just integrate*)
+integralof\[Lambda]invwrtr=NIntegrate[\[Lambda]integrand[l],{l,ldom[[1]],ldom[[2]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3];
+],
+(*Passes through the core*)
+If[regionindex==2,
+(*material is in the core, integrate between the two Mantle-Core boundary points*)
+integralof\[Lambda]invwrtr=NIntegrate[\[Lambda]integrand[l],{l,vDict["lMCs"][[1]],vDict["lMCs"][[2]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3];,
+(*material is in the mantle, integrate over the regions before and after the core, then add*)
+integralof\[Lambda]invwrtr=NIntegrate[\[Lambda]integrand[l],{l,ldom[[1]],vDict["lMCs"][[1]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3]+NIntegrate[\[Lambda]integrand[l],{l,vDict["lMCs"][[2]],ldom[[2]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3];
+]
+];
+
+integralof\[Lambda]invwrtr
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*unit test*)
+
+
+(* ::Input:: *)
+(*temptrajdict = GetWeakCaptureTrajectoryinvRK2wPotential[10^9 ("JpereV")/("c")^2/.SIConstRepl,5 10^4,1 10^6,10^-10,"dEdlofr"/.GetTotalELFunction[Electronic\[Sigma]Dicts[[4]],Nuclear\[Sigma]Dicts[[4]]]];*)
+
+
+(* ::Input:: *)
+(*GetWeakCaptureProbabilitywPot[temptrajdict,Electronic\[Sigma]Dicts[[4,1]]]*)
+
+
+(* ::Input:: *)
+(*"materialname"/.Electronic\[Sigma]Dicts[[4,1]]*)
+
+
+(* ::Input:: *)
+(*Gather[temptrajdict["traj"],Sign@#1["vr"]==Sign@#2["vr"]&];*)
+(*Table[Interpolation[{"l","r"}/.%[[i]]],{i,2}]*)
+(**)
+
+
+(* ::Input:: *)
+(*InverseFunction[#^2&]*)
+
+
+(* ::Input:: *)
+(*temptrajdict["lMCs"]*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Weak Capture Regime Capture Probability - w Potential - Nuc*)
+
+
+(* ::Input::Initialization:: *)
+Clear[GetWeakCaptureProbabilityNucwPot]
+GetWeakCaptureProbabilityNucwPot[vDict_,\[Sigma]Dict_]:= Module[{v\[Chi]min,v\[Chi]raw,v\[Chi],\[Chi]traj,bE,m\[Chi],\[Omega]min,params,NucleusParams,ldom,\[Kappa],regionindex,\[Sigma]dom,mN,\[Omega]capture,\[Delta]\[Xi],\[Xi]of\[Omega]andl,\[Omega]maxofl,d\[Sigma]dERoftand\[Omega],\[Sigma]oftand\[Omega]min,\[Lambda]invoft,\[Lambda]integrand,rCore,rE,lcore,lcrust,integralof\[Lambda]invwrtr},
+\[Omega]min="\[Omega]min"/.\[Sigma]Dict;
+params=\[Sigma]Dict["params"];
+NucleusParams=\[Sigma]Dict["NucleusParams"];
+\[Delta]\[Xi]=(10^"\[Xi]"/.\[Sigma]Dict)[[1]];
+m\[Chi]=("m\[Chi]"/.vDict);
+ldom = "domain"/.vDict;
+\[Kappa]=("\[Kappa]"/.vDict);
+mN = "mN"/.\[Sigma]Dict;
+regionindex = "regionindex"/.\[Sigma]Dict;
+\[Sigma]dom=("\[Sigma]of\[Xi]f"/.\[Sigma]Dict)["Domain"];
+
+(*Print[mN];*)
+
+v\[Chi]min=Max[3Sqrt[("\[HBar]" \[Omega]min)/(2 m\[Chi])]/.params,"vesc"/.Constants`EarthRepl];(*minimum allowable velocity given the lower bound on energy transfer, times an O(1) fudge factor for numerical stability (3) *)
+v\[Chi]raw=("v(l)"/.vDict);
+v\[Chi]=If[v\[Chi]raw[#]>v\[Chi]min,("v(l)"/.vDict)[#],0]&;
+
+(*\[Chi]traj=("l(t)"/.vDict);*)
+bE=("bE"/.vDict);(*impact parameter*)
+
+(*\[Xi]of\[Omega]andl=Abs[EnergyLoss`\[Xi]of\[Omega]Nuc[#1,\[Omega]min,("v(l)"/.vDict)[#2],m\[Chi],mN,params]-\[Delta]\[Xi]]&;*)
+(*\[Xi]of\[Omega]andl=Abs[EnergyLoss`\[Xi]of\[Omega]Nuc[#1,\[Omega]min,("v(l)"/.vDict)[#2],m\[Chi],mN,params]]&;*)
+\[Xi]of\[Omega]andl=EnergyLoss`\[Xi]of\[Omega]Nuc[#1,\[Omega]min,("v(l)"/.vDict)[#2],m\[Chi],mN,params]&;
+\[Omega]maxofl=EnergyLoss`\[Omega]maxNuc[("v(l)"/.vDict)[#1],m\[Chi],mN,params]&;
+
+(*d\[Sigma]dERoftand\[Omega]=10^Re@("d\[Sigma]f"/.\[Sigma]Dict)[Log10@v\[Chi][#1],Log10@\[Xi]of\[Omega]andt[#2,#1]]&; (*not currently used*)*)
+
+\[Sigma]oftand\[Omega]min=10^(Re[("\[Sigma]of\[Xi]f"/.\[Sigma]Dict)[Log10@v\[Chi][#1],Log10@\[Xi]of\[Omega]andl[#2,#1]]])&;
+
+
+(*Post \[Omega]capture*)
+\[Omega]capture = 1/(2 ("\[HBar]"/.params)) m\[Chi] (v\[Chi][#]^2 - ("vesc"/.Constants`EarthRepl)^2)&;
+
+
+(*\[Lambda]invoft=If[v\[Chi]raw[#]>v\[Chi]min && \[Omega]maxofl[#]>\[Omega]capture[#]&&Log10@(\[Xi]of\[Omega]andl[\[Omega]capture[#],#])>\[Sigma]dom[[2,1]],\[Kappa]^2("nI"/.NucleusParams)\[Sigma]oftand\[Omega]min[#,\[Omega]capture[#]],0]&;*)
+\[Lambda]invoft=If[v\[Chi]raw[#]>v\[Chi]min && \[Omega]maxofl[#]>\[Omega]capture[#]&&(\[Xi]of\[Omega]andl[\[Omega]capture[#],#])>10^\[Sigma]dom[[2,1]],\[Kappa]^2 ("nI"/.NucleusParams)\[Sigma]oftand\[Omega]min[#,\[Omega]capture[#]],0]&;
+
+rCore="rcore"/.Constants`EarthRepl;
+rE = "rE"/.Constants`EarthRepl;
+
+\[Lambda]integrand[l_?NumericQ]:=\[Lambda]invoft[l];
+
+If[vDict["lMCs"]=={ "NC"},
+(*Doesn't pass through the core, just integrate*)
+If[regionindex==2,
+(*material is in the core, return 0*)
+Return[0,Module],
+(*material is in the mantle, just integrate*)
+integralof\[Lambda]invwrtr=NIntegrate[\[Lambda]integrand[l],{l,ldom[[1]],ldom[[2]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3];
+],
+(*Passes through the core*)
+If[regionindex==2,
+(*material is in the core, integrate between the two Mantle-Core boundary points*)
+integralof\[Lambda]invwrtr=NIntegrate[\[Lambda]integrand[l],{l,vDict["lMCs"][[1]],vDict["lMCs"][[2]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3];,
+(*material is in the mantle, integrate over the regions before and after the core, then add*)
+integralof\[Lambda]invwrtr=NIntegrate[\[Lambda]integrand[l],{l,ldom[[1]],vDict["lMCs"][[1]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3]+NIntegrate[\[Lambda]integrand[l],{l,vDict["lMCs"][[2]],ldom[[2]]},PrecisionGoal->3,MaxRecursion->8,AccuracyGoal->3];
+]
+];
+
+integralof\[Lambda]invwrtr
+]
+
+
+(* ::Subsection::Closed:: *)
 (*Initial Conditions*)
 
 
@@ -1917,7 +2332,7 @@ Table[<|"\[Chi]speedEarth"->v\[Chi]s[[i]],"bEarth"->bs[[j]]|>,{i,nv\[Chi]s},{j,n
 ]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Get Capture Probability*)
 
 
@@ -2108,7 +2523,10 @@ v\[Chi]Max=Getv\[Chi]Max[MaxBoltzSuppress,\[Beta]D,m\[Chi]]; (*from the above co
 
 {ELfuncTotalby\[Kappa]squared,ELthroughEarthby\[Kappa]squared} = {"dEdlofr","\[CapitalDelta]EthroughEarth"}/.GetTotalELFunction[\[Sigma]DictsElectronic,\[Sigma]DictsNuclear];
 
+(*Print@ELthroughEarthby\[Kappa]squared;*)
+
 (*Monitor[*)
+
 Do[
 \[CapitalDelta]rby\[Kappa]squared=\[CapitalDelta]rTotby\[Kappa]squared[m\[Chi],"\[Chi]speedEarth"/.ICdict[[n]],"bEarth"/.ICdict[[n]],ELthroughEarthby\[Kappa]squared]; 
 
@@ -2118,18 +2536,23 @@ RE=dE["bEarth"/.ICdict[[n]]];
 If[\[CapitalDelta]rby\[Kappa]squared /\[Kappa]^2>RE/100,
 (*on average will loose 100% of kinetic energy as it travels through the earth, if speed is fixed*)
 
-TrajDict=GetWeakCaptureTrajectoryinvFE[m\[Chi],"\[Chi]speedEarth"/.ICdict[[n]],"bEarth"/.ICdict[[n]],\[Kappa],ELfuncTotalby\[Kappa]squared ]; 
+TrajDict=GetWeakCaptureTrajectoryinvRK2wPotential[m\[Chi],"\[Chi]speedEarth"/.ICdict[[n]],"bEarth"/.ICdict[[n]],\[Kappa],ELfuncTotalby\[Kappa]squared ]; 
+(*TrajDict=GetWeakCaptureTrajectoryinvFE[m\[Chi],"\[Chi]speedEarth"/.ICdict[[n]],"bEarth"/.ICdict[[n]],\[Kappa],ELfuncTotalby\[Kappa]squared ];*) 
 (*TrajDict=GetWeakCaptureTrajectoryinv[m\[Chi],"\[Chi]speedEarth"/.ICdict[[n]],"bEarth"/.ICdict[[n]],\[Kappa],ELfuncTotalby\[Kappa]squared ]; *)
 
-vfinal= ("v(l)"/.TrajDict)[TrajDict["domain"][[2]]];
-captured=vfinal<"vesc"/.Constants`EarthRepl;
+(*vfinal= ("v(l)"/.TrajDict)[TrajDict["domain"][[2]]];*)
+(*captured=vfinal<"vesc"/.Constants`EarthRepl;*)
+(*captured=vfinal<"vesc"/.TrajDict;*)
+vfinal= "vfinal"/.TrajDict;
+captured = ("rfinal"/.TrajDict)<("rE"/.Constants`EarthRepl);(*stop condition is bounded motion (E<0) so if we exit the Earth the motion is unbounded, otherwise its bounded.*)
 
 If[!captured,
 (*allow continuous slowing down, escapes with v>vesc, check if can be captured through hard scatter*)
 
-integralof\[Lambda]invwrtrE = Total@Table[GetWeakCaptureProbabilityfromv[TrajDict,\[Sigma]DictsElectronic[[i]]],{i,Length[\[Sigma]DictsElectronic]}];
-
-integralof\[Lambda]invwrtrNuc = Total@Table[GetWeakCaptureProbabilityNucfromv[TrajDict,\[Sigma]DictsNuclear[[i]]],{i,Length[\[Sigma]DictsNuclear]}];
+(*integralof\[Lambda]invwrtrE = Total@Table[GetWeakCaptureProbabilityfromv[TrajDict,\[Sigma]DictsElectronic[[i]]],{i,Length[\[Sigma]DictsElectronic]}];
+integralof\[Lambda]invwrtrNuc = Total@Table[GetWeakCaptureProbabilityNucfromv[TrajDict,\[Sigma]DictsNuclear[[i]]],{i,Length[\[Sigma]DictsNuclear]}];*)
+integralof\[Lambda]invwrtrE = Total@Table[GetWeakCaptureProbabilitywPot[TrajDict,\[Sigma]DictsElectronic[[i]]],{i,Length[\[Sigma]DictsElectronic]}];
+integralof\[Lambda]invwrtrNuc = Total@Table[GetWeakCaptureProbabilityNucwPot[TrajDict,\[Sigma]DictsNuclear[[i]]],{i,Length[\[Sigma]DictsNuclear]}];
 
 SurvivalProb =If[integralof\[Lambda]invwrtrE + integralof\[Lambda]invwrtrNuc>250,0,N[E^-(integralof\[Lambda]invwrtrE + integralof\[Lambda]invwrtrNuc),5]];
 CaptureProb=If[integralof\[Lambda]invwrtrE + integralof\[Lambda]invwrtrNuc>250,1,If[N[integralof\[Lambda]invwrtrE + integralof\[Lambda]invwrtrNuc,5]<0.001,N[integralof\[Lambda]invwrtrE + integralof\[Lambda]invwrtrNuc,5],N[1-E^-(integralof\[Lambda]invwrtrE + integralof\[Lambda]invwrtrNuc),5]]];
@@ -2137,7 +2560,7 @@ CaptureProb=If[integralof\[Lambda]invwrtrE + integralof\[Lambda]invwrtrNuc>250,1
 AppendTo[PDictList,<|"Psurv"->N[SurvivalProb,5],"Pcap"->Max[CaptureProb,10^-100],"CSDcap"->Boole@captured,"v\[Chi]E"->"\[Chi]speedEarth"/.ICdict[[n]],"bEarth"->("bEarth"/.ICdict[[n]]),"vfinal"->vfinal,"\[Kappa]"->\[Kappa],"mpD"->mpD,"meD"->meD,"m\[Chi]"->m\[Chi],"mpDcap"->mpDcap,"v\[Chi]Max"->v\[Chi]Max,"\[Beta]D"->\[Beta]D,"v0"->v0,"y"->\[CapitalDelta]rby\[Kappa]squared /(\[Kappa]^2 RE),"RE"->RE,"PcapE"->Max[N[integralof\[Lambda]invwrtrE,5],10^-100],"PcapNuc"->Max[N[integralof\[Lambda]invwrtrNuc,5],10^-100],"int\[Lambda]invE"->integralof\[Lambda]invwrtrE,"int\[Lambda]invNuc"->integralof\[Lambda]invwrtrNuc|>];,
 
 
-(*allowed continuous slowing down, escapes with v<vesc, it's captured*)
+(*allowed continuous slowing down, v<vesc, it's captured*)
 AppendTo[PDictList,<|"Psurv"->0,"Pcap"->1,"CSDcap"->Boole@True,"v\[Chi]E"->"\[Chi]speedEarth"/.ICdict[[n]],"vfinal"->vfinal,"bEarth"->("bEarth"/.ICdict[[n]]),"\[Kappa]"->\[Kappa],"mpD"->mpD,"meD"->meD,"m\[Chi]"->m\[Chi],"mpDcap"->mpDcap,"v\[Chi]Max"->v\[Chi]Max,"\[Beta]D"->\[Beta]D,"v0"->v0,"y"->\[CapitalDelta]rby\[Kappa]squared /(\[Kappa]^2 RE),"RE"->RE,"PcapE"->1,"PcapNuc"->1,"int\[Lambda]invE"->10^-100,"int\[Lambda]invNuc"->10^-100|>](*captured by CSD so take inverse capture length to Subscript[r, E] so that it's integral over the trajectory is ~1, If we are CSD captured, we want to set the inverse hard capture interaction length to be small so that we can use it to distinguish between hard and soft capture*)
 ];
 ,
@@ -2626,8 +3049,42 @@ AppendTo[\[CapitalGamma]list,GetEvaporationRateend[Electronic\[Sigma]Dicts[[n]]]
 ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Get Penetration Depth*)
+
+
+(* ::Input::Initialization:: *)
+Clear[GetPenetrationDepthfnofv]
+GetPenetrationDepthfnofv[v\[Chi]_,Electronic\[Sigma]Dicts_,Nuclear\[Sigma]Dicts_,vesc_:"vesc"/.Constants`EarthRepl]:=Module[{m\[Chi],\[Beta]C,\[Beta]M,\[Lambda]inve,\[Lambda]invNuc,eregiontable,eregiondict,vdom,nT,Nucregiontable,Nucregiondict},
+
+(* \[Sigma]Dicts should be a single list format (ie. for 1 mass)
+	\[Kappa] = 1 *)
+
+m\[Chi]=Union@Join["m\[Chi]"/.Electronic\[Sigma]Dicts,"m\[Chi]"/.Nuclear\[Sigma]Dicts];
+If[Length[m\[Chi]]>1,Print["Masses in all \[Sigma]Dicts must be equal."];Return[<|"N/A"->Null|>,Module](*,m\[Chi]=m\[Chi][[1]]*)];
+
+{\[Beta]C,\[Beta]M}={"\[Beta]core","\[Beta]crust"}/.Constants`EarthRepl;
+
+(*vbar = <|2->Log10@Max[Sqrt[2/(m\[Chi] \[Beta]C)],vesc],1->Log10@Max[Sqrt[2/(m\[Chi] \[Beta]M)],vesc]|>;*)
+(*vbar = <|2->Log10@Max[Sqrt[2/(m\[Chi] \[Beta]C)],0],1->Log10@Max[Sqrt[2/(m\[Chi] \[Beta]M)],0]|>;*)
+
+eregiontable = Gather[Electronic\[Sigma]Dicts,#1["regionindex"]==#2["regionindex"]&];
+eregiondict=Association@Table[Union["regionindex"/.eregiontable[[i]]][[1]]->eregiontable[[i]],{i,Length[eregiontable]}];
+
+\[Lambda]inve =Association@Table[r->Sum[vdom=("\[Sigma]f"/.eregiondict[#2][[o]])["Domain"][[1]];
+nT=("ne"/.eregiondict[#2][[o]]["params"]);If[#1>vdom[[1]]&&#1<vdom[[2]],nT 10^("\[Sigma]f"/.eregiondict[#2][[o]])[#1],0],{o,Length[eregiondict[#2]]}]&[Log10@v\[Chi],r],{r,2}];(*\[Lambda]inve[v\[Chi]][r] - r is the regionindex*)
+
+Nucregiontable = Gather[Nuclear\[Sigma]Dicts,#1["regionindex"]==#2["regionindex"]&];
+Nucregiondict=Association@Table[Union["regionindex"/.Nucregiontable[[i]]][[1]]->Nucregiontable[[i]],{i,Length[eregiontable]}];
+
+\[Lambda]invNuc=Association@Table[r->Sum[vdom=("\[Sigma]f"/.Nucregiondict[#2][[o]])["Domain"][[1]];
+nT=("nI"/.Nucregiondict[#2][[o]]["NucleusParams"]);If[#1>vdom[[1]]&&#1<vdom[[2]],nT 10^("\[Sigma]f"/.Nucregiondict[#2][[o]])[#1],0],{o,Length[Nucregiondict[#2]]}]&[Log10@v\[Chi],r],{r,2}];(*\[Lambda]invNuc[v\[Chi]][r] - r is the regionindex*)
+
+(*Print[\[Lambda]invNuc];
+Print[\[Lambda]inve];*)
+
+<|"m\[Chi]"->m\[Chi][[1]],"\[Lambda]C"->(\[Lambda]inve[2]+\[Lambda]invNuc[2])^-1,"\[Lambda]M"->(\[Lambda]inve[1]+\[Lambda]invNuc[1])^-1,"v\[Chi]"->v\[Chi],"\[Lambda]inve"->\[Lambda]inve,"\[Lambda]invNuc"->\[Lambda]invNuc|>
+]
 
 
 (* ::Input::Initialization:: *)
@@ -2659,7 +3116,7 @@ nT=("nI"/.Nucregiondict[#2][[o]]["NucleusParams"]);If[#1>vdom[[1]]&&#1<vdom[[2]]
 (*Print[\[Lambda]invNuc];
 Print[\[Lambda]inve];*)
 
-<|"m\[Chi]"->m\[Chi],"\[Lambda]C"->(\[Lambda]inve[2]+\[Lambda]invNuc[2])^-1,"\[Lambda]M"->(\[Lambda]inve[1]+\[Lambda]invNuc[1])^-1,"vbar"->vbar,"\[Lambda]inve"->\[Lambda]inve,"\[Lambda]invNuc"->\[Lambda]invNuc|>
+<|"m\[Chi]"->m\[Chi][[1]],"\[Lambda]C"->(\[Lambda]inve[2]+\[Lambda]invNuc[2])^-1,"\[Lambda]M"->(\[Lambda]inve[1]+\[Lambda]invNuc[1])^-1,"vbar"->vbar,"\[Lambda]inve"->\[Lambda]inve,"\[Lambda]invNuc"->\[Lambda]invNuc|>
 ]
 
 
@@ -2671,15 +3128,40 @@ rC = "rcore"/.Constants`EarthRepl;
 rE="rE"/.Constants`EarthRepl;
 
 (*\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]<rC,\[Lambda]MFPs["\[Lambda]M"],rC + \[Lambda]MFPs["\[Lambda]C"]];*)
-\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2<rC,\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2,rC + \[Lambda]MFPs["\[Lambda]C"]/\[Kappa]^2];
+(*\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2<rC,\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2,rC + \[Lambda]MFPs["\[Lambda]C"]/\[Kappa]^2];*)
+\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2<rE-rC,\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2,rE-rC + \[Lambda]MFPs["\[Lambda]C"]/\[Kappa]^2];
 
 (*EvaporationVolume =  4\[Pi] Integrate[r^2Region\[CapitalTheta][r,regionindex],{r,Max[rE-\[Lambda]eff/\[Kappa]^2,0],rE}];*)
 EvaporationVolume =  4\[Pi] Integrate[r^2 Region\[CapitalTheta][r,regionindex],{r,Max[rE-\[Lambda]eff,0],rE}]; 
 
 RegionVolume =  4\[Pi] Integrate[r^2 Region\[CapitalTheta][r,regionindex],{r,0,"rE"/.Constants`EarthRepl}]; 
 
-\[CapitalGamma]total EvaporationVolume/RegionVolume
+(*\[CapitalGamma]total EvaporationVolume/RegionVolume*)
+EvaporationVolume
 
+]
+
+
+(* ::Input::Initialization:: *)
+Clear[EvaporationVolume]
+EvaporationVolume[\[Lambda]MFPs_,\[Kappa]_,regionindex_:1]:=Module[{rC,rE,\[Lambda]eff,EvapVolume},
+
+rC = "rcore"/.Constants`EarthRepl;
+rE="rE"/.Constants`EarthRepl;
+
+\[Lambda]eff = If[\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2<rE-rC,\[Lambda]MFPs["\[Lambda]M"]/\[Kappa]^2,rE-rC + \[Lambda]MFPs["\[Lambda]C"]/\[Kappa]^2];
+
+(*if \[Lambda]eff < rE-rC and regionindex = 2, 0 
+if \[Lambda]eff < rE-rC and region index = 1, compute as below
+if \[Lambda]eff > rE-rC and region index = 1, Mantle volume
+if \[Lambda]eff > rE-rC and region index = 2, rE -> rC below,
+if \[Lambda]eff > rE, region volume. *)
+
+(*EvapVolume =  (4 \[Pi])/3rE^3 Piecewise[{{1,rE<\[Lambda]eff},{1-(1-\[Lambda]eff/rE)^3,rE>= \[Lambda]eff}}];*)
+EvapVolume =  (4 \[Pi])/3 Piecewise[{{rE^3-rC^3,rE<\[Lambda]eff&&regionindex==1},{rE^3-(rE-\[Lambda]eff)^3,rE-rC>\[Lambda]eff&&regionindex==1},{rE^3-rC^3,rE-rC<\[Lambda]eff&&regionindex==1},
+{rC^3,rE<\[Lambda]eff&&regionindex==2},{rE^3-(rE-\[Lambda]eff)^3- (rE^3-rC^3),rE-rC<\[Lambda]eff&&regionindex==2},{0,\[Lambda]eff < rE-rC&&regionindex==2}}];
+
+<|"Vevap"->EvapVolume,"\[Lambda]eff"->\[Lambda]eff|>
 ]
 
 
@@ -2906,11 +3388,12 @@ m\[Chi]= "m\[Chi]"/.Electronic\[Sigma]Dicts[[1]];
 
 (*Print["m\[Chi]: ",m\[Chi]( ("JpereV")/("c")^2)^-1/.Constants`SIConstRepl];*)
 Do[
+meDratio=("meD/mpD"/.meDratios[[me]]);
 If[mpDcap,
 mpD = m\[Chi];meD = meDratio m\[Chi];,
 meD = m\[Chi];mpD =  m\[Chi]/meDratio;
 ];
-meDratio=("meD/mpD"/.meDratios[[me]]);
+(*meDratio=("meD/mpD"/.meDratios[[me]]);*)
 v0 = v0s[[vs]];
 \[Beta]D ="\[Beta]D"/.v0to\[Beta]D[v0,meD,mpD];
 
