@@ -13,6 +13,13 @@ BeginPackage["Dielectrics`"];
 
 
 (* ::Text:: *)
+(*Utility*)
+
+
+arctantoinfrepl::usage = "replacement for \!\(\*SubscriptBox[\(lim\), \(\(u\[Nu]\)\(->\)\(0\)\(\\\ \)\)]\)ArcTan[\!\(\*FractionBox[\(x\), \(u\[Nu]\)]\)]";
+
+
+(* ::Text:: *)
 (*Dimensionless variables*)
 
 
@@ -26,6 +33,7 @@ zf::usage = "dimensionless variable z in terms of q";
 
 
 uzLinDielectric::usage = "Lindhard Degenerate Dielectric in u z variables";
+uzLinDielectricReIm::usage = "Lindhard dielectric split into a list {Re \[Epsilon], Im \[Epsilon]}"
 LinDielectric::usage = "Lindhard Degenerate Dielectric in q \[Omega] variables";
 
 \[Epsilon]M::usage = "Degenerate Mermin Dielectric as a function of dimensionless variables u, z, u\[Nu] (see overleaf)";
@@ -106,6 +114,21 @@ DielectricPrecision = 140;
 
 
 (* ::Subsection:: *)
+(*Utilities*)
+
+
+(* ::Subsubsection:: *)
+(*Limit of Arctan Replacement*)
+
+
+(* ::Text:: *)
+(*For taking limits as u\[Nu] -> 0 in working with the Mermin Dielectric*)
+
+
+arctantoinfrepl = Times[x__:pre_,ArcTan[ a_/u\[Nu]]]->\[Pi] List[x][[1]]( HeavisideTheta[a]-1/2)
+
+
+(* ::Subsection:: *)
 (*Lindhard Dielectric (Random Phase Approximation) Private Definitions*)
 
 
@@ -132,6 +155,24 @@ uzLinDielectric[u_,z_]:=Module[{f1,f2,g,x,\[Chi]},
 	f2= Piecewise[{{\[Pi]/2 u,z+u<1},{\[Pi] /(8z)(1-(z-u)^2),Abs[z-u]<1<z+u},{0,Abs[z-u]>1}}];
 	
 	1 + "\[Chi]"^2/z^2 ( f1 + I f2)
+]
+
+
+uzLinDielectricReIm[u_,z_]:=Module[{f1,f2,g,x,\[Chi]},
+	(*
+		Input:
+		z - [] q/(2 qF)
+		u - [] \[Omega]/(q qF)
+	
+	Output:
+		\[Epsilon]^Lin - [] Lindhard dielectric function at 0 temperature
+	*)
+	(*\[Chi] = Sqrt["e"^2/(Pi "hbar" "vF") 1/(4 \[Pi] "\[Epsilon]0")];*)
+	g=(1-x^2) Log[Abs[(1+x)/(1-x)]];
+	f1= 1/2 + 1/(8 z) ((g/.x->z-u)+(g/.x->z+u));
+	f2= Piecewise[{{\[Pi]/2 u,z+u<1},{\[Pi] /(8z)(1-(z-u)^2),Abs[z-u]<1<z+u},{0,Abs[z-u]>1}}];
+	
+	{1 + "\[Chi]"^2/z^2 f1,"\[Chi]"^2/z^2 f2}
 ]
 
 
