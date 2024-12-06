@@ -1,0 +1,103 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      2956,         93]
+NotebookOptionsPosition[      2514,         78]
+NotebookOutlinePosition[      2911,         94]
+CellTagsIndexPosition[      2868,         91]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"betaSolver", "[", 
+    RowBox[{"phiE_", ",", "RMaxList_", ",", "r_"}], "]"}], ":=", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+      "Use", " ", "to", " ", "solve", " ", "for", " ", "overall", " ", 
+       "charge", " ", "density", " ", "in", " ", "the", " ", "Earth", " ", 
+       "as", " ", "a", " ", "function", " ", "of", " ", 
+       RowBox[{"radius", ".", " ", 
+        SubscriptBox["n", "H"]}]}], " ", "-", " ", 
+      SubscriptBox["n", "e"]}], " ", "=", " ", 
+     RowBox[{
+      SubscriptBox["\[Alpha]", 
+       RowBox[{"H", " "}]], "*", " ", "\[Beta]", 
+      RowBox[{"(", "r", ")"}], " ", "*", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox[
+         SubscriptBox["n", "H"], "F"], " ", "+", " ", 
+        SuperscriptBox[
+         SubscriptBox["n", "e"], "F"]}], ")"}]}]}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"j", " ", "=", " ", 
+       RowBox[{"Length", "[", "RMaxList", "]"}]}], "}"}], ",", 
+     RowBox[{"-", 
+      RowBox[{"Sum", "[", 
+       RowBox[{
+        RowBox[{"rootF", "[", 
+         RowBox[{"i", ",", 
+          RowBox[{"RMaxList", "[", 
+           RowBox[{"[", 
+            RowBox[{"i", ",", "1"}], "]"}], "]"}], ",", "r", ",", "phiE", ",",
+           "j"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"i", ",", "1", ",", "j"}], "}"}]}], "]"}]}]}], "]"}]}], 
+  ";"}]], "Input",ExpressionUUID->"a5089b51-a6f5-41f8-86aa-101a55294121"],
+
+Cell[BoxData[
+ RowBox[{"Plot", "[", 
+  RowBox[{
+   RowBox[{"betaSolver", "[", 
+    RowBox[{"phiEarth", ",", "RMaxList", ",", "r"}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"r", ",", "0", ",", 
+     RowBox[{"phiList", "[", 
+      RowBox[{"[", 
+       RowBox[{
+        RowBox[{"-", "1"}], ",", "1"}], "]"}], "]"}]}], "}"}]}], 
+  "]"}]], "Input",ExpressionUUID->"2b4150bb-4c30-44b9-aa24-536f742cbfb7"]
+},
+WindowSize->{808, 591},
+WindowMargins->{{102, Automatic}, {Automatic, 0}},
+FrontEndVersion->"13.2 for Mac OS X x86 (64-bit) (November 18, 2022)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"be6b6911-d1b3-4880-8954-57b9d3fd540e"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 1549, 43, 96, "Input",ExpressionUUID->"a5089b51-a6f5-41f8-86aa-101a55294121"],
+Cell[2110, 65, 400, 11, 30, "Input",ExpressionUUID->"2b4150bb-4c30-44b9-aa24-536f742cbfb7"]
+}
+]
+*)
+
+(* End of internal cache information *)
+
