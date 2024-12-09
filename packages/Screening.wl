@@ -1,5 +1,8 @@
 (* ::Package:: *)
 
+Needs["Constants`",NotebookDirectory[]<>"/Constants.wl"]
+
+
 BeginPackage["Screening`"];
 
 
@@ -33,6 +36,13 @@ GetScreened\[Phi]::usage = "Compute the screened potential (assuming neutral pla
 
 betaSolver::usage = "";
 Get\[Beta]rfunc::usage = "";
+
+
+(* ::Text:: *)
+(*Get total captured number*)
+
+
+GetTotalCapturedN::usage = "";
 
 
 (* ::Section:: *)
@@ -178,6 +188,22 @@ Get\[Beta]rfunc[\[Phi]Dict_,N_:100]:=Module[{rE,interTable},
 rE = \[Phi]Dict["rE"];
 interTable=Table[{r,betaSolver[\[Phi]Dict,r]},{r,rE/#,rE(1-1/#),rE/#}]&[N];
 Interpolation[interTable]
+]
+
+
+(* ::Subsubsection:: *)
+(*Get Total captured number*)
+
+
+GetTotalCapturedN[\[Phi]Dict_,mDMtot_:"m"2 \!\(\*SuperscriptBox[\(10\), \("\<logm\>" - 6\)]\)/.Constants`SIConstRepl,fD_:0.05]:=Module[{n\[Infinity]aDM,\[Beta]ofr,\[Beta]dom},
+
+(*logm - [eV] Subscript[Log, 10]Subscript[m, Subscript[p, D]]*)
+
+n\[Infinity]aDM=(Capture`naDM[fD,mDMtot]m^-3);
+
+\[Beta]ofr = \[Phi]Dict["\[Beta](r)"];
+\[Beta]dom = \[Beta]ofr["Domain"];
+n\[Infinity]aDM(4 \[Pi] (("rE")/\[Beta]dom[[1,2]])^3 m^3/.Constants`EarthRepl)NIntegrate[r^2 \[Beta]ofr[r],{r,\[Beta]dom[[1,1]],\[Beta]dom[[1,2]]}]
 ]
 
 
