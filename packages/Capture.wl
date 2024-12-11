@@ -191,7 +191,7 @@ Begin["`Private`"];
 (*Profiler[fun_,inputs_List]:=TableForm[#&/@Join@@@({AbsoluteTiming[fun@@#],#}&/@inputs)]*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Convert from v0 to \[Beta]D*)
 
 
@@ -202,7 +202,7 @@ v0to\[Beta]D[v0_,meD_,mpD_]:=Module[{\[Beta]D,vpDmean,veDmean},
 v0 is the velocity corresponding to the temperature of the aDM particles. By equipartition: 3 Subscript[T, D] = 1/2(Subscript[m, Subscript[e, D]]Subscript[v^2, Subscript[e, D]]+Subscript[m, Subscript[p, D]]Subscript[v^2, Subscript[p, D]]) so we define 3 Subscript[T, D] = Overscript[m, _] Subscript[v^2, 0] 
 *)
 \[Beta]D = 6/((meD + mpD)v0^2);
-vpDmean = Sqrt[3/(mpD \[Beta]D)];
+vpDmean = Sqrt[3/(mpD \[Beta]D)];s
 veDmean = Sqrt[3/(meD \[Beta]D)]; 
 
 <|"\[Beta]D"->\[Beta]D,"v0"->v0,"vpDmean"->vpDmean,"veDmean"->veDmean|>
