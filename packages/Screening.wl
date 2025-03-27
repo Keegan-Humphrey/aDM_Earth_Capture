@@ -203,7 +203,7 @@ n\[Infinity]aDM=(Capture`naDM[fD,mDMtot]m^-3);
 
 \[Beta]ofr = \[Phi]Dict["\[Beta](r)"];
 \[Beta]dom = \[Beta]ofr["Domain"];
-n\[Infinity]aDM(4 \[Pi] (("rE")/\[Beta]dom[[1,2]])^3 m^3/.Constants`EarthRepl)NIntegrate[r^2 \[Beta]ofr[r],{r,\[Beta]dom[[1,1]],\[Beta]dom[[1,2]]}]
+n\[Infinity]aDM(4 \[Pi] (("rE")/\[Beta]dom[[1,2]])^3 m^3/.Constants`EarthRepl)NIntegrate[r^2 \[Beta]ofr[r],{r,\[Beta]dom[[1,1]],\[Beta]dom[[1,2]]}](*Subscript[n, \[Infinity]]/V \[Integral] \[DifferentialD]^3r \[Beta](r)*)
 ]
 
 
