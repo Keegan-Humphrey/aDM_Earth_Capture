@@ -174,7 +174,7 @@ Append[\[Phi]Dict,{"\[Beta](r)"->\[Beta]sol,"\[Beta]max"->\[Beta]max}]
 
 
 betaSolver[\[Phi]Dict_,r_]:=Module[{j,RMaxList,phiE,vInfList,MBfactorList},
-(*Use to solve for overall charge density in the Earth as a function of radius. Subscript[n, H] - Subscript[n, e] = Subscript[\[Alpha], H ]* \[Beta](r) * (Subscript[n, H]^F + Subscript[n, e]^F)*)
+(*Use to solve for overall charge density in the Earth as a function of radius. Subscript[n, H] - Subscript[n, e] = \[Beta](r) * Subscript[n, H]^F *)
 
 {RMaxList,phiE,vInfList,MBfactorList}= \[Phi]Dict[#]&/@{"RMaxList","\[Phi]E","v\[Infinity]List","MBfactorList"};
 
