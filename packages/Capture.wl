@@ -202,7 +202,7 @@ v0to\[Beta]D[v0_,meD_,mpD_]:=Module[{\[Beta]D,vpDmean,veDmean},
 v0 is the velocity corresponding to the temperature of the aDM particles. By equipartition: 3 Subscript[T, D] = 1/2(Subscript[m, Subscript[e, D]]Subscript[v^2, Subscript[e, D]]+Subscript[m, Subscript[p, D]]Subscript[v^2, Subscript[p, D]]) so we define 3 Subscript[T, D] = Overscript[m, _] Subscript[v^2, 0] 
 *)
 \[Beta]D = 6/((meD + mpD)v0^2);
-vpDmean = Sqrt[3/(mpD \[Beta]D)];s
+vpDmean = Sqrt[3/(mpD \[Beta]D)];
 veDmean = Sqrt[3/(meD \[Beta]D)]; 
 
 <|"\[Beta]D"->\[Beta]D,"v0"->v0,"vpDmean"->vpDmean,"veDmean"->veDmean|>
@@ -1147,14 +1147,14 @@ integralof\[Lambda]invwrtr
 (*Initial Conditions*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*vmax*)
 
 
 (* ::Input::Initialization:: *)
 Clear[Getv\[Chi]Max]
-Getv\[Chi]Max[Pcut_,\[Beta]D_,m\[Chi]_]:=Module[{oneminusCDFvmax,vesc,vmaxsol,vmaxbound=0.2 "c"/.SIConstRepl},
-vesc=("vesc"/.Constants`EarthRepl);
+Getv\[Chi]Max[Pcut_,\[Beta]D_,m\[Chi]_,vesc_:("vesc"/.Constants`EarthRepl)]:=Module[{oneminusCDFvmax,(*vesc,*)vmaxsol,vmaxbound=0.2 "c"/.Constants`SIConstRepl},
+(*vesc=("vesc"/.Constants`EarthRepl);*)
 oneminusCDFvmax = E^(1/2 m\[Chi] vesc^2 \[Beta]D) (1+2 E^(-(1/2) m\[Chi] vmax^2 \[Beta]D) Sqrt[(m\[Chi] \[Beta]D)/(2 \[Pi])]vmax- Erf[Sqrt[(m\[Chi] \[Beta]D)/(2 \[Pi])]vmax] );
 
 (*Integral of MB dist, from Subscript[v, max] to \[Infinity] - so probability of v >= Subscript[v, max]*)

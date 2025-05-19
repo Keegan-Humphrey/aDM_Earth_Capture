@@ -1,6 +1,7 @@
 (* ::Package:: *)
 
 Needs["Constants`",NotebookDirectory[]<>"/Constants.wl"]
+Needs["Capture`",NotebookDirectory[]<>"/Capture.wl"]
 
 
 BeginPackage["Screening`"];
@@ -10,8 +11,12 @@ BeginPackage["Screening`"];
 (*Functions used for computing Screening (this is a modularized version of Ina's screening code)*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsection:: *)
 (*Public Declarations*)
+
+
+(* ::Subsubsection:: *)
+(*Ina's code*)
 
 
 (* ::Text:: *)
@@ -45,6 +50,41 @@ Get\[Beta]rfunc::usage = "";
 GetTotalCapturedN::usage = "";
 
 
+(* ::Subsubsection:: *)
+(*flat potential code*)
+
+
+getncap::usage = "";
+
+
+getrmax::usage = "";
+
+
+Ncapof\[Delta]::usage = "";
+
+
+\[Delta]ofNcap::usage = "";
+
+
+get\[Delta]fromPDict::usage = "";
+
+
+Compute\[Delta]onScan::usage = "";
+
+
+Get\[Delta]Truth::usage = "";
+
+
+(* ::Subsubsection:: *)
+(*Potential outside the flat region*)
+
+
+get\[Phi]Dnoncap::usage = "";
+
+
+get\[Phi]DAnalyticEstimates::usage = "";
+
+
 (* ::Section:: *)
 (*Private*)
 
@@ -52,7 +92,11 @@ GetTotalCapturedN::usage = "";
 Begin["Private`"];
 
 
-(* ::Subsubsection:: *)
+(* ::Subsection:: *)
+(*Ina's code and developments therein*)
+
+
+(* ::Subsubsection::Closed:: *)
 (*Source Term (F) Functions*)
 
 
@@ -68,7 +112,7 @@ rootF[i_,RMax_,r_,phi_?NumericQ,n_,vInfList_,RMaxList_,MBfactor_]:=
 Re[N[(E^(-3phi/2)-E^(3phi/2))/n+MBfactor/vInfList[[i]] Sqrt[vInfList[[i]]^2+phi-RMax^2/r^2 (vInfList[[i]]^2+RMaxList[[i,2]])],50]];
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Get Screened Potential Outside the Earth*)
 
 
@@ -169,7 +213,7 @@ Append[\[Phi]Dict,{"\[Beta](r)"->\[Beta]sol,"\[Beta]max"->\[Beta]max}]
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Get \[Beta](r) from \[Phi] solution*)
 
 
@@ -191,7 +235,7 @@ Interpolation[interTable]
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Get Total captured number*)
 
 
@@ -204,6 +248,179 @@ n\[Infinity]aDM=(Capture`naDM[fD,mDMtot]m^-3);
 \[Beta]ofr = \[Phi]Dict["\[Beta](r)"];
 \[Beta]dom = \[Beta]ofr["Domain"];
 n\[Infinity]aDM(4 \[Pi] (("rE")/\[Beta]dom[[1,2]])^3 m^3/.Constants`EarthRepl)NIntegrate[r^2 \[Beta]ofr[r],{r,\[Beta]dom[[1,1]],\[Beta]dom[[1,2]]}](*Subscript[n, \[Infinity]]/V \[Integral] \[DifferentialD]^3r \[Beta](r)*)
+]
+
+
+(* ::Subsection:: *)
+(*Consistent Flat potential *)
+
+
+(* ::Subsubsection:: *)
+(*get Subscript[n, C](r)*)
+
+
+getncap[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_]:=Module[{niofr,npofr,neofr,nc,\[Phi]g,\[Phi]gE},
+\[Phi]g = Function[{r},Capture`Vgrav[r]];
+\[Phi]gE = \[Phi]g["rE"/.Constants`EarthRepl];
+niofr=1/(mi^2 Sqrt[2 \[Pi]] \[Beta]D^2) nF (mi \[Beta]D)^(3/2) (2 mi vesc \[Beta]D+E^(1/2 mi vesc^2 \[Beta]D) Sqrt[2 \[Pi]] Sqrt[mi \[Beta]D]-E^(1/2 mi vesc^2 \[Beta]D) Sqrt[mi] Sqrt[2 \[Pi]] Sqrt[\[Beta]D] Erf[(Sqrt[mi] vesc Sqrt[\[Beta]D])/Sqrt[2]]);(*via: niofr=nF (mi \[Beta]D)^(3/2)Sqrt[2/\[Pi]]Integrate[v^2E^(- \[Beta]D mi/2(v^2-vesc^2)),{v,vesc,\[Infinity]}]//Normal*)
+npofr = niofr/.mi->mpD/.vesc->Sqrt[(-2 ("\[Delta]" mpD \[Phi]gE))/mpD];
+neofr = niofr/.mi->meD/.vesc->Sqrt[(-2((mpD+meD)\[Phi]g[r]-"\[Delta]" mpD \[Phi]gE))/meD];
+nc=(mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("rE")^3)) Boole["rE" -r>0] - (npofr-neofr)/.Constants`SIConstRepl/.Constants`EarthRepl;
+nc
+]
+
+
+(* ::Subsubsection:: *)
+(*get Subscript[r, max](\[Delta])*)
+
+
+getrmax[ncof\[Delta]andr_]:=rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(2 #)/.Constants`EarthRepl]}]&
+
+
+(* ::Subsubsection:: *)
+(*get Subscript[N, C](\[Delta])*)
+
+
+Ncapof\[Delta][ncof\[Delta]andr_,\[Delta]t_?NumberQ]:= 4 \[Pi] NIntegrate[r^2 ncof\[Delta]andr/."\[Delta]"->\[Delta]t,{r,0,getrmax[ncof\[Delta]andr][\[Delta]t]}]
+
+
+(* ::Subsubsection:: *)
+(*get \[Delta](Subscript[N, C])*)
+
+
+\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= \[Delta]t/.FindRoot[Evaluate@(Ncapof\[Delta][ncof\[Delta]andr,\[Delta]t]==NC),{\[Delta]t,(*10^-2*)10^-7,10^-10,1}]
+
+
+(* ::Subsubsection:: *)
+(*get \[Delta] from a PDict*)
+
+
+get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:=Module[{nD,nCap,NC,Ncapof\[Delta]table,\[Delta]t,rmax},
+(*The case of \[Delta]>1 still needs to be sorted out*)
+
+nD =Capture`naDM[fD,"meD" + "mpD"]/.pdict;
+nCap=getncap["mpD" ,"meD" ,"\[Beta]D",nD,\[Alpha]Dby\[Alpha]]/.pdict;
+
+NC = "Nc"/.pdict/."nD"->nD;
+
+\[Delta]t=\[Delta]ofNcap[nCap,NC];
+rmax=getrmax[nCap][\[Delta]t];
+
+<|"\[Delta]"->\[Delta]t,"rmax"->rmax,"NC"->NC|>
+]
+
+
+(* ::Subsubsection:: *)
+(*get \[Delta] from a scan *)
+
+
+Clear[Compute\[Delta]onScan]
+Compute\[Delta]onScan[\[Delta]List_,v0ind_:1]:= Module[{return\[Delta]List,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table},
+(*
+\[Delta]List - of the form: {<|"\[Delta]"->\[Delta],"file"->"\\path\\to\\file"|>}
+*)
+return\[Delta]List ={};
+
+(*Print[\[Delta]List];
+Print[Length[\[Delta]List]];*)
+(*Print[Utilities`ReadIt[\[Delta]List[[1]]["file"]]];*)
+(*Print[Dimensions@Utilities`ReadIt[\[Delta]List[[1]]["file"]]];
+Print[\[Delta]List];
+Print[Length[\[Delta]List]];*)
+
+Monitor[
+Do[
+(*Table[*)
+(*Print["test 1"];
+Print[\[Delta]];*)
+\[Delta]Listcurrent = \[Delta]List[[\[Delta]]];
+(*Print[\[Delta]Listcurrent];*)
+(*Print[Utilities`ReadIt[\[Delta]Listcurrent["file"]][[1]]];
+
+Print[\[Delta]Listcurrent["\[Delta]"]];
+
+Print[\[Delta]Listcurrent];
+Print[\[Delta]Listcurrent["file"]];*)
+
+PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;9,v0ind,;;]];
+(*PDict = PDict[[;;9,v0ind,;;]];*)
+
+(*Print[PDict];*)
+(*Print[{"v0","meD"/"mpD"}/.PDict];*)
+
+
+(*v0, mratio = First@First[{"v0","meD"/"mpD"}/.PDict];*)
+{v0, mratio} = {"v0","meD"/"mpD"}/.First@First[PDict];
+
+(*Print[v0,"\n",mratio];*)
+
+\[Delta]table=Flatten[Table[Table[{Log10[("mpD" ("c")^2)/("JpereV")]/.PDict[[i,j]]/.Constants`SIConstRepl,Log10["\[Kappa]"]/.PDict[[i,j]],Log10@"\[Delta]"/.get\[Delta]fromPDict[PDict[[i,j]]]},{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];
+
+(*PDict["\[Delta]table"]=\[Delta]table;*)
+(*AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table|>];*)
+AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
+AppendTo[return\[Delta]List,\[Delta]Listcurrent];
+
+,{\[Delta],Length[\[Delta]List]}];
+,{\[Delta],j,i}];
+
+Print["Finished running the PDicts for: \n{v0,meD/mpD}=",First@First[{"v0","meD"/"mpD"}/.PDict]];
+
+return\[Delta]List
+]
+
+
+(* ::Subsubsection:: *)
+(*Get \[Delta] Truth*)
+
+
+Get\[Delta]Truth[\[Delta]Scan_]:=Module[{\[Delta]truthtable,\[Delta]outof\[Delta]intable,\[Delta]outof\[Delta]in,\[Delta]truth},
+
+\[Delta]truthtable ={};
+
+Do[
+(*Print@Union[\[Delta]Scan[[;;]]["\[Delta]table"][[i,;;2]]//N//Round];*)
+\[Delta]outof\[Delta]intable =Table[{Log10@"\[Delta]"/.\[Delta]Scan[[j]],\[Delta]Scan[[j]]["\[Delta]table"][[i,3]]},{j,Length[\[Delta]Scan]}];
+\[Delta]outof\[Delta]in = Interpolation[\[Delta]outof\[Delta]intable,InterpolationOrder->1];
+\[Delta]truth = \[Delta]/.FindRoot[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],{\[Delta],0.01}];
+AppendTo[\[Delta]truthtable,{\[Delta]Scan[[1]]["\[Delta]table"][[i,1]],\[Delta]Scan[[1]]["\[Delta]table"][[i,2]],Log10@\[Delta]truth}];
+,{i,Length[\[Delta]Scan[[1]]["\[Delta]table"]]}];(*assuming all \[Delta]tables have the same ordering size*)
+
+\[Delta]truthtable
+]
+
+
+(* ::Subsection:: *)
+(*Potential outside the flat region*)
+
+
+(* ::Subsubsection:: *)
+(*Get EOM*)
+
+
+Clear[get\[Phi]Dnoncap]
+get\[Phi]Dnoncap[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_]:=Module[{niofr,npofr,neofr,nc,\[Psi]g,EOM},
+\[Psi]g = Function[{r},- mpD \[Beta]D Capture`Vgrav[r]];
+niofr= nF (-E^(((mi \[Psi]g[r])/mpD)) (-1+Erf[(Sqrt[mi] Sqrt[\[Psi]g[r]])/Sqrt[mpD]])+E^((mi \[Psi]g[r])/mpD) ("e")Sqrt[\[Alpha]Dby\[Alpha]] qD \[Beta]D (-1+Erf[(Sqrt[mi] Sqrt[\[Psi]g[r]])/Sqrt[mpD]]) \[Phi]D[r]+(2 Sqrt[mi] Sqrt[\[Psi]g[r]])/(Sqrt[mpD] Sqrt[\[Pi]]));(*linearized assuming eD \[Phi]D \[Beta]D << 1 (an ansatz that must be checked self consistently)*)
+(*niofr=nF-("e")Sqrt[\[Alpha]Dby\[Alpha]]nF qD \[Beta]D \[Phi]D[r]+(mi nF \[Psi]g[r])/mpD;*)
+npofr = niofr/.mi->mpD/.qD->1;
+neofr = niofr/.mi->meD/.qD->-1;
+EOM = -1/r^2 D[r^2 \[Phi]D'[r],r]==("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha]](npofr-neofr)/.Constants`SIConstRepl/.Constants`EarthRepl
+]
+
+
+(* ::Subsubsection:: *)
+(*get analytic estimate for \[Phi]D in the small charge regime*)
+
+
+get\[Phi]DAnalyticEstimates[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_,\[Phi]g_:Capture`Vgrav] := Module[{niofr,npD,neD,\[Rho]S,\[Lambda]D},
+niofr = 1/(mi^2 Sqrt[2 \[Pi]] \[Beta]D^2) nF (mi \[Beta]D)^(3/2) (2 mi vesc \[Beta]D+E^(1/2 mi vesc^2 \[Beta]D) Sqrt[2 \[Pi]] Sqrt[mi \[Beta]D]-E^(1/2 mi vesc^2 \[Beta]D) Sqrt[mi] Sqrt[2 \[Pi]] Sqrt[\[Beta]D] Erf[(Sqrt[mi] vesc Sqrt[\[Beta]D])/Sqrt[2]]);
+npD=niofr/.vesc->Sqrt[-((2 Vgp)/mi)]/.mi->mpD;
+neD=niofr/.vesc->Sqrt[-((2 Vge)/mi)]/.mi->meD;
+\[Rho]S = ("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha]](npD-neD)/.{Vgp->mpD \[Phi]g[r],Vge->meD \[Phi]g[r]};
+(*\[Lambda]D = (("e")^2/("\[Epsilon]0")\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge]))^(-1/2)/.{Vgp->mpD \[Phi]g[r],Vge->mpD \[Phi]g[r]};*)
+\[Lambda]D =(-(("e")^2/("\[Epsilon]0"))\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge])/.{Vgp->mpD \[Phi]g[r],Vge->meD \[Phi]g[r]})^(-1/2);
+<|"\[Phi]D"->\[Rho]S \[Lambda]D^2,"\[Rho]S"->\[Rho]S,"\[Lambda]D"->\[Lambda]D|>
 ]
 
 
