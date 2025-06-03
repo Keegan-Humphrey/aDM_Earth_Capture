@@ -75,6 +75,15 @@ Compute\[Delta]onScan::usage = "";
 Get\[Delta]Truth::usage = "";
 
 
+Compute\[Delta]DictonScan::usage="";
+
+
+Get\[Delta]DictTruth::usage="";
+
+
+checkforVeffMaxima::usage="";
+
+
 (* ::Subsubsection:: *)
 (*Potential outside the flat region*)
 
@@ -83,6 +92,9 @@ get\[Phi]Dnoncap::usage = "";
 
 
 get\[Phi]DAnalyticEstimates::usage = "";
+
+
+get\[Phi]D::usage = "";
 
 
 (* ::Section:: *)
@@ -295,18 +307,28 @@ Ncapof\[Delta][ncof\[Delta]andr_,\[Delta]t_?NumberQ]:= 4 \[Pi] NIntegrate[r^2 nc
 (*get \[Delta] from a PDict*)
 
 
-get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:=Module[{nD,nCap,NC,Ncapof\[Delta]table,\[Delta]t,rmax},
+get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NC,Ncapof\[Delta]table,\[Delta]t,rmax},
 (*The case of \[Delta]>1 still needs to be sorted out*)
 
-nD =Capture`naDM[fD,"meD" + "mpD"]/.pdict;
+(*meD = "meD"/.pdict;
+mpD = "mpD"/.pdict;
+\[Beta]D = "\[Beta]D"/.pdict;
+v0 = "v0"/.pdict;
+\[Kappa] = "\[Kappa]"/.pdict;*)
+{meD, mpD, \[Beta]D, v0, \[Kappa]}={"meD","mpD","\[Beta]D","v0","\[Kappa]"}/.pdict;
+
+(*nD =Capture`naDM[fD,"meD" + "mpD"]/.pdict;
 nCap=getncap["mpD" ,"meD" ,"\[Beta]D",nD,\[Alpha]Dby\[Alpha]]/.pdict;
+*)
+nD =Capture`naDM[fD,meD+mpD];
+nCap=getncap[mpD, meD, \[Beta]D, nD, \[Alpha]Dby\[Alpha]];
 
 NC = "Nc"/.pdict/."nD"->nD;
 
 \[Delta]t=\[Delta]ofNcap[nCap,NC];
 rmax=getrmax[nCap][\[Delta]t];
 
-<|"\[Delta]"->\[Delta]t,"rmax"->rmax,"NC"->NC|>
+<|"\[Delta]"->\[Delta]t,"rmax"->rmax,"NC"->NC,"meD"->meD,"mpD"->mpD,"\[Beta]D"->\[Beta]D,"nD"->nD,"v0"->v0,"\[Kappa]"->\[Kappa],"fD"->fD,"\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha]|>
 ]
 
 
@@ -321,43 +343,18 @@ Compute\[Delta]onScan[\[Delta]List_,v0ind_:1]:= Module[{return\[Delta]List,\[Del
 *)
 return\[Delta]List ={};
 
-(*Print[\[Delta]List];
-Print[Length[\[Delta]List]];*)
-(*Print[Utilities`ReadIt[\[Delta]List[[1]]["file"]]];*)
-(*Print[Dimensions@Utilities`ReadIt[\[Delta]List[[1]]["file"]]];
-Print[\[Delta]List];
-Print[Length[\[Delta]List]];*)
-
 Monitor[
 Do[
-(*Table[*)
-(*Print["test 1"];
-Print[\[Delta]];*)
+
 \[Delta]Listcurrent = \[Delta]List[[\[Delta]]];
-(*Print[\[Delta]Listcurrent];*)
-(*Print[Utilities`ReadIt[\[Delta]Listcurrent["file"]][[1]]];
-
-Print[\[Delta]Listcurrent["\[Delta]"]];
-
-Print[\[Delta]Listcurrent];
-Print[\[Delta]Listcurrent["file"]];*)
 
 PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;9,v0ind,;;]];
-(*PDict = PDict[[;;9,v0ind,;;]];*)
 
-(*Print[PDict];*)
-(*Print[{"v0","meD"/"mpD"}/.PDict];*)
-
-
-(*v0, mratio = First@First[{"v0","meD"/"mpD"}/.PDict];*)
 {v0, mratio} = {"v0","meD"/"mpD"}/.First@First[PDict];
 
-(*Print[v0,"\n",mratio];*)
-
+(*\[Delta]table=Flatten[Table[Table[{Log10[("mpD" ("c")^2)/("JpereV")]/.PDict[[i,j]]/.Constants`SIConstRepl,Log10["\[Kappa]"]/.PDict[[i,j]],Log10@"\[Delta]"/.get\[Delta]fromPDict[PDict[[i,j]]]},{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];*)
 \[Delta]table=Flatten[Table[Table[{Log10[("mpD" ("c")^2)/("JpereV")]/.PDict[[i,j]]/.Constants`SIConstRepl,Log10["\[Kappa]"]/.PDict[[i,j]],Log10@"\[Delta]"/.get\[Delta]fromPDict[PDict[[i,j]]]},{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];
 
-(*PDict["\[Delta]table"]=\[Delta]table;*)
-(*AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table|>];*)
 AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
 AppendTo[return\[Delta]List,\[Delta]Listcurrent];
 
@@ -370,7 +367,7 @@ return\[Delta]List
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Get \[Delta] Truth*)
 
 
@@ -384,6 +381,74 @@ Do[
 \[Delta]outof\[Delta]in = Interpolation[\[Delta]outof\[Delta]intable,InterpolationOrder->1];
 \[Delta]truth = \[Delta]/.FindRoot[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],{\[Delta],0.01}];
 AppendTo[\[Delta]truthtable,{\[Delta]Scan[[1]]["\[Delta]table"][[i,1]],\[Delta]Scan[[1]]["\[Delta]table"][[i,2]],Log10@\[Delta]truth}];
+,{i,Length[\[Delta]Scan[[1]]["\[Delta]table"]]}];(*assuming all \[Delta]tables have the same ordering size*)
+
+\[Delta]truthtable
+]
+
+
+(* ::Subsubsection:: *)
+(*get \[Delta] Dict from a scan *)
+
+
+Clear[Compute\[Delta]DictonScan]
+Compute\[Delta]DictonScan[\[Delta]List_,v0ind_:1]:= Module[{return\[Delta]List,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table},
+(*
+\[Delta]List - of the form: {<|"\[Delta]"->\[Delta],"file"->"\\path\\to\\file"|>,...}
+*)
+return\[Delta]List ={};
+
+Monitor[
+Do[
+
+\[Delta]Listcurrent = \[Delta]List[[\[Delta]]];
+
+PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;9,v0ind,;;]];
+
+{v0, mratio} = {"v0","meD"/"mpD"}/.First@First[PDict];
+
+(*\[Delta]table=Flatten[Table[Table[{Log10[("mpD" ("c")^2)/("JpereV")]/.PDict[[i,j]]/.Constants`SIConstRepl,Log10["\[Kappa]"]/.PDict[[i,j]],Log10@"\[Delta]"/.get\[Delta]fromPDict[PDict[[i,j]]]},{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];*)
+\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]]],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];
+
+AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
+AppendTo[return\[Delta]List,\[Delta]Listcurrent];
+
+,{\[Delta],Length[\[Delta]List]}];
+,{\[Delta],j,i}];
+
+Print["Finished running the PDicts for: \n{v0,meD/mpD}=",First@First[{"v0","meD"/"mpD"}/.PDict]];
+
+return\[Delta]List
+]
+
+
+(* ::Subsubsection:: *)
+(*Get \[Delta] Dict Truth*)
+
+
+Clear[Get\[Delta]DictTruth]
+Get\[Delta]DictTruth[\[Delta]Scan_]:=Module[{DEBUG=False,\[Delta]truthtable,\[Delta]outof\[Delta]intable,\[Delta]outof\[Delta]in,\[Delta]truth,\[Delta]Scantruth},
+
+(*take the \[Delta]Scans, and replace \[Delta] by the truth value*)
+
+\[Delta]truthtable ={};
+
+Do[
+\[Delta]outof\[Delta]intable =Table[{Log10@"\[Delta]"/.\[Delta]Scan[[j]],Log10@"\[Delta]"/.\[Delta]Scan[[j]]["\[Delta]table"][[i]]},{j,Length[\[Delta]Scan]}];
+\[Delta]outof\[Delta]in = Interpolation[\[Delta]outof\[Delta]intable,InterpolationOrder->1];
+\[Delta]truth = \[Delta]/.FindRoot[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],{\[Delta],0.01}];
+
+\[Delta]Scantruth = \[Delta]Scan[[1]]["\[Delta]table"][[i]];
+\[Delta]Scantruth["\[Delta]"]=\[Delta]truth;
+
+{\[Delta]Scantruth["rmax"],\[Delta]Scantruth["NC"]}={getrmax[#]["\[Delta]"],Ncapof\[Delta][#,"\[Delta]"]}&@getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth//Quiet;
+
+AppendTo[\[Delta]Scantruth,get\[Phi]DAnalyticEstimates["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth];
+
+If[DEBUG&&(#[[1]]==13&&#[[2]]==-13)&@(Log10@{"mpD" ("c")^2/("JpereV"),"\[Kappa]"}/.\[Delta]Scan[[1]]["\[Delta]table"][[i]]/.Constants`SIConstRepl//N//Round),Print[i];Print[\[Delta]truth];Print[\[Delta]Scantruth]];
+
+AppendTo[\[Delta]truthtable,\[Delta]Scantruth];
+
 ,{i,Length[\[Delta]Scan[[1]]["\[Delta]table"]]}];(*assuming all \[Delta]tables have the same ordering size*)
 
 \[Delta]truthtable
@@ -421,6 +486,122 @@ neD=niofr/.vesc->Sqrt[-((2 Vge)/mi)]/.mi->meD;
 (*\[Lambda]D = (("e")^2/("\[Epsilon]0")\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge]))^(-1/2)/.{Vgp->mpD \[Phi]g[r],Vge->mpD \[Phi]g[r]};*)
 \[Lambda]D =(-(("e")^2/("\[Epsilon]0"))\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge])/.{Vgp->mpD \[Phi]g[r],Vge->meD \[Phi]g[r]})^(-1/2);
 <|"\[Phi]D"->\[Rho]S \[Lambda]D^2,"\[Rho]S"->\[Rho]S,"\[Lambda]D"->\[Lambda]D|>
+]
+
+
+(* ::Subsubsection:: *)
+(*get full \[Phi]D potential *)
+
+
+Clear[get\[Phi]D]
+get\[Phi]D[\[Phi]g_:Capture`Vgrav]:=Module[{\[Phi]S,\[Delta]\[Phi],\[Phi]Dh,\[Phi]D},
+\[Phi]S = ("\[Lambda]D")^2 "\[Rho]S" Piecewise[{{0,r<"rmax"},{(1-E^(-(r/("\[Lambda]D"))) Cosh[("rmax")/("\[Lambda]D")]),r>="rmax">"rE"},{1+("\[Lambda]D" E^(-(("rE")/("\[Lambda]D"))-r/("\[Lambda]D")))/(2 Min["rE",r])-("\[Lambda]D" E^(-(Abs[-"rE"+r]/("\[Lambda]D"))))/(2 Min["rE",r])-("rmax" E^(-(r/("\[Lambda]D"))) Cosh[("rmax")/("\[Lambda]D")])/Min["rE",r]+("\[Lambda]D" E^(-(r/("\[Lambda]D"))) Sinh[("rmax")/("\[Lambda]D")])/Min["rE",r],"rE">="rmax"}}];
+\[Delta]\[Phi] = ("mpD")/("e" Sqrt["\[Alpha]Dby\[Alpha]"]) (-"\[Delta]" ("vesc")^2/2-\[Phi]g[r]);
+\[Phi]Dh = ("rmax")/r E^-((r-"rmax")/("\[Lambda]D")) (\[Delta]\[Phi]-\[Phi]S/.r->"rmax");
+
+(*Print[(\[Delta]\[Phi]-\[Phi]S/.r->"rmax")];*)
+
+\[Phi]D = Piecewise[{{\[Delta]\[Phi],r<"rmax"},{\[Phi]Dh+\[Phi]S,r>="rmax"}}];
+
+<|"\[Phi]S"->\[Phi]S,"\[Delta]\[Phi]"->\[Delta]\[Phi],"\[Phi]Dh"->\[Phi]Dh,"\[Phi]D"->\[Phi]D|>
+]
+
+
+(* ::Subsubsection:: *)
+(*Check for Maxima*)
+
+
+Clear[checkforVeffMaxima]
+checkforVeffMaxima[paramrepl_,\[Phi]g_:Capture`Vgrav,consts_:Join[Association[Constants`SIConstRepl],Constants`EarthRepl]]:= Module[{DEBUG=True,Pots,Lexsq,Lexsqder,rmax,\[Lambda]D,MaximaIntervalLength},
+
+(*Pots = {"meD"\[Phi]g[r]-"e" "\[Phi]D","mpD"\[Phi]g[r]+"e" "\[Phi]D"}/.get\[Phi]D[]/.paramrepl/.Private`r->r/.consts;*)
+Pots = {"meD"\[Phi]g[r]-"e" "\[Phi]D","mpD"\[Phi]g[r]+"e" "\[Phi]D"}/.get\[Phi]D[]/.paramrepl/.Global`r->r/.consts;
+Lexsq = r^3 D[Pots,r]//Expand;
+Lexsqder = D[Lexsq,r]//Expand;
+
+rmax = "rmax"/.paramrepl/.consts;
+
+(*Print["what's the symbol: ",Cases[Pots, s_Symbol :> Context[s] <> SymbolName[s], \[Infinity]]];*)
+(*Print[Pots/.r->rmax];*)
+(*Print[Pots/.Global`r->r/.r->rmax];*)
+
+(*\[Lambda]D = Function[{r},("\[Lambda]D"/.paramrepl/.r->Private`r)](*/.Private`r->rmax/.r->rmax*);*)
+(*\[Lambda]D = Simplify@Evaluate@PiecewiseExpand@("\[Lambda]D"/.paramrepl);
+(*Print[Lexsq/.r->rmax+\[Lambda]D];
+Print[Lexsqder/.r->rmax+\[Lambda]D];*)
+Print[rmax];
+Print[Simplify@Evaluate@(\[Lambda]D/.r->rmax)];
+(*Print[\[Lambda]D/.Private`r->rmax];*)
+Print[Cases[\[Lambda]D, r, \[Infinity]]];*)
+\[Lambda]D = "\[Lambda]D"/.paramrepl/.Global`r->rmax/.consts;
+(*Print["\[Lambda]D"/.paramrepl/.r->rmax];
+Print["\[Lambda]D"/.paramrepl/.Global`r->rmax];*)
+(*\[Lambda]D = Evaluate[PiecewiseExpand@("\[Lambda]D" /. paramrepl)];
+
+Print["rmax = ", rmax];
+Print["\[Lambda]D(rmax) = ", \[Lambda]D /. r -> rmax];  (* or \[Lambda]D[rmax] if it\[CloseCurlyQuote]s a Function *)
+Print["r appears in \[Lambda]D: ", Cases[\[Lambda]D, r, \[Infinity]]];
+Print["Private`r appears in \[Lambda]D: ", Cases[\[Lambda]D, Private`r, \[Infinity]]];
+Print["what's the symbol: ",Cases["\[Lambda]D" /. paramrepl, s_Symbol :> Context[s] <> SymbolName[s], \[Infinity]]];
+Print[Head["\[Lambda]D" /. paramrepl]];*)
+
+(*MaximaIntervalLength = NIntegrate[Boole[Lexsq>0]Boole[Lexsqder<0],{r,rmax,rmax+10 \[Lambda]D}];*)
+MaximaIntervalLength = NIntegrate[Boole[Lexsq[[#]]>0]Boole[Lexsqder[[#]]<0],{r,rmax,rmax+10 \[Lambda]D}]&/@{1,2};
+
+(*Print["what's the symbol: ",Cases[Evaluate@Pots/.Global`r->r/.consts, s_Symbol :> Context[s] <> SymbolName[s], \[Infinity]]];*)
+
+If[DEBUG,
+Print@Plot[Evaluate@(Pots/.consts),{r,rmax,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(r^-3 Lexsq/.consts),{r,rmax,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsq/.consts),{r,rmax,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsqder/.consts),{r,rmax,rmax+5 \[Lambda]D}];
+Pots = {"meD"\[Phi]g[r]-"e" ("\[Phi]D"(*-"\[Rho]S" ("\[Lambda]D")^2*)),"mpD"\[Phi]g[r]+"e" ("\[Phi]D"(*-"\[Rho]S" ("\[Lambda]D")^2*))}/.get\[Phi]D[]/.paramrepl/.Global`r->r/.consts;
+Lexsq = r^3 D[Pots,r]//Expand;
+Lexsqder = D[Lexsq,r]//Expand;
+Print[Pots/.r->rmax];
+Print@Plot[Evaluate@((Sign[#]Abs@Log10@Abs@#)&@Expand@Simplify@(Pots/.consts)),{r,rmax,rmax+50 \[Lambda]D}];
+Print@Plot[Evaluate@((Sign[#]Abs@Log10@Abs@#)&@Expand@Simplify@(r^-3 Lexsq/.consts)),{r,rmax,rmax+50 \[Lambda]D}];
+Print@Plot[Evaluate@((Sign[#]Abs@Log10@Abs@#)&@Expand@Simplify@(Lexsq/.consts)),{r,rmax,rmax+50 \[Lambda]D}];
+Print@Plot[Evaluate@((Sign[#]Abs@Log10@Abs@#)&@Expand@Simplify@(Lexsqder/.consts)),{r,rmax,rmax+50 \[Lambda]D}];
+(*Pots = {(*"meD"\[Phi]g[r]*)-"e" ("\[Phi]D"(*-"\[Rho]S" ("\[Lambda]D")^2*)),(*"mpD"\[Phi]g[r]+*)"e" ("\[Phi]D"(*-"\[Rho]S" ("\[Lambda]D")^2*))}[[1]]/.get\[Phi]D[]/.paramrepl/.Global`r->r/.consts;
+Lexsq = r^3 D[Pots,r]//Expand;
+Lexsqder = D[Lexsq,r]//Expand;
+Print[Pots/.r->rmax];
+Print@Plot[Evaluate@(Pots/.consts),{r,rmax,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(r^-3Lexsq/.consts),{r,rmax,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsq/.consts),{r,rmax,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsqder/.consts),{r,rmax,rmax+5 \[Lambda]D}];*)
+(*Print@Plot[Evaluate@(Pots/.consts),{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsq/.consts),{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsqder/.consts),{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Pots = {(*"meD"\[Phi]g[r]*)-"e" ("\[Phi]D"(*-"\[Rho]S" ("\[Lambda]D")^2*)),(*"mpD"\[Phi]g[r]*)+"e" ("\[Phi]D"(*-"\[Rho]S" ("\[Lambda]D")^2*))}/.get\[Phi]D[]/.paramrepl/.Global`r->r/.consts;
+Lexsq = r^3 D[Pots,r];
+Lexsqder = D[Lexsq,r];
+Print[Pots/.r->rmax];
+Print@Plot[Evaluate@(Pots/.consts),{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsq/.consts),{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@Plot[Evaluate@(Lexsqder/.consts),{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];*)
+(*Print@LogLogPlot[Evaluate@Pots/.Global`r->r/.consts,{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@LogLogPlot[Evaluate@Lexsq/.Global`r->r/.consts,{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@LogLogPlot[Evaluate@Lexsqder/.Global`r->r/.consts,{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Pots = {"meD"\[Phi]g[r]-"e" ("\[Phi]D"-"\[Rho]S" ("\[Lambda]D")^2),"mpD"\[Phi]g[r]+"e" ("\[Phi]D"-"\[Rho]S" ("\[Lambda]D")^2)}/.get\[Phi]D[]/.paramrepl/.Private`r->r/.consts;
+Lexsq = r^3 D[Pots,r];
+Lexsqder = D[Lexsq,r];
+Print@LogLogPlot[Evaluate@Pots/.Global`r->r/.consts,{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@LogLogPlot[Evaluate@Lexsq/.Global`r->r/.consts,{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];
+Print@LogLogPlot[Evaluate@Lexsqder/.Global`r->r/.consts,{r,rmax-5\[Lambda]D,rmax+5 \[Lambda]D}];*)
+];
+
+
+
+(*Print[\[Lambda]D];
+Print[rmax];
+Print[Boole[r^3D[-1/r^3,r]>0]/.r->rmax+\[Lambda]D];
+Print[NIntegrate[Boole[r^3D[-1/r^3,r]>0]Boole[D[r^3D[-1/r^3,r],r]<0],{r,rmax,rmax+10 \[Lambda]D}]&/@{1,2}];
+*)
+(*I NEED TO DEAL WITH SCOPE, UNTIL I DO, I WON'T TRUST THESE RESULTS*)
+
+MaximaIntervalLength
 ]
 
 

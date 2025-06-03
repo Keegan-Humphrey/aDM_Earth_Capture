@@ -59,6 +59,13 @@ AbsInterpolation::usage = "interpolate Moment Table with an absolute value (for 
 InterpolateTable::usage = "interpolate Moment Table loss table";
 
 
+(* ::Text:: *)
+(*Simplify Exponential Arguments*)
+
+
+ExpSimplifier::usage = "";
+
+
 (* ::Section:: *)
 (*Private*)
 
@@ -173,7 +180,7 @@ ReplaceParams[params_,ent_,par_]:=Module[{list,location},
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Interpolation*)
 
 
@@ -192,6 +199,13 @@ InterpolationTable = Table[{{m\[Chi]Mesh[[i, j]], v\[Chi]Mesh[[i, j]]},
         Interpolation[Flatten[Log[10, InterpolationTable
             ], 1]]
 ]
+
+
+(* ::Subsubsection:: *)
+(*Simplify Exponential Arguments*)
+
+
+ExpSimplifier[expr_]:=expr/.{Exp[x_]:>Exp[Together@FullSimplify[x]]}
 
 
 (* ::Subsection:: *)
