@@ -81,6 +81,9 @@ Compute\[Delta]DictonScan::usage="";
 Get\[Delta]DictTruth::usage="";
 
 
+ScanOverUnfixedParameters::usage="";
+
+
 checkforVeffMaxima::usage="";
 
 
@@ -271,7 +274,7 @@ n\[Infinity]aDM(4 \[Pi] (("rE")/\[Beta]dom[[1,2]])^3 m^3/.Constants`EarthRepl)NI
 (*get Subscript[n, C](r)*)
 
 
-getncap[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_]:=Module[{niofr,npofr,neofr,nc,\[Phi]g,\[Phi]gE},
+(*getncap[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_]:=Module[{niofr,npofr,neofr,nc,\[Phi]g,\[Phi]gE},
 \[Phi]g = Function[{r},Capture`Vgrav[r]];
 \[Phi]gE = \[Phi]g["rE"/.Constants`EarthRepl];
 niofr=1/(mi^2 Sqrt[2 \[Pi]] \[Beta]D^2) nF (mi \[Beta]D)^(3/2) (2 mi vesc \[Beta]D+E^(1/2 mi vesc^2 \[Beta]D) Sqrt[2 \[Pi]] Sqrt[mi \[Beta]D]-E^(1/2 mi vesc^2 \[Beta]D) Sqrt[mi] Sqrt[2 \[Pi]] Sqrt[\[Beta]D] Erf[(Sqrt[mi] vesc Sqrt[\[Beta]D])/Sqrt[2]]);(*via: niofr=nF (mi \[Beta]D)^(3/2)Sqrt[2/\[Pi]]Integrate[v^2E^(- \[Beta]D mi/2(v^2-vesc^2)),{v,vesc,\[Infinity]}]//Normal*)
@@ -279,6 +282,24 @@ npofr = niofr/.mi->mpD/.vesc->Sqrt[(-2 ("\[Delta]" mpD \[Phi]gE))/mpD];
 neofr = niofr/.mi->meD/.vesc->Sqrt[(-2((mpD+meD)\[Phi]g[r]-"\[Delta]" mpD \[Phi]gE))/meD];
 nc=(mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("rE")^3)) Boole["rE" -r>0] - (npofr-neofr)/.Constants`SIConstRepl/.Constants`EarthRepl;
 nc
+]*)
+
+
+(* ::Text:: *)
+(*The reason this is screwing up is that the vescs are wrong for r>rmax, it assumes rmax < 0*)
+
+
+Clear[getncap]
+getncap[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_]:=Module[{niofr,npofr,neofr,nG,nc,\[Phi]g,\[Phi]gE},
+\[Phi]g = Function[{r},Capture`Vgrav[r]];
+\[Phi]gE = \[Phi]g["rE"/.Constants`EarthRepl];
+niofr=1/(mi^2 Sqrt[2 \[Pi]] \[Beta]D^2) nF (mi \[Beta]D)^(3/2) (2 mi vesc \[Beta]D+E^(1/2 mi vesc^2 \[Beta]D) Sqrt[2 \[Pi]] Sqrt[mi \[Beta]D]-E^(1/2 mi vesc^2 \[Beta]D) Sqrt[mi] Sqrt[2 \[Pi]] Sqrt[\[Beta]D] Erf[(Sqrt[mi] vesc Sqrt[\[Beta]D])/Sqrt[2]]);(*via: niofr=nF (mi \[Beta]D)^(3/2)Sqrt[2/\[Pi]]Integrate[v^2E^(- \[Beta]D mi/2(v^2-vesc^2)),{v,vesc,\[Infinity]}]//Normal*)
+npofr = niofr/.mi->mpD/.vesc->Sqrt[(-2 ("\[Delta]" mpD \[Phi]gE))/mpD];
+(*neofr = niofr/.mi->meD/.vesc->(*Re@*)Sqrt[(-2((mpD+meD)\[Phi]g[r]-"\[Delta]" mpD \[Phi]gE))/meD];*)
+neofr = niofr/.mi->meD/.vesc->Sqrt[If[#>0,#,0]&@(-2((mpD+meD)\[Phi]g[r]-"\[Delta]" mpD \[Phi]gE)/meD)];
+nG = (mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("rE")^3)) Boole["rE" -r>0]/.Constants`SIConstRepl/.Constants`EarthRepl;
+nc = nG - (npofr - neofr)/.Constants`SIConstRepl/.Constants`EarthRepl;
+(*Re@*)nc (*nc can develop an imaginary part from vesc used in neofr if r>rmax.  This restrict nc to be real (as needed by the root finding functions), in reality it is 0 beyond there but this will give it a non-zero (but negative) value. So nc is only valid for r<=rmax. The restriction must be placed explicitly while evaluating the function. *)
 ]
 
 
@@ -286,7 +307,81 @@ nc
 (*get Subscript[r, max](\[Delta])*)
 
 
-getrmax[ncof\[Delta]andr_]:=rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(2 #)/.Constants`EarthRepl]}]&
+(*getrmax[ncof\[Delta]andr_]:=rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(2 #)/.Constants`EarthRepl]},Method->"Secant"]&*)
+
+
+ Clear[binsearch]
+binsearch[f_,var_,domain_:{1,11},n_:20(*,ofmmin_:1,ofmmax_:13*)(*,LogQ_:True*)]:=Module[{midlist={},interval,fposQ,fmingrfmaxQ,mid,root,DEBUG=False},
+		interval=domain;
+		
+		 (*Monitor[*)
+		 Do[mid = Mean[interval];
+		 
+		 fposQ = (f/.var->10^mid)>0; (*if positive, decrease, if negative increase*)
+		 fmingrfmaxQ = (f/.var->10^interval[[1]])>(f/.var->10^interval[[2]]);(*if need to decrease, take smaller, if need to increase take larger*)
+			interval =If[fposQ,
+			(*need to decrease*)
+			If[fmingrfmaxQ,
+				(*f(xmin) is larger, so take interval with xmax*)
+				{mid,interval[[2]]},
+				(*f(xmin) is smaller, so take interval with xmin*)
+				{interval[[1]],mid}
+				],
+			(*need to increase*)
+			If[fmingrfmaxQ,
+				(*f(xmin) is larger, so take interval with xmin*)
+				{interval[[1]],mid},
+				(*f(xmin) is smaller, so take interval with xmax*)
+				{mid,interval[[2]]}
+				]
+			];
+			
+			If[DEBUG,AppendTo[midlist,{mid,(f/.var->10^mid)}]];
+			
+			,{k,n}];
+			
+			(*,k];*)
+			
+			If[DEBUG,Print[ListPlot[midlist,PlotRange->All]]];
+		root = 10^mid;
+			N[{root,f/.var->root}]
+	]
+
+
+getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-1,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&
+
+
+(*getrmax[ncof\[Delta]andr_]:=10^Log10rmax/.FindRoot[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#/.r->10^Log10rmax),{Log10rmax,Log10@Evaluate[("rE")/(10 #)/.Constants`EarthRepl]},Method->"Secant"(*,MaxIterations->50,AccuracyGoal->10,PrecisionGoal->10*)]&*)
+
+
+(*getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{1,1+Log10@Evaluate[("rE")/(10 #)/.Constants`EarthRepl]},70][[1]]&*)
+
+
+(*getrmax[ncof\[Delta]andr_]:=rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(100 #)/.Constants`EarthRepl]}]&*)
+
+
+(*getrmax[ncof\[Delta]andr_]:=Module[{rmaxfunc,x0fators={2,100}},
+(*rmaxfunc=rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(x0fators[[1]] #)/.Constants`EarthRepl]}]&;*)
+If[Evaluate[ncof\[Delta]andr/."\[Delta]"->#/.r->rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(x0fators[[1]] #)/.Constants`EarthRepl]}]>0],
+Evaluate[rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(x0fators[[1]] #)/.Constants`EarthRepl]}]],
+Evaluate[rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(x0fators[[2]] #)/.Constants`EarthRepl]}]]
+]&
+]
+*)
+
+
+(*getrmax[ncof\[Delta]andr_]:=With[{result=Quiet@Check[FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->10^Log10rmax),{Log10rmax,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]}],"Failed"](*x0fators={2,100}*)},
+(*rmaxfunc=rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->rmax),{rmax,Evaluate[("rE")/(x0fators[[1]] #)/.Constants`EarthRepl]}]&;*)
+
+
+Print[result];
+
+If[!StringQ[result],rmax/.result,
+Evaluate[10^Log10rmax/.FindRoot[Re@(ncof\[Delta]andr/."\[Delta]"->#/.r->10^Log10rmax),{Log10rmax,Log10@Evaluate[("rE")/(100 #)/.Constants`EarthRepl]}]]
+]
+]&
+
+*)
 
 
 (* ::Subsubsection:: *)
@@ -332,7 +427,7 @@ rmax=getrmax[nCap][\[Delta]t];
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*get \[Delta] from a scan *)
 
 
@@ -392,7 +487,7 @@ AppendTo[\[Delta]truthtable,{\[Delta]Scan[[1]]["\[Delta]table"][[i,1]],\[Delta]S
 
 
 Clear[Compute\[Delta]DictonScan]
-Compute\[Delta]DictonScan[\[Delta]List_,v0ind_:1]:= Module[{return\[Delta]List,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table},
+Compute\[Delta]DictonScan[\[Delta]List_,v0ind_:1,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{return\[Delta]List,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table},
 (*
 \[Delta]List - of the form: {<|"\[Delta]"->\[Delta],"file"->"\\path\\to\\file"|>,...}
 *)
@@ -403,12 +498,14 @@ Do[
 
 \[Delta]Listcurrent = \[Delta]List[[\[Delta]]];
 
-PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;9,v0ind,;;]];
+(*PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;9,v0ind,;;]];*)
+PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;,v0ind,;;]];
 
 {v0, mratio} = {"v0","meD"/"mpD"}/.First@First[PDict];
 
 (*\[Delta]table=Flatten[Table[Table[{Log10[("mpD" ("c")^2)/("JpereV")]/.PDict[[i,j]]/.Constants`SIConstRepl,Log10["\[Kappa]"]/.PDict[[i,j]],Log10@"\[Delta]"/.get\[Delta]fromPDict[PDict[[i,j]]]},{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];*)
-\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]]],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];
+(*\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]]],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],\[Alpha]Dby\[Alpha],fD];*)
+\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]],\[Alpha]Dby\[Alpha],fD],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],\[Alpha]Dby\[Alpha],fD];
 
 AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
 AppendTo[return\[Delta]List,\[Delta]Listcurrent];
@@ -423,10 +520,27 @@ return\[Delta]List
 
 
 (* ::Subsubsection:: *)
+(*Scan over unfixed parameters*)
+
+
+Clear[ScanOverUnfixedParameters]
+ScanOverUnfixedParameters[\[Delta]ScanList_,\[Alpha]Dby\[Alpha]s_:{1,2},fDs_:{0.01,0.05}]:=Module[{\[Delta]Dict},
+Do[
+Print["Running: ",{v0ind,\[Alpha]Dby\[Alpha],fD}];
+\[Delta]Dict=Quiet@Compute\[Delta]DictonScan[\[Delta]ScanList,v0ind,\[Alpha]Dby\[Alpha],fD];
+(*Print[\[Delta]Dict];*)
+(*SaveIt[NotebookDirectory[]<>StringForm["\[Delta]Dict_``_aDbya_``_fD_``",{v0ind,\[Alpha]Dby\[Alpha],fD}],\[Delta]Dict];*)
+Capture`ExportDatFileToDir[\[Delta]Dict,ToString@StringForm["\[Delta]Dict_``_aDbya_``_fD_``",v0ind,\[Alpha]Dby\[Alpha],fD],"\[Delta]Dicts"]
+,{v0ind,4},{\[Alpha]Dby\[Alpha],\[Alpha]Dby\[Alpha]s},{fD,fDs}
+]
+]
+
+
+(* ::Subsubsection:: *)
 (*Get \[Delta] Dict Truth*)
 
 
-Clear[Get\[Delta]DictTruth]
+(*Clear[Get\[Delta]DictTruth]
 Get\[Delta]DictTruth[\[Delta]Scan_]:=Module[{DEBUG=False,\[Delta]truthtable,\[Delta]outof\[Delta]intable,\[Delta]outof\[Delta]in,\[Delta]truth,\[Delta]Scantruth},
 
 (*take the \[Delta]Scans, and replace \[Delta] by the truth value*)
@@ -452,6 +566,44 @@ AppendTo[\[Delta]truthtable,\[Delta]Scantruth];
 ,{i,Length[\[Delta]Scan[[1]]["\[Delta]table"]]}];(*assuming all \[Delta]tables have the same ordering size*)
 
 \[Delta]truthtable
+]*)
+
+
+Clear[Get\[Delta]DictTruth]
+Get\[Delta]DictTruth[\[Delta]Scan_]:=Module[{DEBUG=False,\[Delta]truthtable,\[Delta]outof\[Delta]intable,\[Delta]outof\[Delta]in,\[Delta]truth,\[Delta]Scantruth},
+
+(*take the \[Delta]Scans, and replace \[Delta] by the truth value*)
+
+\[Delta]truthtable ={};
+
+Monitor[Do[
+(*Print[i];*)
+\[Delta]outof\[Delta]intable =Table[{Log10@"\[Delta]"/.\[Delta]Scan[[j]],Log10@"\[Delta]"/.Flatten[\[Delta]Scan[[j]]["\[Delta]table"]][[i]]},{j,Length[\[Delta]Scan]}];
+(*Print[\[Delta]outof\[Delta]intable];*)
+\[Delta]outof\[Delta]in = Interpolation[\[Delta]outof\[Delta]intable,InterpolationOrder->1];
+\[Delta]truth = \[Delta]/.FindRoot[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],{\[Delta],0.01}];
+
+\[Delta]Scantruth = Flatten[\[Delta]Scan[[1]]["\[Delta]table"]][[i]];
+\[Delta]Scantruth["\[Delta]"]=\[Delta]truth;
+
+(*Print[\[Delta]truth];
+Print[Flatten[\[Delta]Scan[[1]]["\[Delta]table"]][[i]]];
+Print["Before"];*)
+
+(*{\[Delta]Scantruth["rmax"],\[Delta]Scantruth["NC"]}={getrmax[#]["\[Delta]"],Ncapof\[Delta][#,"\[Delta]"]}&@getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*);*)
+{\[Delta]Scantruth["rmax"],\[Delta]Scantruth["NC"]}={getrmax[#][\[Delta]truth],Ncapof\[Delta][#,\[Delta]truth]}&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*));
+
+(*Print["After"];*)
+
+AppendTo[\[Delta]Scantruth,get\[Phi]DAnalyticEstimates["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth];
+
+If[DEBUG,If[(#[[1]]==13&&#[[2]]==-13)&@(Log10@{"mpD" ("c")^2/("JpereV"),"\[Kappa]"}/.\[Delta]Scan[[1]]["\[Delta]table"][[i]]/.Constants`SIConstRepl//N//Round),Print[i];Print[\[Delta]truth];Print[\[Delta]Scantruth]]];
+
+AppendTo[\[Delta]truthtable,\[Delta]Scantruth];
+
+,{i,Length[Flatten[\[Delta]Scan[[1]]["\[Delta]table"]]]}],{i}];(*assuming all \[Delta]tables have the same ordering size*)
+
+Gather[\[Delta]truthtable,("\[Kappa]"/.#1)==("\[Kappa]"/.#2)&]
 ]
 
 
@@ -478,14 +630,16 @@ EOM = -1/r^2 D[r^2 \[Phi]D'[r],r]==("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha
 (*get analytic estimate for \[Phi]D in the small charge regime*)
 
 
-get\[Phi]DAnalyticEstimates[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_,\[Phi]g_:Capture`Vgrav] := Module[{niofr,npD,neD,\[Rho]S,\[Lambda]D},
+get\[Phi]DAnalyticEstimates[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_,\[Phi]g_:Capture`Vgrav] := Module[{niofr,npD,neD,\[Rho]S,\[Lambda]D,nC},
 niofr = 1/(mi^2 Sqrt[2 \[Pi]] \[Beta]D^2) nF (mi \[Beta]D)^(3/2) (2 mi vesc \[Beta]D+E^(1/2 mi vesc^2 \[Beta]D) Sqrt[2 \[Pi]] Sqrt[mi \[Beta]D]-E^(1/2 mi vesc^2 \[Beta]D) Sqrt[mi] Sqrt[2 \[Pi]] Sqrt[\[Beta]D] Erf[(Sqrt[mi] vesc Sqrt[\[Beta]D])/Sqrt[2]]);
 npD=niofr/.vesc->Sqrt[-((2 Vgp)/mi)]/.mi->mpD;
 neD=niofr/.vesc->Sqrt[-((2 Vge)/mi)]/.mi->meD;
 \[Rho]S = ("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha]](npD-neD)/.{Vgp->mpD \[Phi]g[r],Vge->meD \[Phi]g[r]};
 (*\[Lambda]D = (("e")^2/("\[Epsilon]0")\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge]))^(-1/2)/.{Vgp->mpD \[Phi]g[r],Vge->mpD \[Phi]g[r]};*)
 \[Lambda]D =(-(("e")^2/("\[Epsilon]0"))\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge])/.{Vgp->mpD \[Phi]g[r],Vge->meD \[Phi]g[r]})^(-1/2);
-<|"\[Phi]D"->\[Rho]S \[Lambda]D^2,"\[Rho]S"->\[Rho]S,"\[Lambda]D"->\[Lambda]D|>
+nC = (mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("rE")^3)) Boole["rE" - r > 0] - (npD-neD)/.Constants`SIConstRepl/.Constants`EarthRepl;
+
+<|"\[Phi]D"->\[Rho]S \[Lambda]D^2,"\[Rho]S"->\[Rho]S,"\[Lambda]D"->\[Lambda]D,"npD"->npD,"neD"->neD,"nC"->nC|>
 ]
 
 
@@ -509,6 +663,10 @@ get\[Phi]D[\[Phi]g_:Capture`Vgrav]:=Module[{\[Phi]S,\[Delta]\[Phi],\[Phi]Dh,\[Ph
 
 (* ::Subsubsection:: *)
 (*Check for Maxima*)
+
+
+(* ::Text:: *)
+(*this doesn't work because of some scope issues with the variable r*)
 
 
 Clear[checkforVeffMaxima]

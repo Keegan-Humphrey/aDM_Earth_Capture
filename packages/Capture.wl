@@ -27,6 +27,7 @@ ltor::usage = "";
 
 
 ExportToDir::usage = "";
+ExportDatFileToDir::usage = "";
 
 
 PlotPDist::usage = "";
@@ -199,11 +200,11 @@ Begin["`Private`"];
 Clear[v0to\[Beta]D]
 v0to\[Beta]D[v0_,meD_,mpD_]:=Module[{\[Beta]D,vpDmean,veDmean},
 (*
-v0 is the velocity corresponding to the temperature of the aDM particles. By equipartition: 3 Subscript[T, D] = 1/2(Subscript[m, Subscript[e, D]]Subscript[v^2, Subscript[e, D]]+Subscript[m, Subscript[p, D]]Subscript[v^2, Subscript[p, D]]) so we define 3 Subscript[T, D] = Overscript[m, _] Subscript[v^2, 0] 
+v0 is the velocity corresponding to the temperature of the aDM particles. By equipartition: 3/2 Subscript[T, D] = 1/2(Subscript[m, Subscript[e, D]]Subscript[v^2, Subscript[e, D]]+Subscript[m, Subscript[p, D]]Subscript[v^2, Subscript[p, D]]) so we define 3 Subscript[T, D] = Overscript[m, _] Subscript[v^2, 0] 
 *)
-\[Beta]D = 6/((meD + mpD)v0^2);
-vpDmean = Sqrt[3/(mpD \[Beta]D)];
-veDmean = Sqrt[3/(meD \[Beta]D)]; 
+\[Beta]D = 3/((meD + mpD)v0^2);
+vpDmean = Sqrt[3/( 2 mpD \[Beta]D)];
+veDmean = Sqrt[3/( 2 meD \[Beta]D)]; (*v0i for each species, not really the mean*)
 
 <|"\[Beta]D"->\[Beta]D,"v0"->v0,"vpDmean"->vpDmean,"veDmean"->veDmean|>
 ]
@@ -234,7 +235,7 @@ Region\[CapitalTheta][r_,regionindex_]:=Piecewise[{{1,("rcore"/.Constants`EarthR
 ltor[l_,bE_]:=Sqrt[bE^2+l^2]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Export to Directory*)
 
 
@@ -254,6 +255,28 @@ ndups++;
 
 If[(ndups<ndupsmax),Export[path[ndups],obj];Return[<|"path"->path[ndups],"directory"->directory|>,Module],Print["Too many files with this name in the specified directory."]];
 
+]
+
+
+(* ::Input::Initialization:: *)
+Clear[ExportDatFileToDir]
+ExportDatFileToDir[obj_,name_,subsubdirectory_:"subsubdirectory",subdirectory_:DateString[{"Day","_","Month","_","Year"}],ndupsmax_:500]:=Module[{directory,rootname,extension,path,ndups},
+directory=NotebookDirectory[]<>"Out/"<>subdirectory<>"/"<>subsubdirectory;
+(*{rootname,extension}=StringSplit[ToString@name,"."];*)
+rootname = name;
+
+If[!DirectoryQ[directory],CreateDirectory[directory]];
+
+ndups=0;
+path=directory<>"/"<>rootname<>"_"<>ToString[#]&;
+While[FileExistsQ[path[ndups]]&&ndups<=ndupsmax,
+ndups++;
+];
+
+(*If[(ndups<ndupsmax),Export[path[ndups],obj];*)
+If[(ndups<ndupsmax),Utilities`SaveIt[path[ndups],obj];Return[<|"path"->path[ndups],"directory"->directory|>,Module],Print["Too many files with this name in the specified directory."]];
+(*If[(ndups<ndupsmax),Check[Export[path[ndups],obj],SaveIt[StringSplit[path[ndups],"."][[1]],obj]];Return[<|"path"->path[ndups],"directory"->directory|>,Module],Print["Too many files with this name in the specified directory."]];
+*)
 ]
 
 
@@ -669,7 +692,7 @@ Print["rE"/.EarthRepl];
 (*MC Processes*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Gravitational Potential*)
 
 

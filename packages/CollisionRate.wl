@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-Needs["Dielectrics`"]
+(*Needs["Dielectrics`"]*)
 
 
 BeginPackage["CollisionRate`"];
@@ -10,7 +10,7 @@ BeginPackage["CollisionRate`"];
 (*The purpose of this package is to define modules for the calculation of collision rates of electrons in solids analytically*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Public Declarations*)
 
 
@@ -29,7 +29,21 @@ u\[Nu]::usage = "Dimensionless version of \[Nu] (for use with \[Epsilon]M)";
 \[Nu]ZM::usage = "Collision Rate from elastic scattering off nuclei and inelastic single phonon scattering";
 
 
-(* ::Section::Closed:: *)
+(* ::Text:: *)
+(*Subscript[\[Sigma], coul] - for aDM plasmas*)
+
+
+\[Sigma]coul::usage = "Coulomb Cross-section using Debeye energy for lower bound";
+
+
+(* ::Text:: *)
+(*Subscript[dE, coul]/dl - for aDM plasmas*)
+
+
+dEkdrcoul::usage = "Average energy loss per unit length using Debeye energy for lower bound";
+
+
+(* ::Section:: *)
 (*Private*)
 
 
@@ -81,6 +95,20 @@ u\[Nu][z_]:= Module[{\[Nu]t,u\[Nu]},
 
 
 \[Nu]ZM[params_,c_,\[CapitalTheta]_,T_]:=\[Nu]ZimanFaberLin[params]+\[Nu]PhononMarderLinT[params,c,\[CapitalTheta],T];
+
+
+(* ::Subsubsection:: *)
+(*Subscript[\[Sigma], coul] - for aDM plasmas*)
+
+
+\[Sigma]coul = ("\[HBar]")^2 ("c")^2 ("m\[Chi]")/("mT") \[Pi] ("\[Alpha]D")^2/Ekin^2 Log[ERmax/ERmin]/.{ERmax->4 ("mT" "m\[Chi]")/("mT"+"m\[Chi]")^2 Ekin,ERmin->(("\[HBar]")^3 ("c")^3 "\[Alpha]D" "nF" "\[Beta]D")/(2 "mT" ("c")^2)}/."\[Beta]D"->3/(2"mpD" ("v0")^2)/.Ekin->("m\[Chi]")/2 v^2
+
+
+(* ::Subsubsection:: *)
+(*Subscript[dE, coul]/dl - for aDM plasmas*)
+
+
+dEkdrcoul = ("\[HBar]")^2 ("c")^2 "nF" ("m\[Chi]")/("mT") \[Pi] ("\[Alpha]D")^2/Ekin Log[ERmax/ERmin]/.{ERmax->4 ("mT" "m\[Chi]")/("mT"+"m\[Chi]")^2 Ekin,ERmin->(("\[HBar]")^3 ("c")^3 "\[Alpha]D" "nF" "\[Beta]D")/(2 "mT" ("c")^2)}/."\[Beta]D"->3/(2"mpD" ("v0")^2)/.Ekin->("m\[Chi]")/2 v^2
 
 
 (* ::Section::Closed:: *)
