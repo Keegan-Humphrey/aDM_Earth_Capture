@@ -311,7 +311,7 @@ nc = nG - (npofr - neofr)/.Constants`SIConstRepl/.Constants`EarthRepl;
 
 
  Clear[binsearch]
-binsearch[f_,var_,domain_:{1,11},n_:20(*,ofmmin_:1,ofmmax_:13*)(*,LogQ_:True*)]:=Module[{midlist={},interval,fposQ,fmingrfmaxQ,mid,root,DEBUG=False},
+binsearch[f_,var_,domain_:{1,11},n_:20,DEBUG_:False(*,ofmmin_:1,ofmmax_:13*)(*,LogQ_:True*)]:=Module[{midlist={},interval,fposQ,fmingrfmaxQ,mid,root(*,DEBUG=True*)},
 		interval=domain;
 		
 		 (*Monitor[*)
@@ -395,14 +395,96 @@ Ncapof\[Delta][ncof\[Delta]andr_,\[Delta]t_?NumberQ]:= 4 \[Pi] NIntegrate[r^2 nc
 (*get \[Delta](Subscript[N, C])*)
 
 
-\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= \[Delta]t/.FindRoot[Evaluate@(Ncapof\[Delta][ncof\[Delta]andr,\[Delta]t]==NC),{\[Delta]t,(*10^-2*)10^-7,10^-10,1}]
+(*\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= \[Delta]t/.FindRoot[Evaluate@(Ncapof\[Delta][ncof\[Delta]andr,\[Delta]t]==NC),{\[Delta]t,(*10^-2*)10^-7,10^-10,1}]*)
+
+
+(*\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= binsearch[(*Evaluate@*)(Ncapof\[Delta][ncof\[Delta]andr,\[Delta]t]-NC),\[Delta]t,{-7,Log10[0.75]},30][[1]]*)
+
+
+(*\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= Module[{\[Delta]dom={-7,Log10[0.74]},N\[Delta]s=10,rmaxintrp,\[Delta]min,NCof\[Delta],NCof\[Delta]intrp},
+(*speed up \[Delta] root finding byinterpolating over rmax first*)
+
+Print["test1"];
+rmaxintrp = Interpolation[Table[{\[Delta]t,Log10@getrmax[ncof\[Delta]andr][10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s}],InterpolationOrder->1];
+
+Print["test2"];
+(*Print[Plot[rmaxintrp[\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}]];
+*)
+(*\[Delta]min = binsearch[10^rmaxintrp[\[Delta]t],\[Delta]t,{-1,\[Delta]dom[[2]]},30];
+
+Print[\[Delta]min];*)
+
+NCof\[Delta] = 4 \[Pi] NIntegrate[r^2 ncof\[Delta]andr/."\[Delta]"->#,{r,0,Evaluate[10^rmaxintrp[Log10[#]]]}]&;
+
+Print["test3"];
+
+(*Print@Table[Log10@NCof\[Delta][10^\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}];
+
+Print[((NCof\[Delta][#]-NC)&[\[Delta]t]/.\[Delta]t->10^(\[Delta]dom[[2]]))];
+
+(*Print[ListLinePlot[Table[Log10@NCof\[Delta][\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}]]];*)
+
+Print[NC];*)
+
+NCof\[Delta]intrp = Interpolation[Table[{\[Delta]t,Log10@NCof\[Delta][10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],Evaluate[(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s]}],InterpolationOrder->1];
+Print["test4"];
+(*Print[LogPlot[10^NCof\[Delta]intrp[\[Delta]t]-NC,{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}(*,PlotRange->{0,12}*),PlotRange->All]];
+*)
+(*Print@Table[{\[Delta]t,10^NCof\[Delta]intrp[10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s}];*)
+
+(*binsearch[(NCof\[Delta][\[Delta]t]-NC),\[Delta]t,\[Delta]dom,30][[1]]*)
+binsearch[10^NCof\[Delta]intrp[Log10@\[Delta]t]-NC,\[Delta]t,\[Delta]dom,30][[1]]
+]*)
+
+
+\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= Module[{\[Delta]dom={-7,Log10[1.5](*Log10[0.74]*)},N\[Delta]s=10,rmaxintrp,\[Delta]min,NCof\[Delta],\[Delta]minNC,NCof\[Delta]intrp},
+(*speed up \[Delta] root finding byinterpolating over rmax first*)
+
+(*Print["test1"];*)
+rmaxintrp = Interpolation[Table[{\[Delta]t,Log10@getrmax[ncof\[Delta]andr][10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s}],InterpolationOrder->1];
+
+(*Print["test2"];
+Print[Plot[rmaxintrp[\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}]];
+*)
+(*\[Delta]min = binsearch[10^rmaxintrp[\[Delta]t],\[Delta]t,{-1,\[Delta]dom[[2]]},30];
+
+Print[\[Delta]min];*)
+
+NCof\[Delta] = 4 \[Pi] NIntegrate[r^2 ncof\[Delta]andr/."\[Delta]"->#,{r,0,Evaluate[10^rmaxintrp[Log10[#]]]}]&;
+
+(*Print["test3"];
+*)
+(*Print@Table[Log10@NCof\[Delta][10^\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}];
+
+Print[((NCof\[Delta][#]-NC)&[\[Delta]t]/.\[Delta]t->10^(\[Delta]dom[[2]]))];
+
+(*Print[ListLinePlot[Table[Log10@NCof\[Delta][\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}]]];*)
+
+Print[NC];*)
+
+NCof\[Delta]intrp = Interpolation[Table[{\[Delta]t,NCof\[Delta][10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],Evaluate[(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s]}],InterpolationOrder->1];
+(*Print["test4"];
+Print[LogPlot[NCof\[Delta]intrp[\[Delta]t] - NC,{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}(*,PlotRange->{0,12}*),PlotRange->All]];
+Print[LogPlot[NCof\[Delta]intrp[\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}(*,PlotRange->{0,12}*),PlotRange->All]];
+
+\[Delta]minNC = binsearch[NCof\[Delta]intrp[Log10@\[Delta]t],\[Delta]t,{-2,\[Delta]dom[[2]]},100,True][[1]];
+Print[\[Delta]minNC];
+Print[NCof\[Delta]intrp[\[Delta]dom[[2]]]];
+
+Print[{rmaxintrp[Log10@\[Delta]minNC],NCof\[Delta]intrp[Log10@\[Delta]minNC]}];*)
+
+(*Print@Table[{\[Delta]t,10^NCof\[Delta]intrp[10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s}];*)
+
+(*binsearch[(NCof\[Delta][\[Delta]t]-NC),\[Delta]t,\[Delta]dom,30][[1]]*)
+binsearch[NCof\[Delta]intrp[Log10@\[Delta]t]-NC,\[Delta]t,\[Delta]dom,30][[1]]
+]
 
 
 (* ::Subsubsection:: *)
 (*get \[Delta] from a PDict*)
 
 
-get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NC,Ncapof\[Delta]table,\[Delta]t,rmax},
+(*get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NC,Ncapof\[Delta]table,\[Delta]t,rmax},
 (*The case of \[Delta]>1 still needs to be sorted out*)
 
 (*meD = "meD"/.pdict;
@@ -424,11 +506,31 @@ NC = "Nc"/.pdict/."nD"->nD;
 rmax=getrmax[nCap][\[Delta]t];
 
 <|"\[Delta]"->\[Delta]t,"rmax"->rmax,"NC"->NC,"meD"->meD,"mpD"->mpD,"\[Beta]D"->\[Beta]D,"nD"->nD,"v0"->v0,"\[Kappa]"->\[Kappa],"fD"->fD,"\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha]|>
+]*)
+
+
+get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NC,\[CapitalGamma]cap,\[CapitalGamma]evap,Ncapof\[Delta]table,\[Delta]t,rmax},
+
+{meD, mpD, \[Beta]D, v0, \[Kappa]}={"meD","mpD","\[Beta]D","v0","\[Kappa]"}/.pdict;
+
+nD =Capture`naDM[fD,meD+mpD];
+nCap=getncap[mpD, meD, \[Beta]D, nD, \[Alpha]Dby\[Alpha]];
+
+NC = "Nc"/.pdict/."nD"->nD;
+\[CapitalGamma]cap = "dNcMaxdt"/.pdict/."nD"->nD; (*capture rate averaged over Earth*)
+\[CapitalGamma]evap = "\[CapitalGamma]total"/.pdict;(*per particle evaporation rate averaged over Earth*)
+
+\[Delta]t=\[Delta]ofNcap[nCap,NC];
+rmax=getrmax[nCap][\[Delta]t];
+(*\[Delta]t={Print@#[[1]],#[[2]]}[[2]]&@AbsoluteTiming[\[Delta]ofNcap[nCap,NC]];
+rmax={Print@#[[1]],#[[2]]}[[2]]&@AbsoluteTiming[getrmax[nCap][\[Delta]t]];*)
+
+<|"\[Delta]"->\[Delta]t,"rmax"->rmax,"NC"->NC,"\[CapitalGamma]cap"->\[CapitalGamma]cap,"\[CapitalGamma]evap"->\[CapitalGamma]evap,"meD"->meD,"mpD"->mpD,"\[Beta]D"->\[Beta]D,"nD"->nD,"v0"->v0,"\[Kappa]"->\[Kappa],"fD"->fD,"\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha]|>
 ]
 
 
 (* ::Subsubsection::Closed:: *)
-(*get \[Delta] from a scan *)
+(*get \[Delta] from a scan  - deprecated*)
 
 
 Clear[Compute\[Delta]onScan]
@@ -463,7 +565,7 @@ return\[Delta]List
 
 
 (* ::Subsubsection::Closed:: *)
-(*Get \[Delta] Truth*)
+(*Get \[Delta] Truth  - deprecated*)
 
 
 Get\[Delta]Truth[\[Delta]Scan_]:=Module[{\[Delta]truthtable,\[Delta]outof\[Delta]intable,\[Delta]outof\[Delta]in,\[Delta]truth},
@@ -611,7 +713,7 @@ Gather[\[Delta]truthtable,("\[Kappa]"/.#1)==("\[Kappa]"/.#2)&]
 (*Potential outside the flat region*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Get EOM*)
 
 
@@ -626,7 +728,7 @@ EOM = -1/r^2 D[r^2 \[Phi]D'[r],r]==("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*get analytic estimate for \[Phi]D in the small charge regime*)
 
 
@@ -643,7 +745,7 @@ nC = (mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*get full \[Phi]D potential *)
 
 
@@ -661,7 +763,7 @@ get\[Phi]D[\[Phi]g_:Capture`Vgrav]:=Module[{\[Phi]S,\[Delta]\[Phi],\[Phi]Dh,\[Ph
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Check for Maxima*)
 
 
