@@ -100,6 +100,9 @@ get\[Phi]DAnalyticEstimates::usage = "";
 get\[Phi]D::usage = "";
 
 
+binsearch::usage = "";
+
+
 (* ::Section:: *)
 (*Private*)
 
@@ -300,6 +303,7 @@ neofr = niofr/.mi->meD/.vesc->Sqrt[If[#>0,#,0]&@(-2((mpD+meD)\[Phi]g[r]-"\[Delta
 nG = (mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("rE")^3)) Boole["rE" -r>0]/.Constants`SIConstRepl/.Constants`EarthRepl;
 nc = nG - (npofr - neofr)/.Constants`SIConstRepl/.Constants`EarthRepl;
 (*Re@*)nc (*nc can develop an imaginary part from vesc used in neofr if r>rmax.  This restrict nc to be real (as needed by the root finding functions), in reality it is 0 beyond there but this will give it a non-zero (but negative) value. So nc is only valid for r<=rmax. The restriction must be placed explicitly while evaluating the function. *)
+(*<|"npofr"->npofr,"neofr"->neofr,"nG"->nG,"nc"->nc|>*)
 ]
 
 
@@ -349,6 +353,9 @@ binsearch[f_,var_,domain_:{1,11},n_:20,DEBUG_:False(*,ofmmin_:1,ofmmax_:13*)(*,L
 
 
 getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-1,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&
+
+
+(*getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-4,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&*)
 
 
 (*getrmax[ncof\[Delta]andr_]:=10^Log10rmax/.FindRoot[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#/.r->10^Log10rmax),{Log10rmax,Log10@Evaluate[("rE")/(10 #)/.Constants`EarthRepl]},Method->"Secant"(*,MaxIterations->50,AccuracyGoal->10,PrecisionGoal->10*)]&*)
@@ -443,8 +450,8 @@ binsearch[10^NCof\[Delta]intrp[Log10@\[Delta]t]-NC,\[Delta]t,\[Delta]dom,30][[1]
 (*Print["test1"];*)
 rmaxintrp = Interpolation[Table[{\[Delta]t,Log10@getrmax[ncof\[Delta]andr][10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s}],InterpolationOrder->1];
 
-(*Print["test2"];
-Print[Plot[rmaxintrp[\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}]];
+(*Print["test2"];*)
+(*Print[Plot[rmaxintrp[\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}]];
 *)
 (*\[Delta]min = binsearch[10^rmaxintrp[\[Delta]t],\[Delta]t,{-1,\[Delta]dom[[2]]},30];
 
@@ -452,8 +459,8 @@ Print[\[Delta]min];*)
 
 NCof\[Delta] = 4 \[Pi] NIntegrate[r^2 ncof\[Delta]andr/."\[Delta]"->#,{r,0,Evaluate[10^rmaxintrp[Log10[#]]]}]&;
 
-(*Print["test3"];
-*)
+(*Print["test3"];*)
+
 (*Print@Table[Log10@NCof\[Delta][10^\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}];
 
 Print[((NCof\[Delta][#]-NC)&[\[Delta]t]/.\[Delta]t->10^(\[Delta]dom[[2]]))];
@@ -463,7 +470,8 @@ Print[((NCof\[Delta][#]-NC)&[\[Delta]t]/.\[Delta]t->10^(\[Delta]dom[[2]]))];
 Print[NC];*)
 
 NCof\[Delta]intrp = Interpolation[Table[{\[Delta]t,NCof\[Delta][10^\[Delta]t]},{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]],Evaluate[(\[Delta]dom[[2]]-\[Delta]dom[[1]])/N\[Delta]s]}],InterpolationOrder->1];
-(*Print["test4"];
+(*Print["test4"];*)
+(*
 Print[LogPlot[NCof\[Delta]intrp[\[Delta]t] - NC,{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}(*,PlotRange->{0,12}*),PlotRange->All]];
 Print[LogPlot[NCof\[Delta]intrp[\[Delta]t],{\[Delta]t,\[Delta]dom[[1]],\[Delta]dom[[2]]}(*,PlotRange->{0,12}*),PlotRange->All]];
 
@@ -680,22 +688,36 @@ Get\[Delta]DictTruth[\[Delta]Scan_]:=Module[{DEBUG=False,\[Delta]truthtable,\[De
 
 Monitor[Do[
 (*Print[i];*)
+(*Print["test 1"];*)
 \[Delta]outof\[Delta]intable =Table[{Log10@"\[Delta]"/.\[Delta]Scan[[j]],Log10@"\[Delta]"/.Flatten[\[Delta]Scan[[j]]["\[Delta]table"]][[i]]},{j,Length[\[Delta]Scan]}];
 (*Print[\[Delta]outof\[Delta]intable];*)
 \[Delta]outof\[Delta]in = Interpolation[\[Delta]outof\[Delta]intable,InterpolationOrder->1];
-\[Delta]truth = \[Delta]/.FindRoot[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],{\[Delta],0.01}];
+(*\[Delta]truth = \[Delta]/.FindRoot[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],{\[Delta],0.01}]*)
+\[Delta]truth = binsearch[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],\[Delta],{-5,Log10[1.5]}][[1]];
+
+(*Print["test 2"];*)
 
 \[Delta]Scantruth = Flatten[\[Delta]Scan[[1]]["\[Delta]table"]][[i]];
 \[Delta]Scantruth["\[Delta]"]=\[Delta]truth;
 
+(*Print["test 3"];*)
+
 (*Print[\[Delta]truth];
 Print[Flatten[\[Delta]Scan[[1]]["\[Delta]table"]][[i]]];
+
 Print["Before"];*)
 
+(*Print[\[Delta]Scantruth];
+Print[#&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth)];
+(*Print[getrmax[getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth][\[Delta]truth]]*)
+Print@Ncapof\[Delta][#,\[Delta]truth]&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*));
+Print@getrmax[#][\[Delta]truth]&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*));*)
 (*{\[Delta]Scantruth["rmax"],\[Delta]Scantruth["NC"]}={getrmax[#]["\[Delta]"],Ncapof\[Delta][#,"\[Delta]"]}&@getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*);*)
 {\[Delta]Scantruth["rmax"],\[Delta]Scantruth["NC"]}={getrmax[#][\[Delta]truth],Ncapof\[Delta][#,\[Delta]truth]}&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*));
 
 (*Print["After"];*)
+
+(*Print["test 4"];*)
 
 AppendTo[\[Delta]Scantruth,get\[Phi]DAnalyticEstimates["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth];
 
@@ -703,7 +725,7 @@ If[DEBUG,If[(#[[1]]==13&&#[[2]]==-13)&@(Log10@{"mpD" ("c")^2/("JpereV"),"\[Kappa
 
 AppendTo[\[Delta]truthtable,\[Delta]Scantruth];
 
-,{i,Length[Flatten[\[Delta]Scan[[1]]["\[Delta]table"]]]}],{i}];(*assuming all \[Delta]tables have the same ordering size*)
+,{i,(*1*)Length[Flatten[\[Delta]Scan[[1]]["\[Delta]table"]]]}],{i}];(*assuming all \[Delta]tables have the same ordering size*)
 
 Gather[\[Delta]truthtable,("\[Kappa]"/.#1)==("\[Kappa]"/.#2)&]
 ]
@@ -728,7 +750,7 @@ EOM = -1/r^2 D[r^2 \[Phi]D'[r],r]==("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha
 ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*get analytic estimate for \[Phi]D in the small charge regime*)
 
 
@@ -745,7 +767,7 @@ nC = (mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("
 ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*get full \[Phi]D potential *)
 
 
