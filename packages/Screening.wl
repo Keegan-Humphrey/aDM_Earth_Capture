@@ -315,7 +315,7 @@ nc = nG - (npofr - neofr)/.Constants`SIConstRepl/.Constants`EarthRepl;
 
 
  Clear[binsearch]
-binsearch[f_,var_,domain_:{1,11},n_:20,DEBUG_:False(*,ofmmin_:1,ofmmax_:13*)(*,LogQ_:True*)]:=Module[{midlist={},interval,fposQ,fmingrfmaxQ,mid,root(*,DEBUG=True*)},
+binsearch[f_,var_,domain_:{1,11},n_:20,DEBUG_:False(*,ofmmin_:1,ofmmax_:13*)(*,LogQ_:True*)]:=Module[{midlist={},interval,fposQ,fmingrfmaxQ,mid,root,DEBUG=False},
 		interval=domain;
 		
 		 (*Monitor[*)
@@ -346,16 +346,26 @@ binsearch[f_,var_,domain_:{1,11},n_:20,DEBUG_:False(*,ofmmin_:1,ofmmax_:13*)(*,L
 			
 			(*,k];*)
 			
-			If[DEBUG,Print[ListPlot[midlist,PlotRange->All]]];
+		If[DEBUG,Print[ListPlot[midlist,PlotRange->All]]];
+		
 		root = 10^mid;
-			N[{root,f/.var->root}]
+		
+		(*If[#<0,Print[#]]&@(f/.var->root);*)
+		
+		(*Print@(f/.var->root);
+		Print[root];*)
+		
+		N[{root,f/.var->root}]
 	]
 
 
-getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-1,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&
+(*getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-1,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&*)
 
 
-(*getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-4,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&*)
+(*getrmax[ncof\[Delta]andr_]:=binsearch[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-2,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&*)
+
+
+getrmax[ncof\[Delta]andr_]:=binsearch[(*Abs@*)(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#),r,{Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]-2,Log10@Evaluate[("rE")/(2 #)/.Constants`EarthRepl]+1},30][[1]]&
 
 
 (*getrmax[ncof\[Delta]andr_]:=10^Log10rmax/.FindRoot[Abs@(*Re@*)(ncof\[Delta]andr/."\[Delta]"->#/.r->10^Log10rmax),{Log10rmax,Log10@Evaluate[("rE")/(10 #)/.Constants`EarthRepl]},Method->"Secant"(*,MaxIterations->50,AccuracyGoal->10,PrecisionGoal->10*)]&*)
@@ -444,7 +454,7 @@ binsearch[10^NCof\[Delta]intrp[Log10@\[Delta]t]-NC,\[Delta]t,\[Delta]dom,30][[1]
 ]*)
 
 
-\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= Module[{\[Delta]dom={-7,Log10[1.5](*Log10[0.74]*)},N\[Delta]s=10,rmaxintrp,\[Delta]min,NCof\[Delta],\[Delta]minNC,NCof\[Delta]intrp},
+\[Delta]ofNcap[ncof\[Delta]andr_,NC_]:= Module[{\[Delta]dom={-7,(*Log10[1.5]*)(*Log10[0.75]*)Log10[0.7494]},N\[Delta]s=10,rmaxintrp,\[Delta]min,NCof\[Delta],\[Delta]minNC,NCof\[Delta]intrp},
 (*speed up \[Delta] root finding byinterpolating over rmax first*)
 
 (*Print["test1"];*)
@@ -517,7 +527,10 @@ rmax=getrmax[nCap][\[Delta]t];
 ]*)
 
 
-get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NC,\[CapitalGamma]cap,\[CapitalGamma]evap,Ncapof\[Delta]table,\[Delta]t,rmax},
+InterpolationFunctionQ[expr_]:=Head[expr]===InterpolatingFunction
+
+
+get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05,\[Delta]ofNcapintrp_:Null,\[Delta]dom_:{-5,Log10[1.5]}]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NC,\[CapitalGamma]cap,\[CapitalGamma]evap,Ncapof\[Delta]table,\[Delta]t,rmax},
 
 {meD, mpD, \[Beta]D, v0, \[Kappa]}={"meD","mpD","\[Beta]D","v0","\[Kappa]"}/.pdict;
 
@@ -528,7 +541,8 @@ NC = "Nc"/.pdict/."nD"->nD;
 \[CapitalGamma]cap = "dNcMaxdt"/.pdict/."nD"->nD; (*capture rate averaged over Earth*)
 \[CapitalGamma]evap = "\[CapitalGamma]total"/.pdict;(*per particle evaporation rate averaged over Earth*)
 
-\[Delta]t=\[Delta]ofNcap[nCap,NC];
+(*\[Delta]t=\[Delta]ofNcap[nCap,NC];*)
+\[Delta]t=If[!InterpolationFunctionQ[\[Delta]ofNcapintrp],\[Delta]ofNcap[nCap,NC],binsearch[\[Delta]ofNcapintrp[Log10@\[Delta]t]-NC,\[Delta]t,\[Delta]dom][[1]]];
 rmax=getrmax[nCap][\[Delta]t];
 (*\[Delta]t={Print@#[[1]],#[[2]]}[[2]]&@AbsoluteTiming[\[Delta]ofNcap[nCap,NC]];
 rmax={Print@#[[1]],#[[2]]}[[2]]&@AbsoluteTiming[getrmax[nCap][\[Delta]t]];*)
@@ -596,12 +610,30 @@ AppendTo[\[Delta]truthtable,{\[Delta]Scan[[1]]["\[Delta]table"][[i,1]],\[Delta]S
 (*get \[Delta] Dict from a scan *)
 
 
+Clear[GetNcapof\[Delta]Interpolation]
+GetNcapof\[Delta]Interpolation[mpD_, meD_, \[Beta]D_,fD_,\[Alpha]Dby\[Alpha]_,\[Delta]dom_:{-5,(*Log10[0.7494]*)Log10[1.5]}]:=Module[{nD,ncof\[Delta]andr,N\[Delta]=(*10*)5,\[Delta]points},
+
+nD =Capture`naDM[fD,meD+mpD];
+ncof\[Delta]andr=getncap[mpD, meD, \[Beta]D, nD, \[Alpha]Dby\[Alpha]];
+
+(*\[Delta]points = Subdivide[\[Delta]dom[[1]],\[Delta]dom[[2]],N\[Delta]];*)
+\[Delta]points = Table[Sign[i]i^2,{i,Subdivide[Sign[\[Delta]dom[[1]]]Sqrt[Abs@\[Delta]dom[[1]]],Sign[\[Delta]dom[[2]]]Sqrt[Abs@\[Delta]dom[[2]]],N\[Delta]]}]; (*weight the larger values of \[Delta] more heavily, since the \[Delta] is linear in Subscript[N, C] for small \[Delta]*)
+
+(*Interpolation[Table[{log\[Delta],Ncapof\[Delta][ncof\[Delta]andr,10^log\[Delta]]},{log\[Delta],Subdivide[\[Delta]dom[[1]],\[Delta]dom[[2]],N\[Delta]]}],InterpolationOrder->1]*)
+Interpolation[Table[{log\[Delta],Ncapof\[Delta][ncof\[Delta]andr,10^log\[Delta]]},{log\[Delta],\[Delta]points}],InterpolationOrder->1]
+]
+
+
 Clear[Compute\[Delta]DictonScan]
-Compute\[Delta]DictonScan[\[Delta]List_,v0ind_:1,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{return\[Delta]List,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table},
+Compute\[Delta]DictonScan[\[Delta]List_,v0ind_:1,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{return\[Delta]List,\[Delta]dom,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table,\[Delta]ofNcapintrp},
 (*
 \[Delta]List - of the form: {<|"\[Delta]"->\[Delta],"file"->"\\path\\to\\file"|>,...}
 *)
 return\[Delta]List ={};
+
+(*need to get \[Delta]dom and pass it*)
+
+\[Delta]dom = {Log10@Min[#],Log10@Max[#]}&@("\[Delta]"/.\[Delta]List);
 
 Monitor[
 Do[
@@ -615,13 +647,22 @@ PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;,v0ind,;;]];
 
 (*\[Delta]table=Flatten[Table[Table[{Log10[("mpD" ("c")^2)/("JpereV")]/.PDict[[i,j]]/.Constants`SIConstRepl,Log10["\[Kappa]"]/.PDict[[i,j]],Log10@"\[Delta]"/.get\[Delta]fromPDict[PDict[[i,j]]]},{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];*)
 (*\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]]],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],\[Alpha]Dby\[Alpha],fD];*)
-\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]],\[Alpha]Dby\[Alpha],fD],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],\[Alpha]Dby\[Alpha],fD];
+
+(*\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]],\[Alpha]Dby\[Alpha],fD],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],\[Alpha]Dby\[Alpha],fD];*)
+(*\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]],\[Alpha]Dby\[Alpha],fD],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}]];*)
+\[Delta]table=Flatten[Table[
+			\[Delta]ofNcapintrp = GetNcapof\[Delta]Interpolation["mpD"/.#,"meD"/.#,"\[Beta]D"/.#,fD,\[Alpha]Dby\[Alpha],\[Delta]dom]&[PDict[[i,1]]];
+			(*\[Delta]ofNcapintrp = {Print[#[[1]]],#[[2]]}[[2]]&@AbsoluteTiming@GetNcapof\[Delta]Interpolation["mpD"/.#,"meD"/.#,"\[Beta]D"/.#,fD,\[Alpha]Dby\[Alpha],\[Delta]dom]&[PDict[[i,1]]];*)
+			Table[get\[Delta]fromPDict[PDict[[i,j]],\[Alpha]Dby\[Alpha],fD,\[Delta]ofNcapintrp,\[Delta]dom]
+				,{j,(*1*)Dimensions[PDict][[2]](*\[Kappa]*)}],
+			{i,(*1*)Dimensions[PDict][[1]](*mpD*)}]];
+			(*Can interpolate of getNcap in this \[Delta]table loop. We just need to put it in the mass loop (and make sure it is the outer one so we can use it for all \[Kappa])*)
 
 AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
 AppendTo[return\[Delta]List,\[Delta]Listcurrent];
 
 ,{\[Delta],Length[\[Delta]List]}];
-,{\[Delta],j,i}];
+,{\[Delta],i,j}];
 
 Print["Finished running the PDicts for: \n{v0,meD/mpD}=",First@First[{"v0","meD"/"mpD"}/.PDict]];
 
@@ -641,7 +682,7 @@ Print["Running: ",{v0ind,\[Alpha]Dby\[Alpha],fD}];
 (*Print[\[Delta]Dict];*)
 (*SaveIt[NotebookDirectory[]<>StringForm["\[Delta]Dict_``_aDbya_``_fD_``",{v0ind,\[Alpha]Dby\[Alpha],fD}],\[Delta]Dict];*)
 Capture`ExportDatFileToDir[\[Delta]Dict,ToString@StringForm["\[Delta]Dict_``_aDbya_``_fD_``",v0ind,\[Alpha]Dby\[Alpha],fD],"\[Delta]Dicts"]
-,{v0ind,4},{\[Alpha]Dby\[Alpha],\[Alpha]Dby\[Alpha]s},{fD,fDs}
+,{v0ind,4(*1*)},{\[Alpha]Dby\[Alpha],\[Alpha]Dby\[Alpha]s},{fD,fDs}
 ]
 ]
 
@@ -680,9 +721,10 @@ AppendTo[\[Delta]truthtable,\[Delta]Scantruth];
 
 
 Clear[Get\[Delta]DictTruth]
-Get\[Delta]DictTruth[\[Delta]Scan_]:=Module[{DEBUG=False,\[Delta]truthtable,\[Delta]outof\[Delta]intable,\[Delta]outof\[Delta]in,\[Delta]truth,\[Delta]Scantruth},
+Get\[Delta]DictTruth[\[Delta]Scan_]:=Module[{DEBUG=False,\[Delta]truthtable,\[Delta]outof\[Delta]intable,\[Delta]outof\[Delta]in,\[Delta]truth,\[Delta]Scantruth,keytable,keyintrp,keytruth},
 
 (*take the \[Delta]Scans, and replace \[Delta] by the truth value*)
+(**)
 
 \[Delta]truthtable ={};
 
@@ -693,7 +735,7 @@ Monitor[Do[
 (*Print[\[Delta]outof\[Delta]intable];*)
 \[Delta]outof\[Delta]in = Interpolation[\[Delta]outof\[Delta]intable,InterpolationOrder->1];
 (*\[Delta]truth = \[Delta]/.FindRoot[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],{\[Delta],0.01}]*)
-\[Delta]truth = binsearch[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],\[Delta],{-5,Log10[1.5]}][[1]];
+\[Delta]truth = binsearch[10^\[Delta]outof\[Delta]in[Log10@\[Delta]]-\[Delta],\[Delta],{-5,(*Log10[1.5]*)(*Log10[0.75]*)Log10[0.7494]}][[1]];
 
 (*Print["test 2"];*)
 
@@ -714,6 +756,15 @@ Print@Ncapof\[Delta][#,\[Delta]truth]&@(getncap["mpD","meD","\[Beta]D","nD","\[A
 Print@getrmax[#][\[Delta]truth]&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*));*)
 (*{\[Delta]Scantruth["rmax"],\[Delta]Scantruth["NC"]}={getrmax[#]["\[Delta]"],Ncapof\[Delta][#,"\[Delta]"]}&@getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*);*)
 {\[Delta]Scantruth["rmax"],\[Delta]Scantruth["NC"]}={getrmax[#][\[Delta]truth],Ncapof\[Delta][#,\[Delta]truth]}&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.\[Delta]Scantruth(*//Quiet*));
+
+
+
+(*(\[Delta]Scantruth[#]&/@{"\[CapitalGamma]evap","\[CapitalGamma]cap"})*)\[Delta]Scantruth= ReplacePart[(*Flatten[\[Delta]Scan[[1]]["\[Delta]table"]][[i]]*)\[Delta]Scantruth,#->With[{key=#},
+keytable =Table[{Log10@"\[Delta]"/.\[Delta]Scan[[j]],Log10@Max[(key/.Flatten[\[Delta]Scan[[j]]["\[Delta]table"]][[i]]),10^-100]},{j,Length[\[Delta]Scan]}];
+keyintrp = Interpolation[keytable,InterpolationOrder->1];
+keytruth = 10^keyintrp[Log10[\[Delta]truth]]]&/@{"\[CapitalGamma]evap","\[CapitalGamma]cap"}];
+
+(*If[i==1,Print@\[Delta]Scantruth];*)
 
 (*Print["After"];*)
 
