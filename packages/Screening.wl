@@ -2,6 +2,7 @@
 
 Needs["Constants`",NotebookDirectory[]<>"/Constants.wl"]
 Needs["Capture`",NotebookDirectory[]<>"/Capture.wl"]
+Needs["ThermTimescales`",NotebookDirectory[]<>"/ThermTimescales.wl"]
 
 
 BeginPackage["Screening`"];
@@ -315,7 +316,7 @@ nc = nG - (npofr - neofr)/.Constants`SIConstRepl/.Constants`EarthRepl;
 
 
  Clear[binsearch]
-binsearch[f_,var_,domain_:{1,11},n_:20,DEBUG_:False(*,ofmmin_:1,ofmmax_:13*)(*,LogQ_:True*)]:=Module[{midlist={},interval,fposQ,fmingrfmaxQ,mid,root,DEBUG=False},
+binsearch[f_,var_,domain_:{1,11},n_:20,DEBUG_:False(*,ofmmin_:1,ofmmax_:13*)(*,LogQ_:True*)]:=Module[{midlist={},interval,fposQ,fmingrfmaxQ,mid,root(*,DEBUG=False*)},
 		interval=domain;
 		
 		 (*Monitor[*)
@@ -625,7 +626,7 @@ Interpolation[Table[{log\[Delta],Ncapof\[Delta][ncof\[Delta]andr,10^log\[Delta]]
 
 
 Clear[Compute\[Delta]DictonScan]
-Compute\[Delta]DictonScan[\[Delta]List_,v0ind_:1,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{return\[Delta]List,\[Delta]dom,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table,\[Delta]ofNcapintrp},
+Compute\[Delta]DictonScan[\[Delta]List_,\[Sigma]dicte_,\[Sigma]dictNuc_,v0ind_:1,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{return\[Delta]List,\[Delta]dom,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table,\[Delta]ofNcapintrp},
 (*
 \[Delta]List - of the form: {<|"\[Delta]"->\[Delta],"file"->"\\path\\to\\file"|>,...}
 *)
@@ -642,6 +643,12 @@ Do[
 
 (*PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;9,v0ind,;;]];*)
 PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;,v0ind,;;]];
+
+Print["test test"];
+
+ThermTimescales`Get\[Tau]sFromPDict[PDict,"\[Delta]"/.\[Delta]Listcurrent,\[Sigma]dicte,\[Sigma]dictNuc];
+
+Return[Print["Test over"],Module];
 
 {v0, mratio} = {"v0","meD"/"mpD"}/.First@First[PDict];
 
@@ -662,7 +669,12 @@ AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD
 AppendTo[return\[Delta]List,\[Delta]Listcurrent];
 
 ,{\[Delta],Length[\[Delta]List]}];
+
+(*Return[Print["Test over"],Module];*)
+
 ,{\[Delta],i,j}];
+
+(*Return[Print["Test over"],Module];*)
 
 Print["Finished running the PDicts for: \n{v0,meD/mpD}=",First@First[{"v0","meD"/"mpD"}/.PDict]];
 
@@ -801,7 +813,7 @@ EOM = -1/r^2 D[r^2 \[Phi]D'[r],r]==("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*get analytic estimate for \[Phi]D in the small charge regime*)
 
 
@@ -818,7 +830,7 @@ nC = (mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*get full \[Phi]D potential *)
 
 
