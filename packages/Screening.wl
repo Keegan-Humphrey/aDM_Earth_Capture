@@ -531,16 +531,25 @@ rmax=getrmax[nCap][\[Delta]t];
 InterpolationFunctionQ[expr_]:=Head[expr]===InterpolatingFunction
 
 
-get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05,\[Delta]ofNcapintrp_:Null,\[Delta]dom_:{-5,Log10[1.5]}]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NC,\[CapitalGamma]cap,\[CapitalGamma]evap,Ncapof\[Delta]table,\[Delta]t,rmax},
+get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05,\[Delta]ofNcapintrp_:Null,\[Delta]dom_:{-5,Log10[1.5]}]:=Module[{meD,mpD,\[Beta]D,v0,\[Kappa],nD,nCap,NCE,NC,\[CapitalGamma]cap,\[CapitalGamma]evap,\[CapitalGamma]capE,\[CapitalGamma]evapE,log\[Tau]s,Ncapof\[Delta]table,\[Delta]t,rmax},
 
 {meD, mpD, \[Beta]D, v0, \[Kappa]}={"meD","mpD","\[Beta]D","v0","\[Kappa]"}/.pdict;
 
 nD =Capture`naDM[fD,meD+mpD];
 nCap=getncap[mpD, meD, \[Beta]D, nD, \[Alpha]Dby\[Alpha]];
 
-NC = "Nc"/.pdict/."nD"->nD;
-\[CapitalGamma]cap = "dNcMaxdt"/.pdict/."nD"->nD; (*capture rate averaged over Earth*)
-\[CapitalGamma]evap = "\[CapitalGamma]total"/.pdict;(*per particle evaporation rate averaged over Earth*)
+NCE = "Nc"/.pdict/."nD"->nD
+NC = "Nctot"/.pdict/."nD"->nD;
+
+(*\[CapitalGamma]cap = "dNcMaxdt"/.pdict/."nD"->nD; (*capture rate averaged over Earth*)
+\[CapitalGamma]evap = "\[CapitalGamma]total"/.pdict;(*per particle evaporation rate averaged over Earth*)*)
+
+\[CapitalGamma]cap = "\[CapitalGamma]captot"/.pdict/."nD"->nD; (*total capture rate - including plasma*)
+\[CapitalGamma]evap = "\[CapitalGamma]evaptot"/.pdict;(*per particle evaporation rate - including plasma*)
+\[CapitalGamma]capE = "\[CapitalGamma]capE"/.pdict/."nD"->nD; (*total capture rate - Earth only*)
+\[CapitalGamma]evapE = "\[CapitalGamma]evapE"/.pdict;(*per particle evaporation rate - Earth only*)
+
+log\[Tau]s = "log\[Tau]s"/.pdict;
 
 (*\[Delta]t=\[Delta]ofNcap[nCap,NC];*)
 \[Delta]t=If[!InterpolationFunctionQ[\[Delta]ofNcapintrp],\[Delta]ofNcap[nCap,NC],binsearch[\[Delta]ofNcapintrp[Log10@\[Delta]t]-NC,\[Delta]t,\[Delta]dom][[1]]];
@@ -548,7 +557,7 @@ rmax=getrmax[nCap][\[Delta]t];
 (*\[Delta]t={Print@#[[1]],#[[2]]}[[2]]&@AbsoluteTiming[\[Delta]ofNcap[nCap,NC]];
 rmax={Print@#[[1]],#[[2]]}[[2]]&@AbsoluteTiming[getrmax[nCap][\[Delta]t]];*)
 
-<|"\[Delta]"->\[Delta]t,"rmax"->rmax,"NC"->NC,"\[CapitalGamma]cap"->\[CapitalGamma]cap,"\[CapitalGamma]evap"->\[CapitalGamma]evap,"meD"->meD,"mpD"->mpD,"\[Beta]D"->\[Beta]D,"nD"->nD,"v0"->v0,"\[Kappa]"->\[Kappa],"fD"->fD,"\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha]|>
+<|"\[Delta]"->\[Delta]t,"rmax"->rmax,"NCE"->NCE,"NC"->NC,"\[CapitalGamma]cap"->\[CapitalGamma]cap,"\[CapitalGamma]evap"->\[CapitalGamma]evap,"\[CapitalGamma]capE"->\[CapitalGamma]capE,"\[CapitalGamma]evapE"->\[CapitalGamma]evapE,"log\[Tau]s"->log\[Tau]s,"meD"->meD,"mpD"->mpD,"\[Beta]D"->\[Beta]D,"nD"->nD,"v0"->v0,"\[Kappa]"->\[Kappa],"fD"->fD,"\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha]|>
 ]
 
 
@@ -626,6 +635,67 @@ Interpolation[Table[{log\[Delta],Ncapof\[Delta][ncof\[Delta]andr,10^log\[Delta]]
 
 
 Clear[Compute\[Delta]DictonScan]
+Compute\[Delta]DictonScan[\[Delta]List_,\[Sigma]dicte_,\[Sigma]dictNuc_,v0ind_:1,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{return\[Delta]List,\[Delta]dom,\[Delta]Listcurrent,PDict,pdictwtherm,v0,mratio,\[Delta]table,\[Delta]ofNcapintrp},
+(*
+\[Delta]List - of the form: {<|"\[Delta]"->\[Delta],"file"->"\\path\\to\\file"|>,...}
+*)
+return\[Delta]List ={};
+
+(*need to get \[Delta]dom and pass it*)
+
+\[Delta]dom = {Log10@Min[#],Log10@Max[#]}&@("\[Delta]"/.\[Delta]List);
+
+Monitor[
+Do[
+
+\[Delta]Listcurrent = \[Delta]List[[\[Delta]]];
+
+(*PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;9,v0ind,;;]];*)
+PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;,v0ind,;;]];
+
+Print["test test"];
+
+pdictwtherm = ThermTimescales`Get\[Tau]sFromPDict[PDict,"\[Delta]"/.\[Delta]Listcurrent,\[Sigma]dicte,\[Sigma]dictNuc,\[Alpha]Dby\[Alpha],fD];
+
+Return[Print["Test over"],Module];
+
+{v0, mratio} = {"v0","meD"/"mpD"}/.First@First[PDict];
+
+(*\[Delta]table=Flatten[Table[Table[{Log10[("mpD" ("c")^2)/("JpereV")]/.PDict[[i,j]]/.Constants`SIConstRepl,Log10["\[Kappa]"]/.PDict[[i,j]],Log10@"\[Delta]"/.get\[Delta]fromPDict[PDict[[i,j]]]},{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],1];*)
+(*\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]]],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],\[Alpha]Dby\[Alpha],fD];*)
+
+(*\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]],\[Alpha]Dby\[Alpha],fD],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}],\[Alpha]Dby\[Alpha],fD];*)
+(*\[Delta]table=Flatten[Table[Table[get\[Delta]fromPDict[PDict[[i,j]],\[Alpha]Dby\[Alpha],fD],{i,Dimensions[PDict][[1]]}],{j,Dimensions[PDict][[2]]}]];*)
+\[Delta]table=Flatten[Table[
+			\[Delta]ofNcapintrp = GetNcapof\[Delta]Interpolation["mpD"/.#,"meD"/.#,"\[Beta]D"/.#,fD,\[Alpha]Dby\[Alpha],\[Delta]dom]&[pdictwtherm[[i,1]]];
+			(*\[Delta]ofNcapintrp = {Print[#[[1]]],#[[2]]}[[2]]&@AbsoluteTiming@GetNcapof\[Delta]Interpolation["mpD"/.#,"meD"/.#,"\[Beta]D"/.#,fD,\[Alpha]Dby\[Alpha],\[Delta]dom]&[PDict[[i,1]]];*)
+			Table[get\[Delta]fromPDict[pdictwtherm[[i,j]],\[Alpha]Dby\[Alpha],fD,\[Delta]ofNcapintrp,\[Delta]dom]
+				,{j,(*1*)Dimensions[pdictwtherm][[2]](*\[Kappa]*)}],
+			{i,(*1*)Dimensions[pdictwtherm][[1]](*mpD*)}]];
+			(*Can interpolate of getNcap in this \[Delta]table loop. We just need to put it in the mass loop (and make sure it is the outer one so we can use it for all \[Kappa])*)
+
+AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
+AppendTo[return\[Delta]List,\[Delta]Listcurrent];
+
+,{\[Delta],Length[\[Delta]List]}];
+
+(*Return[Print["Test over"],Module];*)
+
+,{\[Delta],i,j}];
+
+(*Return[Print["Test over"],Module];*)
+
+Print["Finished running the PDicts for: \n{v0,meD/mpD}=",First@First[{"v0","meD"/"mpD"}/.pdictwtherm]];
+
+return\[Delta]List
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Compute\[Delta]dictonscan - old*)
+
+
+(*Clear[Compute\[Delta]DictonScan]
 Compute\[Delta]DictonScan[\[Delta]List_,\[Sigma]dicte_,\[Sigma]dictNuc_,v0ind_:1,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{return\[Delta]List,\[Delta]dom,\[Delta]Listcurrent,PDict,v0,mratio,\[Delta]table,\[Delta]ofNcapintrp},
 (*
 \[Delta]List - of the form: {<|"\[Delta]"->\[Delta],"file"->"\\path\\to\\file"|>,...}
@@ -646,7 +716,7 @@ PDict= Utilities`ReadIt[\[Delta]Listcurrent["file"]][[;;,v0ind,;;]];
 
 Print["test test"];
 
-ThermTimescales`Get\[Tau]sFromPDict[PDict,"\[Delta]"/.\[Delta]Listcurrent,\[Sigma]dicte,\[Sigma]dictNuc];
+pdictwtherm = ThermTimescales`Get\[Tau]sFromPDict[PDict,"\[Delta]"/.\[Delta]Listcurrent,\[Sigma]dicte,\[Sigma]dictNuc,\[Alpha]Dby\[Alpha],fD];
 
 Return[Print["Test over"],Module];
 
@@ -679,7 +749,7 @@ AppendTo[return\[Delta]List,\[Delta]Listcurrent];
 Print["Finished running the PDicts for: \n{v0,meD/mpD}=",First@First[{"v0","meD"/"mpD"}/.PDict]];
 
 return\[Delta]List
-]
+]*)
 
 
 (* ::Subsubsection:: *)
@@ -774,7 +844,7 @@ Print@getrmax[#][\[Delta]truth]&@(getncap["mpD","meD","\[Beta]D","nD","\[Alpha]D
 (*(\[Delta]Scantruth[#]&/@{"\[CapitalGamma]evap","\[CapitalGamma]cap"})*)\[Delta]Scantruth= ReplacePart[(*Flatten[\[Delta]Scan[[1]]["\[Delta]table"]][[i]]*)\[Delta]Scantruth,#->With[{key=#},
 keytable =Table[{Log10@"\[Delta]"/.\[Delta]Scan[[j]],Log10@Max[(key/.Flatten[\[Delta]Scan[[j]]["\[Delta]table"]][[i]]),10^-100]},{j,Length[\[Delta]Scan]}];
 keyintrp = Interpolation[keytable,InterpolationOrder->1];
-keytruth = 10^keyintrp[Log10[\[Delta]truth]]]&/@{"\[CapitalGamma]evap","\[CapitalGamma]cap"}];
+keytruth = 10^keyintrp[Log10[\[Delta]truth]]]&/@{"\[CapitalGamma]evap","\[CapitalGamma]cap","\[CapitalGamma]evapE","\[CapitalGamma]capE","NCE"}];
 
 (*If[i==1,Print@\[Delta]Scantruth];*)
 

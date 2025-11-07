@@ -68,7 +68,7 @@ Begin["`Private`"];
 
 (* ::Input::Initialization:: *)
 Clear[Get\[Tau]C]
-Get\[Tau]C[Logm_,v0kms_?NumericQ,\[Delta]t_:10^-4]:=Module[{ncap,ncapofr,Ntot,rmax,rat,ravg,\[Tau]relCintegrand,\[Tau]relC,meDbympD=10^-4,fD=0.05,\[Alpha]Dby\[Alpha]=1,DEBUG=False},
+Get\[Tau]C[Logm_,v0kms_?NumericQ,\[Delta]t_:10^-4]:=Module[{ncap,ncapofr,rmax,Ntot,(*mTs,vrels,*)rat,ravg,\[Tau]relCintegrand,\[Tau]relC,meDbympD=10^-4,fD=0.05,\[Alpha]Dby\[Alpha]=1,DEBUG=False},
 ncap = Screening`getncap["mpD","meD","\[Beta]D","nD",\[Alpha]Dby\[Alpha]]/."nD"->Capture`naDM[fD,"mpD"+"meD"]/."\[Beta]D"->(*3/("mpD"("v0")^2)*)3 /("mpD" ("v0")^2)/.{Private`v->"v0"}/."v0"->v0kms 10^3/."meD"->"mpD"meDbympD/."mpD"->("JpereV")/("c")^2 10^Logm/.Constants`SIConstRepl/.Constants`EarthRepl;
 
 (*Print[ncap];*)
@@ -77,7 +77,8 @@ rmax=Screening`getrmax[ncap][\[Delta]t];
 
 ncapofr=Evaluate[ncap/.{"\[Delta]"->\[Delta]t,Private`r->#}]&;
 
-
+(*mTs = {"mpD","meD"};
+vrels = {v0kms 10^3,v0kms 10^3 Sqrt[("mpD")/("meD")]};*)
 
 Ntot = Screening`Ncapof\[Delta][ncap,\[Delta]t];
 
@@ -86,6 +87,8 @@ ravg =Re[ (4 \[Pi])/Ntot NIntegrate[r^3 ncap/."\[Delta]"->\[Delta]t/.Private`r->
 \[Tau]relCintegrand=(v /(("m\[Chi]")/2 v^2) CollisionRate`dEkdrcoul )^-1/."nF"->ncap/.{"m\[Chi]"->"mpD","mT"->"mpD"}/.{"\[Alpha]D"->"\[Alpha]","meD"->"mpD"meDbympD}/.{"nD"->Capture`naDM[fD,"mpD"]}/."\[Beta]D"->3/("mpD" ("v0")^2)/.Private`v->v/.v->"vesc" \[Delta]t /."v0"->v0kms 10^3/."mpD"->("JpereV")/("c")^2 10^Logm/.\[Delta]->\[Delta]t/.Constants`SIConstRepl/.Constants`EarthRepl/.{Private`r->#,"\[Delta]"->\[Delta]t}&;
 (*Print@Plot[Log10@\[Tau]relCintegrand[10^logr],{logr,0,Log10@rmax},PlotRange->{0,2}];*)
 \[Tau]relC  = 1/rmax NIntegrate[\[Tau]relCintegrand[r],{r,0,0.95 rmax}];(*averaged relaxation time through an orbit assuming right through Earth, so this is really an lower bound since some orbits will miss earth*)
+(*Print[\[Tau]relC];*)
+
 
 If[DEBUG,
 Print[\[Delta]t];
@@ -117,7 +120,7 @@ Print@Plot[Log10@Abs@\[Tau]relCintegrand[10^logr],{logr,0,Log10@Evaluate[10^2 rm
 
 (* ::Input::Initialization:: *)
 Clear[Get\[Tau]A]
-Get\[Tau]A[Logm_,v0kms_?NumericQ,\[Delta]t_:10^-4,vrat_:10^-4]:=Module[{ncap,Ntot,rmax,rat,ravg,\[Tau]relCintegrand,\[Tau]relA,meDbympD=10^-4,fD=0.05,\[Alpha]Dby\[Alpha]=1},
+Get\[Tau]A[Logm_,v0kms_?NumericQ,\[Delta]t_:10^-4(*,vrat_:10^-4*)]:=Module[{ncap,Ntot,rmax,rat,mTs,vrels,ravg,\[Tau]relCintegrand,\[Tau]relA,meDbympD=10^-4,fD=0.05,\[Alpha]Dby\[Alpha]=1},
 
 ncap = Screening`getncap["mpD","meD","\[Beta]D","nD",\[Alpha]Dby\[Alpha]]/."nD"->Capture`naDM[fD,"mpD"]/."\[Beta]D"->3/("mpD" ("v0")^2)/.{Private`v->"v0",v->"v0"}/."v0"->v0kms 10^3/."meD"->"mpD"meDbympD/."mpD"->("JpereV")/("c")^2 10^Logm/.Constants`SIConstRepl/.Constants`EarthRepl;
 
@@ -127,7 +130,11 @@ Ntot = Screening`Ncapof\[Delta][ncap,\[Delta]t];
 
 ravg =Re[ (4 \[Pi])/Ntot NIntegrate[r^3 ncap/."\[Delta]"->\[Delta]t/.Private`r->r,{r,0,rmax}]];
 
-\[Tau]relA=(v /(("m\[Chi]")/2 v^2) CollisionRate`dEkdrcoul )^-1/.{"m\[Chi]"->"mpD","mT"->"meD"}/.{"\[Alpha]D"->"\[Alpha]"\[Alpha]Dby\[Alpha],"meD"->"mpD"meDbympD}/."nF"->Capture`naDM[fD,"mpD"]/."mpD"->("JpereV")/("c")^2 10^Logm/.Private`v->v/.v->"vesc"vrat(* \[Delta]t *)/."v0"->v0kms 10^3/.Constants`SIConstRepl/.Constants`EarthRepl;
+mTs = {"mpD","meD"};
+vrels = {v0kms 10^3,v0kms 10^3 Sqrt[("mpD")/("meD")]};
+
+\[Tau]relA=Sum[(v /(("m\[Chi]")/2 v^2) CollisionRate`dEkdrcoul )^-1/.{"m\[Chi]"->"mpD","mT"->mTs[[Tind]]}/.Private`v->v/.v->vrels[[Tind]],{Tind,Length@mTs}]/.{"\[Alpha]D"->"\[Alpha]"\[Alpha]Dby\[Alpha],"meD"->"mpD"meDbympD}/."nF"->Capture`naDM[fD,"mpD"]/."mpD"->("JpereV")/("c")^2 10^Logm(*"vesc"vrat*)(* \[Delta]t *)/."v0"->v0kms 10^3/.Constants`SIConstRepl/.Constants`EarthRepl;
+
 
 (*\[Tau]relC  = 1/rmax NIntegrate[\[Tau]relCintegrand[r],{r,0,0.99 rmax}];(*averaged relaxation time through an orbit*)*)
 
@@ -141,7 +148,7 @@ ravg =Re[ (4 \[Pi])/Ntot NIntegrate[r^3 ncap/."\[Delta]"->\[Delta]t/.Private`r->
 (*Timescale Modules*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*\[Tau]AA*)
 
 
@@ -153,7 +160,7 @@ flatpdict = Flatten[pdict,1];
 pdictind=FirstPosition[{Round@Log10@("mpD"//N),Round@Log10@("\[Kappa]"//N)}/.flatpdict,{Round@Log10@(10^logm ("JpereV")/("c")^2/.Constants`SIConstRepl),log\[Kappa]}][[1]];
 (*\[Delta]temp="\[Delta]"/.pdict[[\[Delta]dictind]];*)
 
-\[Tau]relAdict=Get\[Tau]A[logm,10^-3 "v0"/.flatpdict[[pdictind]],\[Delta]in,("v0")/("vesc")/.flatpdict[[pdictind]]/.Constants`EarthRepl];
+\[Tau]relAdict=Get\[Tau]A[logm,10^-3 "v0"/.flatpdict[[pdictind]],\[Delta]in(*,("v0")/("vesc")/.flatpdict[[pdictind]]/.Constants`EarthRepl*)];
 \[Tau]relAA = "\[Tau]relA"/.\[Tau]relAdict;
 
 \[Tau]nearEarth = 10 ("rE")/("v0")/.flatpdict[[pdictind]]/.Constants`EarthRepl;
@@ -233,7 +240,7 @@ pdictind=FirstPosition[{Round@Log10@("mpD"//N),Round@Log10@("\[Kappa]"//N)}/.fla
 eind = FirstPosition["m\[Chi]"/.\[Sigma]dicte,10^logm ("JpereV")/("c")^2/.Constants`SIConstRepl][[1]];
 Nucind = FirstPosition["m\[Chi]"/.\[Sigma]dictNuc,10^logm ("JpereV")/("c")^2/.Constants`SIConstRepl][[1]];
 
-\[Tau]relAdict=Quiet@Get\[Tau]C[logm,10^-3 "v0"/.flatpdict[[pdictind]],\[Delta]in];
+(*\[Tau]relAdict=Quiet@Get\[Tau]C[logm,10^-3 "v0"/.flatpdict[[pdictind]],\[Delta]in];*)
 
 \[Tau]relAE=Quiet[(v\[Chi](("\[Kappa]")^2/.flatpdict[[pdictind]])Quiet@Max[10^-100,("dEdlofr"/.Capture`GetTotalELFunction[\[Sigma]dicte[[eind]],\[Sigma]dictNuc[[Nucind]]])[1 10^6,v\[Chi]]]/((10^logm ("JpereV")/("c")^2/.Constants`SIConstRepl) v\[Chi]^2/2))^-1/.v\[Chi]->"v0"/.flatpdict[[pdictind]]/.Constants`EarthRepl(*/.\[Tau]relAdict*)];
 (*\[Tau]relAE=1;*)
@@ -243,7 +250,7 @@ Nucind = FirstPosition["m\[Chi]"/.\[Sigma]dictNuc,10^logm ("JpereV")/("c")^2/.Co
 ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*\[Tau]CA*)
 
 
@@ -258,7 +265,7 @@ pdictind=FirstPosition[{Round@Log10@("mpD"//N),Round@Log10@("\[Kappa]"//N)}/.fla
 (*\[Tau]relCdict=Get\[Tau]C[logm,10^-3"v0"/.pdict[[pdictind]],\[Delta]temp];
 \[Tau]relCC = "\[Tau]relC"/.\[Tau]relCdict;*)
 
-\[Tau]relCAdict=Get\[Tau]A[logm,10^-3 "v0"/.flatpdict[[pdictind]],\[Delta]in,("v0")/("vesc")/.flatpdict[[pdictind]]/.Constants`EarthRepl];
+\[Tau]relCAdict=Get\[Tau]A[logm,10^-3 "v0"/.flatpdict[[pdictind]],\[Delta]in(*,("v0")/("vesc")/.flatpdict[[pdictind]]/.Constants`EarthRepl*)];
 \[Tau]relCA = "\[Tau]relA"/.\[Tau]relCAdict;
 
 (*\[Tau]evap =("\[Kappa]")^-2 ("\[CapitalGamma]evap")^-1/.flatpdict[[pdictind]];*)
@@ -351,7 +358,7 @@ Print[\[Tau]CA];
 
 
 Clear[Get\[Tau]sFromPDict]
-Get\[Tau]sFromPDict[pdict_,\[Delta]_,\[Sigma]dicte_,\[Sigma]dictNuc_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{pdictnew,logm,log\[Kappa],\[Tau]stable,\[Tau]AA,\[Tau]CC,\[Tau]CA,\[Tau]CE,\[Tau]AE,log\[Tau]sdict,rmax,\[CapitalGamma]pC,\[CapitalGamma]pA,NE,NA,\[CapitalGamma]evapE,\[CapitalGamma]capE,\[CapitalGamma]evaptot,\[CapitalGamma]captot,tE,timeenoughforequil,Nctot},
+Get\[Tau]sFromPDict[pdict_,\[Delta]_,\[Sigma]dicte_,\[Sigma]dictNuc_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{pdictnew,logm,log\[Kappa],\[Tau]stable,\[Tau]AA,\[Tau]CC,\[Tau]CA,\[Tau]CE,\[Tau]AE,log\[Tau]sdict,rmax,\[CapitalGamma]pC,\[CapitalGamma]pA,NE,NA,\[CapitalGamma]evapE,\[CapitalGamma]capE,\[CapitalGamma]evaptot,\[CapitalGamma]captot,tE,timeenoughforequil,Nctot(*,timeenoughforequilE,NcE*)},
 
 pdictnew = {};
 
@@ -381,12 +388,21 @@ Print[log\[Tau]sdict];
 
 rmax = Screening`getrmax[Screening`getncap["mpD","meD","\[Beta]D",Capture`naDM[fD,"mpD"],\[Alpha]Dby\[Alpha]]/.pdict[[mind,\[Kappa]ind]]][\[Delta]];
 
-(*These should really be rates that are integrated over r*)
+Print["rmax is ", rmax];
+
+Print[Capture`naDM[fD,"mpD"]/.pdict[[mind,\[Kappa]ind]]];
+(*
+These should really be rates that are integrated over r 
+
+WE NEED TO DO THIS BEFORE SCANNING OR WE WILL BE SIGNIFICANTLY OFF.
+*)
+
 \[CapitalGamma]pC = Total[10^-#&/@({"\[Tau]CC","\[Tau]CA"}/.log\[Tau]sdict)];
 \[CapitalGamma]pA = Total[10^-#&/@({"\[Tau]AA","\[Tau]CA"}/.log\[Tau]sdict)];
 
 NE = Capture`naDM[fD,"mpD"]((4\[Pi])/3 ("rE")^3)/.pdict[[mind,\[Kappa]ind]]/.Constants`EarthRepl;
 NA = Capture`naDM[fD,"mpD"]((4\[Pi])/3 rmax^3)/.pdict[[mind,\[Kappa]ind]];
+
 \[CapitalGamma]evapE = NE/\!\(\*SuperscriptBox[\(10\), \("\<\[Tau]evapE\>"\)]\)/.log\[Tau]sdict;
 
 \[CapitalGamma]capE="dNcMaxdt"/.pdict[[mind,\[Kappa]ind]]/."nD"->Capture`naDM[fD,"mpD"]/.pdict[[mind,\[Kappa]ind]];
@@ -405,11 +421,18 @@ timeenoughforequil = 1/tE<(\[CapitalGamma]evaptot);
 
 Nctot = If[timeenoughforequil, Nctot, \[CapitalGamma]captot tE];
 
+(*timeenoughforequilE = 1/tE<\[CapitalGamma]evapE/Nctot;
+
+NcE = If[timeenoughforequilE,Nctot\[CapitalGamma]capE/\[CapitalGamma]evapE,\[CapitalGamma]capE tE];*)
+
+(*Print[\[CapitalGamma]capE/\[CapitalGamma]evapE];*)
+
+
 Print[timeenoughforequil];
 
 
 AppendTo[pdictnew[[-1]],pdict[[mind,\[Kappa]ind]]];
-AssociateTo[pdictnew[[-1,-1]],{"\[CapitalGamma]total"->\[CapitalGamma]evaptot,"log\[Tau]s"->log\[Tau]sdict,"Nc"->Nctot,"\[CapitalGamma]captot"->\[CapitalGamma]captot,"\[CapitalGamma]evaptot"->\[CapitalGamma]evaptot,"\[CapitalGamma]evapE"-> \[CapitalGamma]evapE/Nctot,"\[CapitalGamma]capE"->\[CapitalGamma]capE,"timeenoughforequil"->timeenoughforequil}];
+AssociateTo[pdictnew[[-1,-1]],{"\[CapitalGamma]total"->\[CapitalGamma]evaptot,"log\[Tau]s"->log\[Tau]sdict,"Nctot"->Nctot,(*"NcE"->NcE,*)"\[CapitalGamma]captot"->\[CapitalGamma]captot,"\[CapitalGamma]evaptot"->\[CapitalGamma]evaptot,"\[CapitalGamma]evapE"-> \[CapitalGamma]evapE/Nctot,"\[CapitalGamma]capE"->\[CapitalGamma]capE,"timeenoughforequil"->timeenoughforequil,"timeenoughforequilE"->timeenoughforequilE}];
 
 ,{\[Kappa]ind,7,7(*Dimensions[pdict][[2]]*)}]
 ,{mind,4,4(*Dimensions[pdict][[1]]*)}],1];
