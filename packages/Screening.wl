@@ -883,7 +883,7 @@ EOM = -1/r^2 D[r^2 \[Phi]D'[r],r]==("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha
 ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*get analytic estimate for \[Phi]D in the small charge regime*)
 
 
@@ -891,16 +891,20 @@ get\[Phi]DAnalyticEstimates[mpD_,meD_,\[Beta]D_,nF_,\[Alpha]Dby\[Alpha]_,\[Phi]g
 niofr = 1/(mi^2 Sqrt[2 \[Pi]] \[Beta]D^2) nF (mi \[Beta]D)^(3/2) (2 mi vesc \[Beta]D+E^(1/2 mi vesc^2 \[Beta]D) Sqrt[2 \[Pi]] Sqrt[mi \[Beta]D]-E^(1/2 mi vesc^2 \[Beta]D) Sqrt[mi] Sqrt[2 \[Pi]] Sqrt[\[Beta]D] Erf[(Sqrt[mi] vesc Sqrt[\[Beta]D])/Sqrt[2]]);
 npD=niofr/.vesc->Sqrt[-((2 Vgp)/mi)]/.mi->mpD;
 neD=niofr/.vesc->Sqrt[-((2 Vge)/mi)]/.mi->meD;
+(*npD=niofr/.vesc->Sqrt[-((2 Vgp)/mi)]/.Vgp->mpD \[Phi]g[r]/.mi->mpD;*)
+(*neD=niofr/.vesc->Sqrt[-((2 Vge)/mi)]/.Vge->meD \[Phi]g[r]/.mi->meD;*)
 \[Rho]S = ("e")/("\[Epsilon]0") Sqrt[\[Alpha]Dby\[Alpha]](npD-neD)/.{Vgp->mpD \[Phi]g[r],Vge->meD \[Phi]g[r]};
 (*\[Lambda]D = (("e")^2/("\[Epsilon]0")\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge]))^(-1/2)/.{Vgp->mpD \[Phi]g[r],Vge->mpD \[Phi]g[r]};*)
 \[Lambda]D =(-(("e")^2/("\[Epsilon]0"))\[Alpha]Dby\[Alpha](D[npD,Vgp]+D[neD,Vge])/.{Vgp->mpD \[Phi]g[r],Vge->meD \[Phi]g[r]})^(-1/2);
 nC = (mpD "G" "ME" )/(("e")^2/("\[Epsilon]0") \[Alpha]Dby\[Alpha]((4 \[Pi])/3 ("rE")^3)) Boole["rE" - r > 0] - (npD-neD)/.Constants`SIConstRepl/.Constants`EarthRepl;
 
+(*the potentials here need to include \[Delta] or you will get negative nC*)
+
 <|"\[Phi]D"->\[Rho]S \[Lambda]D^2,"\[Rho]S"->\[Rho]S,"\[Lambda]D"->\[Lambda]D,"npD"->npD,"neD"->neD,"nC"->nC|>
 ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*get full \[Phi]D potential *)
 
 
