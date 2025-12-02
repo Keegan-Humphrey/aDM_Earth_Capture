@@ -538,7 +538,7 @@ get\[Delta]fromPDict[pdict_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05,\[Delta]ofNcapintrp_
 nD =Capture`naDM[fD,meD+mpD];
 nCap=getncap[mpD, meD, \[Beta]D, nD, \[Alpha]Dby\[Alpha]];
 
-NCE = "Nc"/.pdict/."nD"->nD
+NCE = "Nc"/.pdict/."nD"->nD;
 NC = "Nctot"/.pdict/."nD"->nD;
 
 (*\[CapitalGamma]cap = "dNcMaxdt"/.pdict/."nD"->nD; (*capture rate averaged over Earth*)
