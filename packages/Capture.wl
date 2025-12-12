@@ -265,16 +265,12 @@ directory=NotebookDirectory[]<>"Out/"<>subdirectory<>"/"<>subsubdirectory;
 (*{rootname,extension}=StringSplit[ToString@name,"."];*)
 rootname = name;
 
-Print["Here I am!"];
-Print[directory];
-(*Print[NotebookDirectory[]];*)
 
 If[!DirectoryQ[directory],CreateDirectory[directory]];
 
 ndups=0;
 path=directory<>"/"<>rootname<>"_"<>ToString[#]&;
 While[FileExistsQ[path[ndups]<>".dat"]&&ndups<=ndupsmax,
-Print["I made it here"];
 (*the existence check needs the extension (this is the convention in ReadIt and SaveIt)*)
 ndups++;
 ];

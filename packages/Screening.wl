@@ -752,10 +752,13 @@ Print[pdictwtherm];*)
 
 (*Print[\[Delta]table];*)
 
-AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
-AppendTo[return\[Delta]List,\[Delta]Listcurrent];
+(*AppendTo[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
+AppendTo[return\[Delta]List,\[Delta]Listcurrent];*)
 
-,{\[Delta],(*Length[\[Delta]List]*)1}];
+\[Delta]Listcurrent=Append[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio|>];
+return\[Delta]List=Append[return\[Delta]List,\[Delta]Listcurrent];
+
+,{\[Delta],Length[\[Delta]List]}];
 
 (*Return[Print["Test over"],Module];*)
 
@@ -763,9 +766,10 @@ AppendTo[return\[Delta]List,\[Delta]Listcurrent];
 
 (*Return[Print["Test over"],Module];*)
 
-Print["Finished running the PDicts for: \n{v0,meD/mpD}=",{"v0","meD"/"mpD"}/.First@First[pdictwtherm]];
+(*Print["Finished running the PDicts for: \n{v0,meD/mpD}=",{"v0","meD"/"mpD"}/.First@First[pdictwtherm]];*)
+Print["Finished running the PDicts for: \n{v0,meD/mpD}=",{"v0","meD"/"mpD"}/.return\[Delta]List[[1]]["\[Delta]table"]];
 
-Print[return\[Delta]List];
+(*Print[return\[Delta]List];*)
 
 return\[Delta]List
 ]
@@ -1579,6 +1583,8 @@ Print[\[Tau]CA];
 Clear[Get\[Tau]sFromPDict]
 Get\[Tau]sFromPDict[pdict_,\[Delta]_,(*\[Sigma]dicte_,\[Sigma]dictNuc_,*)\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{pdictnew,logm,log\[Kappa],ratetable,\[Tau]stable,\[Tau]AA,\[Tau]CC,\[Tau]CA,\[Tau]CE,\[Tau]AE,log\[Tau]sdict,rmax,\[CapitalGamma]pC,\[CapitalGamma]pA,NE,NA,NCfrom\[Delta],\[CapitalGamma]evapE,\[CapitalGamma]capE,\[CapitalGamma]evapP,\[CapitalGamma]capP,\[CapitalGamma]evaptot,\[CapitalGamma]captot,tE,timeenoughforequil,Nctot,newstuffassoc(*,timeenoughforequilE,NcE*)},
 
+(*Print@Dimensions[pdict];*)
+
 pdictnew = {};
 
 (*Print@Dimensions[pdict];
@@ -1599,7 +1605,7 @@ Print[Head[pdict[[mind,\[Kappa]ind]]]];*)
 {logm ,log\[Kappa]}=Log10@{(("mpD" ("c")^2)/("JpereV")/.pdict[[mind,\[Kappa]ind]]/.Constants`SIConstRepl),("\[Kappa]"/.pdict[[mind,\[Kappa]ind]])};
 
 (*Print[{logm,log\[Kappa]}];*)
-If[log\[Kappa]>-10, Continue[]];
+(*If[log\[Kappa]>-10, Continue[]];*)
 
 (*Print["testy test 1"];
 
@@ -1741,8 +1747,8 @@ pdictnew = ReplacePart[pdictnew, {-1} -> Append[pdictnew[[-1]],Append[pdict[[min
 
 (*Print["also made it here"];*)
 
-,{\[Kappa]ind,(*7,7*)2(*Dimensions[pdict][[2]]*)}]
-,{mind,(*4,4*)1(*Dimensions[pdict][[1]]*)}],1];
+,{\[Kappa]ind,(*7,7*)Dimensions[pdict][[2]]}]
+,{mind,(*4,4*)Dimensions[pdict][[1]]}],1];
 ,{\[Kappa]ind,mind}];
 
 pdictnew
