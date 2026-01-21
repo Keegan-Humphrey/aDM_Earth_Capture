@@ -1685,11 +1685,21 @@ of captured charges in Earth's volume at a time (ie. a ratio of rmax volume to e
 \[CapitalGamma]evapE = (("rE")/rmax)^3 "\[CapitalGamma]total"/.pdict[[mind,\[Kappa]ind]]/.Constants`EarthRepl;
 \[CapitalGamma]capE=(*(("rE")/rmax)^3*)"dNcMaxdt"/.pdict[[mind,\[Kappa]ind]]/."nD"->Capture`naDM[fD,"mpD"]/.pdict[[mind,\[Kappa]ind]]/.Constants`EarthRepl; (*per particle rate*)
 
+(*Print["first here cap"];
+Print[ratetable];
+Print[ratetable["keys"]];
+Print[ratetable[[1]]["keys"]];
+Print[ratetable["keys"][[1]]];*)
+
 (*\[CapitalGamma]capP = ((4\[Pi])/3 rmax^3) Sum["rate"/.#[[i]],{i,Length[#]}]&@Gather[ratetable,#1["keys"][[1]]==#2["keys"][[1]]&][[1]];*)
-\[CapitalGamma]capP = ((4\[Pi])/3 rmax^3) Sum[If[#["keys"][[1]]=="cap","rate"/.#[[i]],0],{i,Length[#]}]&@ratetable;
+\[CapitalGamma]capP = ((4\[Pi])/3 rmax^3) Sum[If[#[[i]]["keys"][[1]]=="cap","rate"/.#[[i]],(*Print[#["keys"][[1]]];Print[Length[#]];Print["here cap"];*)0],{i,Length[#]}]&@ratetable;
+
+(*Print["first here evap"];*)
+
+(*I caught it. The issue is that the If is never evaluating to true. I just need to probe it and correct the logic.*)
 
 (*\[CapitalGamma]evapP = ((4\[Pi])/3 rmax^3)1/NCfrom\[Delta]Sum["rate"/.#[[i]],{i,Length[#]}]&@Gather[ratetable,#1["keys"][[1]]==#2["keys"][[1]]&][[2]]; (*per particle rate*)*)
-\[CapitalGamma]evapP = ((4\[Pi])/3 rmax^3) 1/NCfrom\[Delta] Sum[If[#["keys"][[1]]=="evap","rate"/.#[[i]],0],{i,Length[#]}]&@ratetable; (*per particle rate*)
+\[CapitalGamma]evapP = ((4\[Pi])/3 rmax^3) 1/NCfrom\[Delta] Sum[If[#[[i]]["keys"][[1]]=="evap","rate"/.#[[i]],(*Print[#["keys"][[1]]];Print[Length[#]];Print["here evap"];*)0],{i,Length[#]}]&@ratetable; (*per particle rate*)
 
 (*Nctot = (\[CapitalGamma]capE-\[CapitalGamma]evapE+ NA \[CapitalGamma]pA)/\[CapitalGamma]pC;*)
 
@@ -1747,8 +1757,8 @@ pdictnew = ReplacePart[pdictnew, {-1} -> Append[pdictnew[[-1]],Append[pdict[[min
 
 (*Print["also made it here"];*)
 
-,{\[Kappa]ind,(*7,7*)Dimensions[pdict][[2]]}]
-,{mind,(*4,4*)Dimensions[pdict][[1]]}],1];
+,{\[Kappa]ind,1(*7,7*)(*Dimensions[pdict][[2]]*)}]
+,{mind,1(*4,4*)(*Dimensions[pdict][[1]]*)}],1];
 ,{\[Kappa]ind,mind}];
 
 pdictnew
