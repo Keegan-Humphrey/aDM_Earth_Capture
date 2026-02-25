@@ -112,6 +112,13 @@ binsearch::usage = "";
 (*Plasma Interactions*)
 
 
+GetProbeFunctions::usage = "";
+
+
+GetTargetResponses::usage = "";
+GetNuclearEarthTargetResponses::usage = "";
+
+
 (* ::Text:: *)
 (*Modules for Capture*)
 
@@ -143,6 +150,7 @@ Get\[Tau]sFromPDict::usage = "";
 
 
 GetPlasmaRates::usage = "";
+GetEarthRates::usage = "";
 
 
 (* ::Chapter:: *)
@@ -1316,7 +1324,7 @@ pdictind=FirstPosition[{Round@Log10@("mpD"//N),Round@Log10@("\[Kappa]"//N)}/.fla
 (*Rate Modules (Hardcore Capture and Evaporation)*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Get Probe Functions*)
 
 
@@ -1325,13 +1333,13 @@ GetProbeFunctions[]:=Module[{Ficap,Fievap,FipList},
 
 Ficap =ni Sqrt[(2 \[Beta]i mi)/\[Pi]] HeavisideTheta[1/4 (mj/mi z + Abs[u])^2-zesci^2](E^(-4 (\[Beta]i mi)/(\[Beta]j mj) zltcap^2)-E^(-4 (\[Beta]i mi)/(\[Beta]j mj) zgtcap^2))/.{zltcap->Sqrt[Max[zesci^2,mj/mi u z]],zgtcap ->Sqrt[Min[zesci^2 + mj/mi u z, 1/4 (mj/mi z + u)^2]]};
 Fievap = ni Sqrt[(2 \[Beta]i mi)/\[Pi]] HeavisideTheta[1/4 (mj/mi z + Abs[u])^2-zesci^2](E^(-4 (\[Beta]i mi)/(\[Beta]j mj) zltcap^2)-E^(-4 (\[Beta]i mi)/(\[Beta]j mj) zgtcap^2))/.{zltcap->Sqrt[Max[0,zesci^2-mj/mi Abs[u] z]],zgtcap ->Sqrt[Min[zesci^2 , 1/4 (mj/mi z -Abs[u])^2]]};
-FipList = <|"cap"->Ficap,"evap"->Fievap|>/.{\[Beta]i->"\[Beta]i",\[Beta]j->"\[Beta]j",ni->"ni",nj->"nj",zesci->"zesci",zescj->"zescj",zD->"zD"};
+FipList = <|"cap"->Ficap,"evap"->Fievap|>/.{\[Beta]i->"\[Beta]i",\[Beta]j->"\[Beta]j",ni->"ni",nj->"nj",zesci->"zesci",zescj->"zescj"(*,zD->"zD"*)};
 
 FipList
 ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Get Target Response Functions*)
 
 
@@ -1345,6 +1353,39 @@ V\[Chi]Amb = V\[Chi]Therm-V\[Chi]Bnd//Simplify;(*{Re,Im} - valid for zesc<<1*)
 V\[Chi]List = <|"therm"->V\[Chi]Therm,"bnd"->V\[Chi]Bnd,"amb"->V\[Chi]Amb|>;
 TargetjList = Association@Table[key->("e")^2/("\[Epsilon]0") 2/(1-E^(-4 u z)) V\[Chi]List[key][[2]]/Total@(({1,0}+V\[Chi]List[key])^2),{key,{"therm","bnd","amb"}}]/.{\[Beta]i->"\[Beta]i",\[Beta]j->"\[Beta]j",ni->"ni",nj->"nj",zesci->"zesci",zescj->"zescj",zD->"zD"};
 TargetjList
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Get Electronic Earth Target Response Functions - unfinished*)
+
+
+Clear[GetElectronicEarthTargetResponses]
+GetElectronicEarthTargetResponses[]:=Module[{V\[Chi]Therm,V\[Chi]Bnd,V\[Chi]Amb,V\[Chi]List,TargetjList},
+
+V\[Chi]Therm = (Sqrt[\[Pi]]/4 ) zD^2/z^3  ((#/.a->u+z)-(#/.a->u-z))&@ {2 Sqrt[\[Pi]]DawsonF[a],-\[Pi] E^-a^2}(*{Re,Im}*);
+V\[Chi]Bnd =(Sqrt[\[Pi]]/ 4) zD^2/z^3 ((#/.a->u+z)-(#/.a->u-z))&@ {2 zescj/a (1-E^-a^2)-(E^-zescj^2+E^-a^2)Log[Abs[(a-zescj)/(a+zescj)]],-\[Pi](E^-zescj^2+E^-a^2)HeavisideTheta[zescj - Abs[a]]};(*{Re,Im} - valid for zesc<<1*)
+V\[Chi]Amb = V\[Chi]Therm-V\[Chi]Bnd//Simplify;(*{Re,Im} - valid for zesc<<1*)
+
+V\[Chi]List = <|"therm"->V\[Chi]Therm,"bnd"->V\[Chi]Bnd,"amb"->V\[Chi]Amb|>;
+TargetjList = Association@Table[key->("e")^2/("\[Epsilon]0") 2/(1-E^(-4 u z)) V\[Chi]List[key][[2]]/Total@(({1,0}+V\[Chi]List[key])^2),{key,{"therm","bnd","amb"}}]/.{\[Beta]i->"\[Beta]i",\[Beta]j->"\[Beta]j",ni->"ni",nj->"nj",zesci->"zesci",zescj->"zescj",zD->"zD"};
+TargetjList
+]
+
+
+(* ::Subsubsection:: *)
+(*Get Nuclear Earth Target Response Functions*)
+
+
+Clear[GetNuclearEarthTargetResponses]
+GetNuclearEarthTargetResponses[NucCoeffs_]:=Module[{VCoul,V\[Chi]ofzNuc},
+
+VCoul[q_]:= ((("e")^2)/(q^2 "\[Epsilon]0"))(*no kappa included here*);
+
+" dz \!\(\*FractionBox[\(q\), \(\[HBar] \*SuperscriptBox[\((2  \[Pi])\), \(2\)]\)]\)V(q\!\(\*SuperscriptBox[\()\), \(2\)]\) \[Integral] d\[Omega] S(q,\[Omega]) Nuclear in \[Omega] z variables (with the \[Delta] fn left implicit. Enforce w: \[Omega]->\!\(\*FractionBox[SuperscriptBox[\(\[HBar]q\), \(2\)], \(2 \*SubscriptBox[\(m\), \(N\)]\)]\))";
+V\[Chi]ofzNuc=(Sqrt[(8 #["mN"])/(#["\[Beta]"]("\[HBar]")^2)](*from q->z jac*)) q/("\[HBar]" (2\[Pi])^2) (1/("\[HBar]") (*from E->\[Omega] in \[Delta] fn*))VCoul[q]^2 2 \[Pi]  #["nI"]FormFactors`Zeff[q,#]^2/.{q->z Sqrt[(8 #["mN"])/(#["\[Beta]"]("\[HBar]")^2)]}/.Constants`SIConstRepl&@NucCoeffs;
+
+V\[Chi]ofzNuc
 ]
 
 
@@ -1498,6 +1539,179 @@ ratetable
 ]
 
 
+(* ::Subsubsection::Closed:: *)
+(*Get Electronic Earth Rates*)
+
+
+Clear[GetElectronicEarthRates]
+GetElectronicEarthRates[pdict_,\[Delta]_,rmax_,\[Alpha]Dby\[Alpha]_:1,fD_:0.01]:=Module[{FipList,TargetjList,j=0,ratetable,VpDT,VeDT,zD,zesci,zescj,\[Beta]i,\[Beta]j,npD,neD,nC,nD,ni,nj,plasmaparamlist,(*badreg,*)integrand,integrandnum,rate},
+
+FipList = GetProbeFunctions[];
+TargetjList = GetElectronicEarthTargetResponses[];
+
+(*It looks like npD, neD are not being loaded in.
+There's also a Null["cap"] somewhere*)
+(*what is the right prescription for npD and neD? Well, the consistent \[Delta] value it won't matter. We can use \[Delta] to get it*)
+
+nD = If[Head["nD"/.pdict]==String,Capture`naDM[fD,"mpD"/.pdict],"nD"];
+
+{npD,neD,nC} = If[Head["npD"/.pdict]==String||Head["neD"/.pdict]==String||Head["nC"/.pdict]==String,{"npD","neD","nC"}/.(get\[Phi]DAnalyticEstimates["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.pdict),{"npD","neD","nC"}]/."nD"->nD/."\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha];
+(*neD = If[Head["neD"/.pdict]==String,(get\[Phi]DAnalyticEstimates["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.pdict)["npD"],"npD"];*)
+
+
+(*trackingind = 0;*)
+ratetable = {};
+Do[
+
+If[jkey=="therm",Continue[]];
+(*If[jkey=="amb",Continue[]];*)
+(*If[jkey=="bnd",Continue[]];*)
+(*If[{ikey,jkey,mT}=={"cap","amb","mpD"},Continue[]];*)
+
+(*If[{ikey,jkey,mT}!={"evap","amb","meD"}&&{ikey,jkey,mT}!={"cap","amb","mpD"},Continue[]];*)
+(*If[{ikey,jkey,mT}!={"evap","amb","mpD"}&&{ikey,jkey,mT}!={"cap","amb","meD"},Continue[]];*)
+
+{VpDT,VeDT}= {-\[Delta] ("mpD")/2 "vesc","mpD"Capture`Vgrav[rmax/2]+\[Delta] ("mpD")/2 "vesc"};
+
+If[ikey =="cap",
+\[Beta]i = "\[Beta]D"/.pdict;
+(*ni =  "npD"/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT}/.pdict/.Constants`EarthRepl//Simplify;*)
+ni =  npD/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT}/.pdict/.Constants`EarthRepl//Simplify;
+,(*evap*)
+\[Beta]i = "\[Beta]core"/.Constants`EarthRepl;
+(*ni= "nC"/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify;*)
+ni= nC/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify;
+];
+
+zesci = Sqrt[\[Beta]i/4 \[Delta] ("mpD")/2 ("vesc")^2]/.Constants`EarthRepl/.pdict;(*assumes probe is Subscript[m, Subscript[p, D]]*)
+
+
+If[jkey =="bnd",
+\[Beta]j = "\[Beta]core"/.Constants`EarthRepl;
+(*nj =  "nC"/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify;*)
+nj =  nC/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify;
+,(*amb*)
+\[Beta]j = "\[Beta]D";
+(*nj = {"npD","neD"}[[If[mT=="mpD",1,2]]]/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify;*)
+nj = {npD,neD}[[If[mT=="mpD",1,2]]]/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify;
+	];
+zescj= Sqrt[-(\[Beta]j/4)If[mT=="mpD",VpDT,VeDT]]/.Constants`EarthRepl/.pdict;
+zD = Sqrt[(\[Beta]j ("\[HBar]")^2)/(8 mT) (2 nj \[Beta]j ("e")^2/("\[Epsilon]0"))]/.Constants`SIConstRepl/.pdict;
+
+(*Print[ni];
+Print[nj];*)
+
+plasmaparamlist = {"\[Beta]i"->\[Beta]i,"\[Beta]j"->\[Beta]j,"ni"->ni,"nj"->nj,"zesci"->zesci,"zescj"->zescj,"zD"->zD,"\[Delta]"->\[Delta],"rmax"->rmax}/.pdict;
+(*Print[plasmaparamlist];*)
+
+
+integrand=\[Alpha]Dby\[Alpha]/(\[Pi]^2 \[Beta]j ("\[HBar]")^2) FipList[ikey] TargetjList[jkey] (*HeavisideTheta[x-Abs[y]]/.{u->(x+y)/2,z->(x-y)/2}*)/.plasmaparamlist/.mj->mT/.mi->"mpD"/.pdict/.Constants`SIConstRepl;
+integrandnum[ut_?NumericQ,zt_?NumericQ] := integrand/.{u->ut,z->zt};
+(*integrandnum[ut_,zt_]/;VectorQ[{ut,zt},NumericQ]:= integrand/.{u->ut,z->zt};*)
+
+(*rate = NIntegrate[integrand(*[ikey,jkey]*),{u,z}\[Element] ImplicitRegion[(*10^-1Min[zD,zescj,zesci]<=Abs[u-z]&&*)Abs[u-z]<=#&&u>0&&z>0,{u,z}],(*Method->"LocalAdaptive",*)AccuracyGoal->3,PrecisionGoal->3]&[If[jkey=="bnd",zescj,2]];
+*)(*current*)
+rate = NIntegrate[integrand(*[ikey,jkey]*),{z,0,100},{u,Max[z-#,0],z+#},(*Method->"LocalAdaptive",*)AccuracyGoal->3,PrecisionGoal->3]&[If[jkey=="bnd",zescj,2]];(*only one that seems to work (ie. is quick enough and accurate) for amb and bnd at small masses*)
+(*z is IR dominated (ie. by z << 1) so 0 - 100 is fine. *)
+
+If[False(*(rate)<0*),
+Print[ikey];
+Print[jkey];
+Print[mT];
+Print[{Log10@"\[Kappa]",Log10["mpD" ("c")^2/("JpereV")]}/.pdict/.Constants`SIConstRepl//N];
+Print@DensityPlot[Log10@integrand,{u,0,100},{z,0,100},PlotLegends->Automatic,PlotRange->All];
+Print@DensityPlot[Log10[-integrand],{u,0,100},{z,0,100},PlotLegends->Automatic,PlotRange->All];
+Print[rmax/2/.pdict];
+Print[LogLogPlot[nC/.pdict/.Private`r->r/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify,{r,0,rmax}]];
+Print[Plot[{-\[Delta] ("mpD")/2 "vesc","mpD"Capture`Vgrav[r]+\[Delta] ("mpD")/2 "vesc"}/.pdict/.Constants`EarthRepl//Simplify,{r,0,rmax}]];
+(*Print[FipList[ikey]/.plasmaparamlist/.mj->mT/.mi->"mpD"/.pdict/.Constants`SIConstRepl/.{u->(x+y)/2,z->(x-y)/2}/.{x->1,y->10^-3}];
+Print[TargetjList[jkey]/.plasmaparamlist/.mj->mT/.mi->"mpD"/.pdict/.Constants`SIConstRepl/.{u->(x+y)/2,z->(x-y)/2}/.{x->1,y->10^-3}];*)
+];
+
+AppendTo[ratetable,<|"rate"->Abs@rate,"keys"->{ikey,jkey,mT},"params"->plasmaparamlist(*,"sign"->Sign[rate]*)|>];
+(*the Abs on rate is a band aid, I haven't been able to diagnose the occasional incorrect sign. Maybe related to low accuracy / precision goals?*)
+
+j= j+1;
+
+,{ikey,{"cap","evap"}},{jkey,{"therm","bnd","amb"}},{mT,{"mpD","meD"}}];
+
+ratetable
+]
+
+
+(* ::Subsubsection:: *)
+(*Get Nuclear Earth Rates*)
+
+
+Clear[GetNuclearEarthRates]
+GetNuclearEarthRates[pdict_,\[Delta]_,rmax_,NuccoeffList_,\[Alpha]Dby\[Alpha]_:1,fD_:0.01]:=Module[{\[Kappa],FipList,TargetjList,j=0,ratetable,VpDT,VeDT,zD,zesci,zescj,\[Beta]i,\[Beta]j,npD,neD,nC,nD,ni,nj,mT,nucname,plasmaparamlist,(*badreg,*)integrand,integrandnum,rate},
+
+(*LOAD in nuclear params and then pass them as arguments here. Then call target responses as an association organized by material name*)
+
+\[Kappa] = "\[Kappa]"/.pdict;
+
+FipList = GetProbeFunctions[]/.u->z;(*u=z ~ \[Omega] = \[HBar]q^2/(2 Subscript[m, N])*)
+TargetjList = Association@Table[{#[[i]]["name"]->GetNuclearEarthTargetResponses[#[[i]]]},{i,Length[#]}]&@NuccoeffList;
+
+nD = If[Head["nD"/.pdict]==String,Capture`naDM[fD,"mpD"/.pdict],"nD"];
+
+{npD,neD,nC} = If[Head["npD"/.pdict]==String||Head["neD"/.pdict]==String||Head["nC"/.pdict]==String,{"npD","neD","nC"}/.(get\[Phi]DAnalyticEstimates["mpD","meD","\[Beta]D","nD","\[Alpha]Dby\[Alpha]"]/.pdict),{"npD","neD","nC"}]/."nD"->nD/."\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha];
+
+ratetable = {};
+Do[
+
+{VpDT,VeDT}= {-\[Delta] ("mpD")/2 "vesc","mpD"Capture`Vgrav[rmax/2]+\[Delta] ("mpD")/2 "vesc"};
+
+"aDM species";
+If[ikey =="cap",
+\[Beta]i = "\[Beta]D"/.pdict;
+ni =  npD/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT}/.pdict/.Constants`EarthRepl//Simplify;
+,(*evap*)
+\[Beta]i = "\[Beta]core"/.Constants`EarthRepl;
+ni= nC/.pdict/.Private`r->rmax/2/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify;
+];
+
+zesci = Sqrt[\[Beta]i/4 \[Delta] ("mpD")/2 ("vesc")^2]/.Constants`EarthRepl/.pdict;(*assumes probe is Subscript[m, Subscript[p, D]]*)
+
+"Nuclear species";
+nucname = "name"/.NuccoeffList[[jkey]];
+{\[Beta]j,nj,mT} = {"\[Beta]","nI","mN"}/.NuccoeffList[[jkey]];
+zescj= 0;
+(*zD = Sqrt[(\[Beta]j ("\[HBar]")^2)/(8 mT) (2 nj \[Beta]j ("e")^2/("\[Epsilon]0"))]/.Constants`SIConstRepl/.pdict;*)
+
+plasmaparamlist = {"\[Beta]i"->\[Beta]i,"\[Beta]j"->\[Beta]j,"ni"->ni,"nj"->nj,"zesci"->zesci,"zescj"->zescj,"\[Delta]"->\[Delta],"rmax"->rmax}/.pdict;
+
+
+integrand=(*jac already included in target list*)\[Kappa]^2 FipList[ikey] TargetjList[nucname]/.plasmaparamlist/.mj->mT/.mi->"mpD"/.pdict/.Constants`SIConstRepl;
+integrandnum[zt_?NumericQ] := integrand/.{z->zt};
+
+rate = NIntegrate[integrand,{z,0,100},AccuracyGoal->3,PrecisionGoal->3];(*only one that seems to work (ie. is quick enough and accurate) for amb and bnd at small masses*)
+(*z is IR dominated (ie. by z << 1) so 0 - 100 is fine. *)
+
+If[False(*(rate)<0*),
+Print[ikey];
+Print[jkey];
+Print[{Log10@"\[Kappa]",Log10["mpD" ("c")^2/("JpereV")]}/.pdict/.Constants`SIConstRepl//N];
+Print@Plot[Log10@integrand,{z,0,100},PlotLegends->Automatic,PlotRange->All];
+(*Print@DensityPlot[Log10[-integrand],{u,0,100},{z,0,100},PlotLegends->Automatic,PlotRange->All];*)
+Print[rmax/2/.pdict];
+Print[LogLogPlot[nC/.pdict/.Private`r->r/.{Private`Vgp->VpDT,Private`Vge->VeDT}/.pdict/.Constants`EarthRepl//Simplify,{r,0,rmax}]];
+Print[Plot[{-\[Delta] ("mpD")/2 "vesc","mpD"Capture`Vgrav[r]+\[Delta] ("mpD")/2 "vesc"}/.pdict/.Constants`EarthRepl//Simplify,{r,0,rmax}]];
+(*Print[FipList[ikey]/.plasmaparamlist/.mj->mT/.mi->"mpD"/.pdict/.Constants`SIConstRepl/.{u->(x+y)/2,z->(x-y)/2}/.{x->1,y->10^-3}];
+Print[TargetjList[jkey]/.plasmaparamlist/.mj->mT/.mi->"mpD"/.pdict/.Constants`SIConstRepl/.{u->(x+y)/2,z->(x-y)/2}/.{x->1,y->10^-3}];*)
+];
+
+AppendTo[ratetable,<|"rate"->Abs@rate,"keys"->{ikey,NuccoeffList[[jkey]]["name"]},"params"->plasmaparamlist,"nucparams"->NuccoeffList[[jkey]]|>];
+(*the Abs on rate is a band aid, I haven't been able to diagnose the occasional incorrect sign. Maybe related to low accuracy / precision goals?*)
+
+j= j+1;
+
+,{ikey,{"cap","evap"}},{jkey,Length@NuccoeffList}];
+
+ratetable
+]
+
+
 (* ::Subsection:: *)
 (*Pipeline Modules*)
 
@@ -1581,14 +1795,9 @@ Print[\[Tau]CA];
 
 
 Clear[Get\[Tau]sFromPDict]
-Get\[Tau]sFromPDict[pdict_,\[Delta]_,(*\[Sigma]dicte_,\[Sigma]dictNuc_,*)\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{pdictnew,logm,log\[Kappa],ratetable,\[Tau]stable,\[Tau]AA,\[Tau]CC,\[Tau]CA,\[Tau]CE,\[Tau]AE,log\[Tau]sdict,rmax,\[CapitalGamma]pC,\[CapitalGamma]pA,NE,NA,NCfrom\[Delta],\[CapitalGamma]evapE,\[CapitalGamma]capE,\[CapitalGamma]evapP,\[CapitalGamma]capP,\[CapitalGamma]evaptot,\[CapitalGamma]captot,tE,timeenoughforequil,Nctot,newstuffassoc(*,timeenoughforequilE,NcE*)},
-
-(*Print@Dimensions[pdict];*)
+Get\[Tau]sFromPDict[pdict_,\[Delta]_,NuccoeffList_,\[Alpha]Dby\[Alpha]_:1,fD_:0.05]:= Module[{pdictnew,logm,log\[Kappa],ratetableP,ratetableE,\[Tau]stable,\[Tau]AA,\[Tau]CC,\[Tau]CA,\[Tau]CE,\[Tau]AE,log\[Tau]sdict,rmax,\[CapitalGamma]pC,\[CapitalGamma]pA,NE,NA,NCfrom\[Delta],\[CapitalGamma]evapE,\[CapitalGamma]capE,\[CapitalGamma]evapP,\[CapitalGamma]capP,\[CapitalGamma]evaptot,\[CapitalGamma]captot,tE,timeenoughforequil,Nctot,newstuffassoc(*,timeenoughforequilE,NcE*)},
 
 pdictnew = {};
-
-(*Print@Dimensions[pdict];
-Print["in get \[Tau]s"];*)
 
 \[Tau]stable=Monitor[Flatten[Table[
 
@@ -1596,112 +1805,23 @@ AppendTo[pdictnew,{}];
 
 Table[
 
-(*Print["testy test 0"];
-
-Print[Head[pdict]];
-Print[Head[pdict[[mind,\[Kappa]ind]]]];*)
-
-(*{logm ,log\[Kappa]}=Log10@{(("m\[Chi]" ("c")^2)/("JpereV")/.pdict[[mind,\[Kappa]ind]]/.Constants`SIConstRepl),("\[Kappa]"/.pdict[[mind,\[Kappa]ind]])};*)
 {logm ,log\[Kappa]}=Log10@{(("mpD" ("c")^2)/("JpereV")/.pdict[[mind,\[Kappa]ind]]/.Constants`SIConstRepl),("\[Kappa]"/.pdict[[mind,\[Kappa]ind]])};
-
-(*Print[{logm,log\[Kappa]}];*)
-(*If[log\[Kappa]>-10, Continue[]];*)
-
-(*Print["testy test 1"];
-
-Print["Head[logm] = ", Head[logm]];
-Print["NumericQ[logm] = ", NumericQ[logm]];
-Print["LeafCount[logm] = ", LeafCount[logm]];
-Print["ByteCount[logm]  = ", ByteCount[logm]];*)
-
-(*
-Print[Dimensions[logm]];
-Print[logm[[1]]];
-Print[logm[[2]]];
-Print[Dimensions[log\[Kappa]]];
-Print[log\[Kappa][[1]]];
-Print[log\[Kappa][[2]]];*)
-
-(*Print[pdict[[mind,\[Kappa]ind]]];*)
-
-(*Print[{logm ,log\[Kappa]}];*)
-
-(*Print["testy test"];*)
-
-(*Print[Keys@pdict[[mind,\[Kappa]ind]]];*)
 
 rmax = getrmax[getncap["mpD","meD","\[Beta]D",Capture`naDM[fD,"mpD"],\[Alpha]Dby\[Alpha]]/.pdict[[mind,\[Kappa]ind]]][\[Delta]];
 
-(*Print["rmax is ", rmax];*)
+ratetableP = GetPlasmaRates[pdict[[mind,\[Kappa]ind]],\[Delta],rmax,\[Alpha]Dby\[Alpha],fD];
 
-ratetable = GetPlasmaRates[pdict[[mind,\[Kappa]ind]],\[Delta],rmax,\[Alpha]Dby\[Alpha],fD];
-
-(*Print[ratetable];*)
-(*Print@Gather[ratetable,#1["keys"][[1]]==#2["keys"][[1]]&];*)
-
-(*Print[Dimensions@ratetable];*)
-
-(*can probably do the index search globally and pass it as needed.*)
-(*need to update these with the relative velocity rather than the velocity of the probe.*)
-(*\[Tau]AA = Get\[Tau]AA[logm,log\[Kappa],pdict,\[Delta]];
-\[Tau]CC = Get\[Tau]CC[logm,log\[Kappa],pdict,\[Delta]];
-\[Tau]CA = Get\[Tau]CA[logm,log\[Kappa],pdict,\[Delta]];
-\[Tau]CE = Get\[Tau]CE[logm,log\[Kappa],pdict,\[Delta],\[Sigma]dicte,\[Sigma]dictNuc];
-\[Tau]AE = Get\[Tau]AE[logm,log\[Kappa],pdict,\[Delta],\[Sigma]dicte,\[Sigma]dictNuc];*)
-
-(*add these to the pdict as an association*)
-
-(*log\[Tau]sdict = <|"\[Tau]AA"->"log\[Tau]rel"/.\[Tau]AA,"\[Tau]CC"->"log\[Tau]rel"/.\[Tau]CC,"\[Tau]CA"->"log\[Tau]rel"/.\[Tau]CA,"\[Tau]CE"->"log\[Tau]rel"/.\[Tau]CE,"\[Tau]AE"->"log\[Tau]rel"/.\[Tau]AE,"\[Tau]Epass"->"log\[Tau]comp"/.\[Tau]AE,"\[Tau]evapE"->"log\[Tau]comp"/.\[Tau]CE|>;
-*)
-(*log\[Tau]sdict = <|"\[Tau]AA"->0.02,"\[Tau]CC"->0.04,"\[Tau]CA"->0.03,"\[Tau]CE"->0.01,"\[Tau]AE"->0.001,"\[Tau]Epass"->0.00001,"\[Tau]evapE"->0.004|>;
-
-Print[log\[Tau]sdict];*)
-
-(*rmax = Screening`getrmax[Screening`getncap["mpD","meD","\[Beta]D",Capture`naDM[fD,"mpD"],\[Alpha]Dby\[Alpha]]/.pdict[[mind,\[Kappa]ind]]][\[Delta]];*)
-
-(*Print[Capture`naDM[fD,"mpD"]/.pdict[[mind,\[Kappa]ind]]];*)
-(*
-These should really be rates that are integrated over r 
-
-WE NEED TO DO THIS BEFORE SCANNING OR WE WILL BE SIGNIFICANTLY OFF.
-*)
-
-(*the missing piece here is to find the total per particle evaporation rate. At the mo they are total rates. *)
-(*to do that we just need to divide by the total expected number of captured charges*)
-(*(again, point is that they will agree with the rate definition once a solution is found) - so this means just divide through by 4 \[Pi] \[Integral] \[DifferentialD]r r^2Subscript[n, C](r), ie. just get NC of \[Delta]*)
-(*Ie. we are solving Subscript[\[CapitalGamma], evap]=Subscript[\[CapitalGamma], cap] <=> Subscript[N, C]= Subscript[\[CapitalGamma], cap]/(Subscript[\[CapitalGamma], evap]/Subscript[N, C])= Subscript[\[CapitalGamma], cap]/(\[CapitalGamma]evap,per-part)*)
-
-(*\[CapitalGamma]pC = Total[10^-#&/@({"\[Tau]CC","\[Tau]CA"}/.log\[Tau]sdict)];
-\[CapitalGamma]pA = Total[10^-#&/@({"\[Tau]AA","\[Tau]CA"}/.log\[Tau]sdict)];*)
-
-(*NE = Capture`naDM[fD,"mpD"]((4\[Pi])/3 ("rE")^3)/.pdict[[mind,\[Kappa]ind]]/.Constants`EarthRepl;
-NA = Capture`naDM[fD,"mpD"]((4\[Pi])/3 rmax^3)/.pdict[[mind,\[Kappa]ind]];*)
+ratetableE = GetNuclearEarthRates[pdict[[mind,\[Kappa]ind]],\[Delta],rmax,NuccoeffList,\[Alpha]Dby\[Alpha],fD];
 
 NCfrom\[Delta] = Ncapof\[Delta][getncap["mpD","meD","\[Beta]D",Capture`naDM[fD,"mpD"],\[Alpha]Dby\[Alpha]]/.pdict[[mind,\[Kappa]ind]],\[Delta]]; (*NC computed from the given value of \[Delta]*)
 
 
-(*Capture rate for earth is total rate accounting for flux incident on Earth. Evap is per particle so needs to account for number
-of captured charges in Earth's volume at a time (ie. a ratio of rmax volume to earth volume)*)
-\[CapitalGamma]evapE = (("rE")/rmax)^3 "\[CapitalGamma]total"/.pdict[[mind,\[Kappa]ind]]/.Constants`EarthRepl;
-\[CapitalGamma]capE=(*(("rE")/rmax)^3*)"dNcMaxdt"/.pdict[[mind,\[Kappa]ind]]/."nD"->Capture`naDM[fD,"mpD"]/.pdict[[mind,\[Kappa]ind]]/.Constants`EarthRepl; (*per particle rate*)
+\[CapitalGamma]capE =  Sum[If[#[[i]]["keys"][[1]]=="cap",("nucparams"/.#[[i]])["Vol"]("rate"/.#[[i]]),0],{i,Length[#]}]&@ratetableE;
+\[CapitalGamma]evapE =  1/NCfrom\[Delta] Sum[If[#[[i]]["keys"][[1]]=="evap",("nucparams"/.#[[i]])["Vol"]("rate"/.#[[i]]),0],{i,Length[#]}]&@ratetableE; (*per particle rate*)
 
-(*Print["first here cap"];
-Print[ratetable];
-Print[ratetable["keys"]];
-Print[ratetable[[1]]["keys"]];
-Print[ratetable["keys"][[1]]];*)
 
-(*\[CapitalGamma]capP = ((4\[Pi])/3 rmax^3) Sum["rate"/.#[[i]],{i,Length[#]}]&@Gather[ratetable,#1["keys"][[1]]==#2["keys"][[1]]&][[1]];*)
-\[CapitalGamma]capP = ((4\[Pi])/3 rmax^3) Sum[If[#[[i]]["keys"][[1]]=="cap","rate"/.#[[i]],(*Print[#["keys"][[1]]];Print[Length[#]];Print["here cap"];*)0],{i,Length[#]}]&@ratetable;
-
-(*Print["first here evap"];*)
-
-(*I caught it. The issue is that the If is never evaluating to true. I just need to probe it and correct the logic.*)
-
-(*\[CapitalGamma]evapP = ((4\[Pi])/3 rmax^3)1/NCfrom\[Delta]Sum["rate"/.#[[i]],{i,Length[#]}]&@Gather[ratetable,#1["keys"][[1]]==#2["keys"][[1]]&][[2]]; (*per particle rate*)*)
-\[CapitalGamma]evapP = ((4\[Pi])/3 rmax^3) 1/NCfrom\[Delta] Sum[If[#[[i]]["keys"][[1]]=="evap","rate"/.#[[i]],(*Print[#["keys"][[1]]];Print[Length[#]];Print["here evap"];*)0],{i,Length[#]}]&@ratetable; (*per particle rate*)
-
-(*Nctot = (\[CapitalGamma]capE-\[CapitalGamma]evapE+ NA \[CapitalGamma]pA)/\[CapitalGamma]pC;*)
+\[CapitalGamma]capP = ((4\[Pi])/3 rmax^3) Sum[If[#[[i]]["keys"][[1]]=="cap","rate"/.#[[i]],0],{i,Length[#]}]&@ratetableP;
+\[CapitalGamma]evapP = ((4\[Pi])/3 rmax^3) 1/NCfrom\[Delta] Sum[If[#[[i]]["keys"][[1]]=="evap","rate"/.#[[i]],0],{i,Length[#]}]&@ratetableP; (*per particle rate*)
 
 \[CapitalGamma]captot = \[CapitalGamma]capE+ \[CapitalGamma]capP;(*total cap rate*)
 \[CapitalGamma]evaptot = \[CapitalGamma]evapE+ \[CapitalGamma]evapP;(*total per particle evap rate*)
@@ -1709,56 +1829,25 @@ Print[ratetable["keys"][[1]]];*)
 (*ATTN: double check that factors of \[Kappa] etc are accounted for in Earth rates*)
 (*ah no there are volume factors for the Earth rates that need to be included.*)
 
-(*Print[\[CapitalGamma]evapE];
-Print[\[CapitalGamma]evapP];
-Print[\[CapitalGamma]capE];
-Print[\[CapitalGamma]capP];*)
-
-(*am I missing volume factors for the plasma rates?*)
-
-(*Return[Print["nah b"],Module];*)
-
 
 tE = 4.543 10^9 (356  24 3600);(*[s] age of the Earth*)
 
-(*these rates may need to be modified slightly to account for the varying rates with r.*)
-(*\[CapitalGamma]evaptot = \[CapitalGamma]pC + \[CapitalGamma]evapE/Nctot;
-\[CapitalGamma]captot = NA \[CapitalGamma]pA + \[CapitalGamma]capE;*)
 
 timeenoughforequil = 1/tE<(\[CapitalGamma]evaptot);
 
 Nctot = If[timeenoughforequil, \[CapitalGamma]captot/\[CapitalGamma]evaptot, \[CapitalGamma]captot tE];
 
-(*Print[Nctot];*)
 
-(*timeenoughforequilE = 1/tE<\[CapitalGamma]evapE/Nctot;
-
-NcE = If[timeenoughforequilE,Nctot\[CapitalGamma]capE/\[CapitalGamma]evapE,\[CapitalGamma]capE tE];*)
-
-(*Print[\[CapitalGamma]capE/\[CapitalGamma]evapE];*)
+newstuffassoc = <|"\[Delta]"->\[Delta],"\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha],"fD"->fD,"rmax"->rmax,"Nctot"->Nctot,(*"NcE"->NcE,*)"\[CapitalGamma]captot"->\[CapitalGamma]captot,"\[CapitalGamma]evaptot"->\[CapitalGamma]evaptot,"\[CapitalGamma]evapE"-> \[CapitalGamma]evapE,"\[CapitalGamma]capE"->\[CapitalGamma]capE,"\[CapitalGamma]evapP"-> \[CapitalGamma]evapP,"\[CapitalGamma]capP"->\[CapitalGamma]capP,"timeenoughforequil"->timeenoughforequil,"ratetable"->ratetableP,"ratetableE"->ratetableE|>;
 
 
-(*Print[timeenoughforequil];*)
-
-newstuffassoc = <|"Nctot"->Nctot,(*"NcE"->NcE,*)"\[CapitalGamma]captot"->\[CapitalGamma]captot,"\[CapitalGamma]evaptot"->\[CapitalGamma]evaptot,"\[CapitalGamma]evapE"-> \[CapitalGamma]evapE,"\[CapitalGamma]capE"->\[CapitalGamma]capE,"\[CapitalGamma]evapP"-> \[CapitalGamma]evapP,"\[CapitalGamma]capP"->\[CapitalGamma]capP,"timeenoughforequil"->timeenoughforequil,"ratetable"->ratetable|>;
-
-(*Print["made it herer"];*)
-
-(*AppendTo[pdictnew[[-1]],pdict[[mind,\[Kappa]ind]]];*)
-(*pdictnew = ReplacePart[pdictnew, -1 -> Append[pdictnew[[-1]], pdict[[mind,\[Kappa]ind]]]];*)
-
-(*Print[Dimensions[pdictnew]];*)
-(*AssociateTo[pdictnew[[-1,-1]],{"Nctot"->Nctot,(*"NcE"->NcE,*)"\[CapitalGamma]captot"->\[CapitalGamma]captot,"\[CapitalGamma]evaptot"->\[CapitalGamma]evaptot,"\[CapitalGamma]evapE"-> \[CapitalGamma]evapE,"\[CapitalGamma]capE"->\[CapitalGamma]capE,"\[CapitalGamma]evapP"-> \[CapitalGamma]evapP,"\[CapitalGamma]capP"->\[CapitalGamma]capP,"timeenoughforequil"->timeenoughforequil,"ratetable"->ratetable(*,"timeenoughforequilE"->timeenoughforequilE*)}];*)
-(*AssociateTo[pdictnew[[-1,-1]],<|"Nctot"->Nctot,(*"NcE"->NcE,*)"\[CapitalGamma]captot"->\[CapitalGamma]captot,"\[CapitalGamma]evaptot"->\[CapitalGamma]evaptot,"\[CapitalGamma]evapE"-> \[CapitalGamma]evapE,"\[CapitalGamma]capE"->\[CapitalGamma]capE,"\[CapitalGamma]evapP"-> \[CapitalGamma]evapP,"\[CapitalGamma]capP"->\[CapitalGamma]capP,"timeenoughforequil"->timeenoughforequil,"ratetable"->ratetable(*,"timeenoughforequilE"->timeenoughforequilE*)|>];*)
-(*pdictnew = ReplacePart[pdictnew, {-1, -1} -> Append[pdictnew[[-1, -1]], newstuffassoc]];*)
 pdictnew = ReplacePart[pdictnew, {-1} -> Append[pdictnew[[-1]],Append[pdict[[mind,\[Kappa]ind]], newstuffassoc]]];
 
-(*Print[Dimensions[pdictnew]];*)
 
-(*Print["also made it here"];*)
-
-,{\[Kappa]ind,1(*7,7*)(*Dimensions[pdict][[2]]*)}]
-,{mind,1(*4,4*)(*Dimensions[pdict][[1]]*)}],1];
+(*,{\[Kappa]ind,7,7(*Dimensions[pdict][[2]]*)}]
+,{mind,4,4(*Dimensions[pdict][[1]]*)}],1];*)
+,{\[Kappa]ind,Dimensions[pdict][[2]]}]
+,{mind,Dimensions[pdict][[1]]}],1];
 ,{\[Kappa]ind,mind}];
 
 pdictnew
