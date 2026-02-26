@@ -262,7 +262,7 @@ If[(ndups<ndupsmax),Export[path[ndups],obj];Return[<|"path"->path[ndups],"direct
 Clear[ExportDatFileToDir]
 ExportDatFileToDir[obj_,name_,subsubdirectory_:"subsubdirectory",subdirectory_:DateString[{"Day","_","Month","_","Year"}],ndupsmax_:500]:=Module[{directory,rootname,extension,path,ndups},
 directory=NotebookDirectory[]<>"Out/"<>subdirectory<>"/"<>subsubdirectory;
-(*{rootname,extension}=StringSplit[ToString@name,"."];*)
+
 rootname = name;
 
 
@@ -275,10 +275,9 @@ While[FileExistsQ[path[ndups]<>".dat"]&&ndups<=ndupsmax,
 ndups++;
 ];
 
-(*If[(ndups<ndupsmax),Export[path[ndups],obj];*)
+
 If[(ndups<ndupsmax),Utilities`SaveIt[path[ndups],obj];Return[<|"path"->path[ndups],"directory"->directory|>,Module],Print["Too many files with this name in the specified directory."]];
-(*If[(ndups<ndupsmax),Check[Export[path[ndups],obj],SaveIt[StringSplit[path[ndups],"."][[1]],obj]];Return[<|"path"->path[ndups],"directory"->directory|>,Module],Print["Too many files with this name in the specified directory."]];
-*)
+
 ]
 
 

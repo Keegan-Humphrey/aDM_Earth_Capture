@@ -1,0 +1,2677 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    139005,       2669]
+NotebookOptionsPosition[    136048,       2622]
+NotebookOutlinePosition[    136473,       2639]
+CellTagsIndexPosition[    136430,       2636]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{"Needs", "[", 
+  RowBox[{"\"\<Screening`\>\"", ",", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+    "\"\<../packages/Screening.wl\>\""}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Needs", "[", 
+  RowBox[{"\"\<Capture`\>\"", ",", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+    "\"\<../packages/Capture.wl\>\""}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Needs", "[", 
+  RowBox[{"\"\<Constants`\>\"", ",", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+    "\"\<../packages/Constants.wl\>\""}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Needs", "[", 
+  RowBox[{"\"\<Utilities`\>\"", ",", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+    "\"\<../packages/Utilities.wl\>\""}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Needs", "[", 
+  RowBox[{"\"\<FormFactors`\>\"", ",", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+    "\"\<../packages/FormFactors.wl\>\""}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Needs", "[", 
+  RowBox[{"\"\<Dielectrics`\>\"", ",", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+    "\"\<../packages/Dielectrics.wl\>\""}]}], "]"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.9797420021888237`*^9, 3.9797420024277563`*^9}, {
+  3.9797442131731205`*^9, 3.979744222467719*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"a3b55698-735d-4375-9aef-20c20ae1b873"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Pdict", " ", "=", " ", 
+   RowBox[{
+   "Utilities`ReadIt", "[", 
+    "\"\<C:\\\\Users\\\\keega\\\\OneDrive\\\\Documents\\\\THEP\\\\aDM Capture\
+\\\\notebooks\\\\AdM_capture\\\\aDM_git\\\\plasma\\\\Out\\\\25_02_2026\\\\\
+\[Delta]Dicts\\\\\[Delta]Dict_1_aDbya_1_fD_0.01_delta_-1_0.dat\>\"", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.981028007568084*^9, 3.981028041187687*^9}, {
+  3.981031747642432*^9, 3.9810317544061127`*^9}, {3.9810353709945245`*^9, 
+  3.981035371234522*^9}, {3.9810439531411495`*^9, 3.9810439536254463`*^9}},
+ CellLabel->
+  "In[119]:=",ExpressionUUID->"31cb1776-ddce-49ab-8da8-e4eb9f26c616"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Keys", "@", 
+  RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}]], "Input",
+ CellChangeTimes->{{3.9810280960057917`*^9, 3.981028161336115*^9}, {
+  3.9810283665715623`*^9, 3.981028367236054*^9}},
+ CellLabel->"In[64]:=",ExpressionUUID->"462e5cc6-b9f1-4fef-b1ac-0c18c3263e99"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"\[Delta]\"\>", ",", "\<\"rmax\"\>", ",", "\<\"NCE\"\>", 
+     ",", "\<\"NC\"\>", ",", "\<\"\[CapitalGamma]cap\"\>", 
+     ",", "\<\"\[CapitalGamma]evap\"\>", ",", "\<\"\[CapitalGamma]capE\"\>", 
+     ",", "\<\"\[CapitalGamma]evapE\"\>", ",", "\<\"log\[Tau]s\"\>", 
+     ",", "\<\"meD\"\>", ",", "\<\"mpD\"\>", ",", "\<\"\[Beta]D\"\>", 
+     ",", "\<\"nD\"\>", ",", "\<\"v0\"\>", ",", "\<\"\[Kappa]\"\>", 
+     ",", "\<\"fD\"\>", ",", "\<\"\[Alpha]Dby\[Alpha]\"\>"}], "}"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{
+  3.981028098779064*^9, {3.9810281481812973`*^9, 3.9810281617865148`*^9}, 
+   3.981028367439502*^9},
+ CellLabel->"Out[64]=",ExpressionUUID->"bfdcb8d5-23e7-41f8-b967-552319fb9f1b"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Log10", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<mpD\>\"", 
+        FractionBox[
+         SuperscriptBox["\"\<c\>\"", "2"], "\"\<JpereV\>\""]}], ",", 
+       "\"\<\[Kappa]\>\"", ",", 
+       FractionBox["\"\<\[CapitalGamma]capE\>\"", 
+        RowBox[{
+        "\"\<\[CapitalGamma]cap\>\"", "-", "\"\<\[CapitalGamma]capE\>\""}]]}],
+       "}"}]}], "/.", 
+    RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}], "/.", 
+   "SIConstRepl"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListContourPlot", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"ContourLabels", "->", "All"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Log10", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<mpD\>\"", 
+        FractionBox[
+         SuperscriptBox["\"\<c\>\"", "2"], "\"\<JpereV\>\""]}], ",", 
+       "\"\<\[Kappa]\>\"", ",", "\"\<\[CapitalGamma]capE\>\""}], "}"}]}], "/.", 
+    RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}], "/.", 
+   "SIConstRepl"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListContourPlot", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"ContourLabels", "->", "All"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Log10", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<mpD\>\"", 
+        FractionBox[
+         SuperscriptBox["\"\<c\>\"", "2"], "\"\<JpereV\>\""]}], ",", 
+       "\"\<\[Kappa]\>\"", ",", 
+       RowBox[{
+       "\"\<\[CapitalGamma]cap\>\"", "-", "\"\<\[CapitalGamma]capE\>\""}]}], 
+      "}"}]}], "/.", 
+    RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}], "/.", 
+   "SIConstRepl"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListContourPlot", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"ContourLabels", "->", "All"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Log10", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<mpD\>\"", 
+        FractionBox[
+         SuperscriptBox["\"\<c\>\"", "2"], "\"\<JpereV\>\""]}], ",", 
+       "\"\<\[Kappa]\>\"", ",", 
+       FractionBox["\"\<\[CapitalGamma]evapE\>\"", 
+        RowBox[{
+        "\"\<\[CapitalGamma]evap\>\"", "-", 
+         "\"\<\[CapitalGamma]evapE\>\""}]]}], "}"}]}], "/.", 
+    RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}], "/.", 
+   "SIConstRepl"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListContourPlot", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"ContourLabels", "->", "All"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Log10", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<mpD\>\"", 
+        FractionBox[
+         SuperscriptBox["\"\<c\>\"", "2"], "\"\<JpereV\>\""]}], ",", 
+       "\"\<\[Kappa]\>\"", ",", "\"\<\[CapitalGamma]evapE\>\""}], "}"}]}], "/.", 
+    RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}], "/.", 
+   "SIConstRepl"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListContourPlot", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"ContourLabels", "->", "All"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Log10", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<mpD\>\"", 
+        FractionBox[
+         SuperscriptBox["\"\<c\>\"", "2"], "\"\<JpereV\>\""]}], ",", 
+       "\"\<\[Kappa]\>\"", ",", 
+       RowBox[{
+       "\"\<\[CapitalGamma]evap\>\"", "-", "\"\<\[CapitalGamma]evapE\>\""}]}],
+       "}"}]}], "/.", 
+    RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}], "/.", 
+   "SIConstRepl"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListContourPlot", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"ContourLabels", "->", "All"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Log10", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\"\<mpD\>\"", 
+        FractionBox[
+         SuperscriptBox["\"\<c\>\"", "2"], "\"\<JpereV\>\""]}], ",", 
+       "\"\<\[Kappa]\>\"", ",", "\"\<NC\>\""}], "}"}]}], "/.", 
+    RowBox[{"Pdict", "[", "\"\<\[Delta]table\>\"", "]"}]}], "/.", 
+   "SIConstRepl"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListContourPlot", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"ContourLabels", "->", "All"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.981028125026514*^9, 3.9810281275742273`*^9}, {
+  3.981028182501382*^9, 3.981028288482568*^9}, {3.9810283452691207`*^9, 
+  3.98102841732728*^9}},
+ CellLabel->
+  "In[120]:=",ExpressionUUID->"9f2dba0a-a554-4816-a19a-5342e94bcf6a"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Power", "infy", 
+   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0.`\\\"]\\) \
+encountered.\"", 2, 120, 24, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.98104395767253*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"675003a9-2512-4ce4-b43f-84403a2afc97"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Power", "infy", 
+   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0.`\\\"]\\) \
+encountered.\"", 2, 120, 25, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.981043957714952*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"e3a47f66-5965-4155-b99e-6f157fa300a6"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Power", "infy", 
+   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0.`\\\"]\\) \
+encountered.\"", 2, 120, 26, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439577365274`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"bc6311a2-68ce-42e4-9b6f-263976bb95e1"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "General", "stop", 
+   "\"Further output of \\!\\(\\*StyleBox[RowBox[{\\\"Power\\\", \\\"::\\\", \
+\\\"infy\\\"}], \\\"MessageName\\\"]\\) will be suppressed during this \
+calculation.\"", 2, 120, 27, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439577684565`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"debb0989-ce9c-44e3-914e-10ff703a9f7b"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1:eJxl1XlMFHcUB3A8qEqiiKyge8zOzg7D7MyqFaOmGsrPq5bSCqJBY5FtoVg8
+KgWsoKUV0KihYhQNNoIcLYqWcIhARY38EK2UIqAWLYKiHAqIIKhVPKB0tvOb
++DrJ5pvPP/PezL75PUNgqG/wcBsbm9yh3785KF0aZCNdZvy2BWAemANmgRlg
+GliLByTrSf23LQDzwBwwC8wA08Da//oxgOeXLQDzwBwwC8wA08ByfSOoL1sA
+5oE5YBaYAaaB5fouoL5sAZgH5oBZYAaYBpbru4L6sgVgHpgDZoEZYBpYrm8C
+9WULwDwwB8wCM8A0sFxfBPVlC8A8MAcsz/8Ucr+3LQDzuKY02I8bp0PtTW6i
+4y4BT71dz07zo9CP3RsSnUUR73n5yZPZqXq0+M2xfk2NiP3o9v74Ki0Sxz+N
+XrSGx0Xu/hUHVBRqoKa2etqZsOOntUkp/noUPyXEa0muCUdOPDCz+Y2W1L/o
+bDwquFHEDupTqog1yvcuTO18sU/Hk/czfOIC/RysJf0ucb6+N+6pjjh5ctBA
+Ja+cD9b3oUE/9XXNOlcu4saYdUd64rUoFBVVRy7i8NzUO+tfXNMhyrtnZnQH
+hw+f9Z0zTKNH1atNR2ISXPEe1ZPRiXFyPQ7XO22PulWsI3aZ7NjOPKSIg+51
+oeWeWlTw9Wb6F5bFFwY+s1+9X4cCt+Xvyq1gMa2tux1cTyGHvZ3dBRtcyPx3
+5zyxdFfqSb9pUr8GnO64rHHeKLm+GT+a2OIVP1dHPGdSxNlroRTxTvUIUZOp
+nJ8fO1T6RJ9Qzi8n1c99HQvl+7E4yGlGoNsWHXH+pPKrW3Mo4tfqZfPK7ynn
+aee80NbTQ/08S58d3jiCwZ6WloIybx06mhdWfzeLwVnRK2IrD1Fo+fls1OZl
+xO8c/sP7epMejbzSltXRY8SbX2avzvregCKlNOG4qpJhvYM0+b82eabWLH5H
+7o8Zmq99fhMcdMTvPY+93aihiDXVEV9kccr5nrvycXrlAy1aaY7yaYugcaEl
+Mttj2NA85p2tS7Mx4DNrBooK1XoUMGNw1aoEAzn/39wXk51fsTghxeOKGEuj
+vVJyeP2uEwXBfnJ/HF75+YOM4ga5PxpnBZXzsfd1xM+D0/K8einiD0K+neX0
+Wtk3Sw+ZbWPytMjXmjjcN9n+WYUObbImPjjWTr2umUJJ1sRFFVFs0ys9+tWa
+pN97mZuz97jQuLx5DH/+qNyPFldrLAsS8nTE9csLA/xLKOKWhDFbxXJl33lP
+PzW6LJ9BPlIq+62yrbdvvq2IeXPA9B3u/99fbdv7TyYzRjzfI8f5z3EsWiCl
+sp+SvBxDosYL+NiVsnP4IEvmr2fk/QlrdzLosTVxc0iaobLBBbVIacIZAa+K
+PF4wpN54y+wtZWFG5CClgdx/49qCguNVyv6Ydqvm/OWbJuyZZJey9iGHPpKS
+x1XtS3Ob6pR9cTFzlP3+BBZdkpLG7lWWrtZOV/S+NbFqVXp+6CVlP3m0/3U6
++5ELiqk9GbaiQY8/DLELfzdP2Rep8Sqqy96E0qQUce2i5xlfFfPkeQ2JF3pL
+VTxirEn2TbvPtq5Tda7YLcy/4OFYnvTX/9SSEN7KoWcdpeq2oXk4rU7c3xOg
+7KNY997B3b8p53/zDzcDor5U9kts3zeD6WoTipPSgC8vC4lZf1hEFVK6kn0z
+cCPNO7DDiPkznVfN7QKZ79+33plVUi73Q+ObqoWFWOTRSdPukNgVWtxtjMzw
+dxBQj5Qsrnav2Xjk+BRUK6WIzdf//i68wkye3/bxoczqMfL9WbKf7pbY5izd
+weO7fHFK6Q1lP8H9A78XuH/g/MB+4PfyD7nTno4=
+   "], {{
+     {RGBColor[0.148, 0.33, 0.54], EdgeForm[None], 
+      GraphicsGroupBox[PolygonBox[{{78, 1, 90}}]]}, 
+     {RGBColor[0.26571496900462255`, 0.3953972050025681, 0.6502410027186147], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{95, 5, 85}, {89, 6, 105}, {71, 2, 65}, {105, 6, 99}, {82,
+          4, 79}, {75, 3, 68}}], 
+        PolygonBox[{{68, 3, 2, 71}, {99, 6, 5, 95}, {79, 4, 3, 75}, {85, 5, 4,
+          82}}], PolygonBox[{{65, 2, 78, 90, 91}}]}]}, 
+     {RGBColor[0.5429798270143252, 0.4945296516663763, 0.49987767357624335`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{PolygonBox[{{115, 7, 109}, {124, 8, 119}}], 
+        PolygonBox[{{76, 75, 68, 69}, {106, 105, 99, 100}, {119, 8, 7, 115}, {
+         86, 85, 82, 83}, {80, 79, 75, 76}, {100, 99, 95, 96}, {83, 82, 79, 
+         80}, {66, 65, 91, 92}, {72, 71, 65, 66}, {96, 95, 85, 86}, {69, 68, 
+         71, 72}}], PolygonBox[{{109, 7, 89, 105, 106}}]}]}, 
+     {RGBColor[0.8222501885586233, 0.5926757851164491, 0.33570595944157605`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{97, 96, 86, 87}, {120, 119, 115, 116}, {70, 69, 72, 73}, {
+        84, 83, 80, 81}, {73, 72, 66, 67}, {81, 80, 76, 77}, {107, 106, 100, 
+        101}, {87, 86, 83, 84}, {125, 124, 119, 120}, {77, 76, 69, 70}, {101, 
+        100, 96, 97}, {110, 109, 106, 107}, {67, 66, 92, 93}, {116, 115, 109, 
+        110}}]]}, 
+     {RGBColor[0.9321917811666008, 0.7004794529165022, 0.3897945216164626], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{152, 43, 150}, {10, 9, 17}, {128, 25, 133}, {73, 10, 
+         70}, {104, 11, 103}, {114, 12, 113}, {149, 42, 148}, {34, 33, 41}, {
+         136, 34, 140}, {142, 43, 144}, {34, 41, 42}, {112, 12, 114}, {134, 
+         34, 136}, {151, 43, 152}, {93, 9, 67}, {77, 11, 81}, {84, 12, 87}, {
+         144, 43, 151}}], 
+        PolygonBox[{{81, 11, 12, 84}, {111, 110, 107, 108}, {117, 116, 110, 
+         111}, {94, 10, 17, 129}, {108, 107, 101, 102}, {141, 42, 43, 142}, {
+         70, 10, 11, 77}, {103, 11, 10, 94}, {113, 12, 11, 104}, {129, 17, 25,
+          128}, {102, 101, 97, 98}, {121, 120, 116, 117}, {132, 33, 34, 
+         134}, {67, 9, 10, 73}, {150, 43, 42, 149}, {133, 25, 33, 132}, {140, 
+         34, 42, 141}, {126, 125, 120, 121}, {148, 42, 41, 154}}], 
+        PolygonBox[{{98, 97, 87, 12, 112}}]}]}, 
+     {RGBColor[0.976803660007543, 0.8120091500188575, 0.5280913460233834], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{149, 50, 150}, {142, 35, 141}, {35, 28, 27}, {146, 39, 
+         88}, {27, 20, 19}, {37, 29, 36}, {36, 28, 35}, {28, 36, 29}, {137, 
+         30, 138}, {28, 20, 27}, {53, 45, 52}, {45, 37, 44}, {138, 30, 139}, {
+         154, 49, 148}, {45, 46, 38}, {141, 35, 140}, {18, 26, 19}, {50, 57, 
+         58}, {39, 38, 46}, {39, 46, 47}, {74, 48, 162}, {26, 27, 19}, {44, 
+         52, 45}, {29, 21, 28}, {50, 49, 57}, {50, 58, 51}, {13, 21, 14}, {20,
+          28, 21}, {21, 13, 20}, {52, 44, 51}, {160, 52, 158}, {37, 45, 38}, {
+         94, 18, 103}, {159, 53, 166}, {98, 13, 102}, {166, 53, 163}, {37, 36,
+          44}, {45, 53, 46}, {134, 26, 132}, {161, 47, 157}, {132, 26, 133}, {
+         165, 58, 164}, {145, 39, 146}, {128, 18, 129}, {129, 18, 94}, {167, 
+         58, 165}, {123, 14, 130}, {112, 13, 98}, {108, 14, 111}, {29, 37, 
+         30}, {37, 38, 30}, {104, 19, 113}}], 
+        PolygonBox[{{162, 48, 47, 161}, {127, 126, 121, 122}, {155, 51, 58, 
+         167}, {143, 38, 39, 145}, {114, 20, 13, 112}, {156, 46, 53, 159}, {
+         164, 58, 57, 168}, {135, 29, 30, 137}, {163, 53, 52, 160}, {157, 47, 
+         46, 156}, {88, 39, 47, 153}, {151, 44, 36, 144}, {152, 51, 44, 
+         151}, {153, 47, 48, 147}, {133, 26, 18, 128}, {102, 13, 14, 108}, {
+         144, 36, 35, 142}, {139, 30, 38, 143}, {140, 35, 27, 136}, {158, 52, 
+         51, 155}, {150, 50, 51, 152}, {130, 14, 21, 131}, {131, 21, 29, 
+         135}, {103, 18, 19, 104}, {148, 49, 50, 149}, {136, 27, 26, 134}, {
+         122, 121, 117, 118}, {113, 19, 20, 114}}], 
+        PolygonBox[{{118, 117, 111, 14, 123}}]}]}, 
+     {RGBColor[1., 0.95, 0.75], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{168, 62, 164}, {61, 56, 55}, {54, 61, 55}, {63, 64, 
+         59}, {167, 59, 155}, {31, 32, 24}, {160, 60, 163}, {135, 22, 131}, {
+         137, 22, 135}, {64, 61, 60}, {147, 40, 153}, {118, 15, 122}, {153, 
+         40, 88}, {31, 24, 23}, {159, 54, 156}, {64, 56, 61}, {23, 16, 15}, {
+         15, 22, 23}, {131, 22, 130}, {156, 54, 157}, {155, 59, 158}, {123, 
+         15, 118}, {145, 31, 143}, {143, 31, 139}, {161, 55, 162}, {59, 64, 
+         60}, {23, 24, 16}}], 
+        PolygonBox[{{146, 32, 31, 145}, {158, 59, 60, 160}, {122, 15, 16, 
+         127}, {130, 22, 15, 123}, {157, 54, 55, 161}, {138, 23, 22, 137}, {
+         88, 40, 32, 146}, {162, 55, 56, 74}, {165, 63, 59, 167}, {166, 61, 
+         54, 159}, {164, 62, 63, 165}, {139, 31, 23, 138}, {163, 60, 61, 
+         166}}]}]}}, {{}, 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{74, 162, 161, 157, 156, 159, 166, 163, 160, 158, 155, 167, 
+         165, 164, 168}], 
+        LineBox[{127, 122, 118, 123, 130, 131, 135, 137, 138, 139, 143, 145, 
+         146, 88, 153, 147}]},
+       "10"],
+      Annotation[#, 10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{154, 148, 149, 150, 152, 151, 144, 142, 141, 140, 136, 134, 
+         132, 133, 128, 129, 94, 103, 104, 113, 114, 112, 98, 102, 108, 111, 
+         117, 121, 126}]},
+       "0"],
+      Annotation[#, 0, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{93, 67, 73, 70, 77, 81, 84, 87, 97, 101, 107, 110, 116, 120, 
+         125}]},
+       RowBox[{"-", "10"}]],
+      Annotation[#, -10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{92, 66, 72, 69, 76, 80, 83, 86, 96, 100, 106, 109, 115, 119, 
+         124}]},
+       RowBox[{"-", "20"}]],
+      Annotation[#, -20, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{89, 105, 99, 95, 85, 82, 79, 75, 68, 71, 65, 91}]},
+       RowBox[{"-", "30"}]],
+      Annotation[#, -30, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], LineBox[{90, 78}]},
+       RowBox[{"-", "40"}]],
+      Annotation[#, -40, "Tooltip"]& ], {}, {}}, {InsetBox[
+      RowBox[{"-", "30"}], 169], InsetBox[
+      RowBox[{"-", "20"}], 170], InsetBox[
+      RowBox[{"-", "10"}], 171], InsetBox["0", 172], InsetBox["10", 173], 
+     InsetBox["10", 174]}}],
+  AspectRatio->1,
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->True,
+  FrameLabel->{None, None},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "GridLinesInFront" -> 
+    True},
+  PlotRange->{{6.999999999999999, 14.999999999999996`}, {-14., -7.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.981028129570842*^9, 3.9810281925281954`*^9, {3.981028242641205*^9, 
+   3.9810282488957143`*^9}, {3.981028282519331*^9, 3.9810282891069083`*^9}, {
+   3.9810283618751707`*^9, 3.9810283754585752`*^9}, 3.981028417876214*^9, 
+   3.981031756407349*^9, 3.9810353747840014`*^9, 3.9810439578481007`*^9},
+ CellLabel->
+  "Out[121]=",ExpressionUUID->"42a5d6a5-a2d7-43a1-ab45-eb91f7053401"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1:eJxt1gtU1FYaB/BBEQGRCmIFSTKZTGYmZKCAPAS09qKo+GBdQKiCQt0iSBVh
+5bEF0Sq1ZWF9rIAuAhbfCD5QRFrFls+lykHlIajgo7aKYhFdreBaVHDZjEnW
+6+acOf/zO8ncL3cyufdT/Sk+aMkQhULRO/j5b74WDnukEA5HeNs8Zg6zFjOL
+mcFMYyZgQLBSqv+2ecwcZi1mFjODmcZMvLkfFTZ/0TxmDrMWM4uZwUxjFuur
+sfqiecwcZi1mFjODmcYs1tdg9UXzmDnMWswsZgYzjVmsr8Pqi+Yxc5i1mFnM
+DGYas1jfAasvmsfMYdZiZjEzmGnMYn09Vl80j5nDrMXMYmYw05jF989Jqv+2
+ecwcZi1mFjODmcZMwOya9y09FhFof+SIzIIPeDhuaZ09z45EYcPNppVt4ME+
+YqRJ0hUSWZabDD31gIcvD5tm5G6h0D9Djc/U++uh+9XQgYoAJUoZMPri2n49
+hCy/N+WZFYH0VSt3vTDl4PvqX36waSTQz4sSIs1jONCMuOnjnk2i3GEryHFn
+OdgY1lYVPJ1CMw4vu+GgdoBnpS3jE4co0ct5sdu91znAwr6GIzk/KFH5q+iP
+Z/7sANxdxb7WUEL6fU5stYiwNiEl+86wHRt4Qnbj7+rmzVGU5LAy56zG0fL6
+dj984pSRtbKfxDpvOjVKHJ+DdPuJM/pqZJs1TFd4xZOSt60JOplCUZIZl4iV
+JxpkH7kdq+9Nl9fPc0vLey5nECiqsi31M18tfPBdWXzvZBLZLrwyIa1YC9uG
+7+8e/ZJEF4e2PsvqH3y+obti3L6l0NqDzce3h+sgen9RR1CiErkHN/659KQO
+/HbFuvySKt6fFi4FJXdRDqTkRcbrdi9ql/3gxIbwokxKckpMvs0NT3k9H2q3
+t8GuU7bh/2qPyJaGZ01f6aB5zBpu6wQCdZl/lHfengWvJal7K3sItKNiUtD1
+VBZ2VibRl8tJFBjmM+pBGwumxglFPcsoNGyIV2OfhwYSgpfZjuaU6GSpxwaz
+PA20747OG39XieIC3WbZPdVI9QihHgOfRLRUPywS5+cIj967laSfQ0pOPdPl
+9NlL2SaJzzoPlFGSc1ijnfcXvLu/pZ2zCNN/rwcLXb5dnZs4Pgv57XtahnXI
+1mSX/80vh5RcMbHa70tfSvLkR+f6zzyRfeGblirFTnk/nGLtfy3pAIFUZnuX
++8xjoGzx1JC8KBJdObqLn1XBgPWxyZeO0xTKml/864JRakhT+AS03qTQh4od
++2NXqOH2XI/6p/lK9FtJQVTqRTV2/1qAgOTdiZPk/bEpo/ra/K/E+2egI8B8
++NRxpOTntgvcncplW9wtWTzWj5JMl/97k9E12R5p0053x8n7+Z4JezaE/oFA
+LYWB0/U6Gk5HfvdR4kMC3XK+WeydQsOVzIanmwff7+7a6L4ZZ2n4V/mdfYc4
+Cj3/+LegUBsVmLQ/n19/jkLGD1cdivpUBUrFSIvOKCUatdbEJLFCJc2vq2xC
+9soINeS5Nr2omynOh4YDr0iu4pbs03XLQ4oSScnNOdUZX5tSku8tMj+asEN2
+H7fgp7Dxcj9i2VtiPq1OttuZgltj3yOQuyFhTlf5FvfDBAowJCyxOusXOJtE
+0YaENd7Xn8d1kegLQ8K2xY/Lsgffr3xDwpEs44gSjRIdNSTUHbOz+nFwvak3
+pDRfiImP2XlfBXNDkjnOUpwfAcroS1XJu2U/TnGaVutJSq7JzGoddUH25vx7
+iyMiKcmRpb5PDvbIdj61Y01fptx/9Zxz+UeGL/3Gg/vf7SN+xe+/20/pZv/l
+89V1HIyAGwEmWxlkISQH3naFn/46VYV8DCld71W2mSzrlr9/0DXD8+pdGlQX
+fNzDzzOIEZIF54FEU+K63D/lBNrVtj1Uo1xDSv1S4zdX4+zHcdD2ocPyYisW
+tQvJQcdAUL+3Jyv9//vmZlaWJjDohZCD+51PvHriMg16LaROGs9++jFNd7sa
+2k7Ern1wi5Gev/H6yJl/j1Mjc9OaHPoGJV1v2m/EVx8kIX2h64qlf9Sh1ULq
+IWZlp/PzfhYtFVLut8LrzUIK1TpYFetpxx7XonRDSue3Tz5KrHZhwLaiPTi9
+We6nRla6aF4nsYhYunjWQBcB6XMdaw89GqwnpAaCD1SZDQyV+7ebBxRzUpI4
+9JOQPLQ3dSz41ksrP0/h0KGJnlty9Xd46Ekebmn7hHtznoemIevMxlFa1Cwk
+A/UBo8Pt0x3QeUPC4/OxCQsnieMxMK3doqfYTYemC6nCxtdIrrbNPjZmHw3B
+L7Na/X/n0DwhWRizi1je+YKX7n+Of3XJ9f/p32x8CzUPBz1GSLXUr7mf4Vpu
+vuZglbdVRdp6HqULyUG/69KdJ63l/szoyO5NNp9waIiQNFy+6rY+b6MeXRFS
+h42nhqOuM9tTzoq/Bw2VwS/G0sscUGxJrzO6SknXe9zbXFB5iYRjuRtju8c6
+oQoh9aD7K1M43EyPOCHVUn/XG9fsaDz4/L1q1/p35zkiHyG12HkGfvx6w8VX
+LnI/t9027UZhOo/cXXurJvQR4BBVkN1d4IT0Qmpg39NNmRWso/R8xX7uTm1S
+8uc+PNQ8TdR1WzkiEJKBvW9dz2D3r8K+r8FMv9Mf4vsl3h/i6yXeH+LrJT6/
+//++yL8//j7+B7J7ZlM=
+   "], {{
+     {RGBColor[0.148, 0.33, 0.54], EdgeForm[None], 
+      GraphicsGroupBox[{PolygonBox[{{90, 3, 78}, {84, 2, 73}, {107, 3, 90}}], 
+        PolygonBox[{{73, 2, 1, 115}, {78, 3, 2, 84}}]}]}, 
+     {RGBColor[0.34253265285544354`, 0.4240849578725201, 0.6177124341041482], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{101, 4, 96}, {114, 5, 121}, {121, 5, 108}}], 
+        PolygonBox[{{108, 5, 4, 101}, {74, 73, 115, 116}, {91, 90, 78, 79}, {
+         85, 84, 73, 74}, {79, 78, 84, 85}}], 
+        PolygonBox[{{96, 4, 107, 90, 91}}]}]}, 
+     {RGBColor[0.5037933102983082, 0.48075803237320736`, 0.5229138367575441], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{134, 6, 127}, {147, 7, 140}, {162, 8, 154}}], 
+        PolygonBox[{{80, 79, 85, 86}, {86, 85, 74, 75}, {122, 121, 108, 
+         109}, {102, 101, 96, 97}, {75, 74, 116, 117}, {140, 7, 6, 134}, {97, 
+         96, 91, 92}, {109, 108, 101, 102}, {92, 91, 79, 80}, {154, 8, 7, 
+         147}}], PolygonBox[{{127, 6, 114, 121, 122}}]}]}, 
+     {RGBColor[0.6650539677411731, 0.5374311068738946, 0.4281152394109399], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{123, 122, 109, 110}, {87, 86, 75, 76}, {76, 75, 117, 
+        118}, {93, 92, 80, 81}, {110, 109, 102, 103}, {98, 97, 92, 93}, {135, 
+        134, 127, 128}, {155, 154, 147, 148}, {163, 162, 154, 155}, {148, 147,
+         140, 141}, {141, 140, 134, 135}, {81, 80, 86, 87}, {128, 127, 122, 
+        123}, {103, 102, 97, 98}}]]}, 
+     {RGBColor[0.8263146251840379, 0.594104181374582, 0.3333166420643356], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{PolygonBox[{{220, 65, 229}, {228, 65, 220}}], 
+        PolygonBox[{{99, 98, 93, 94}, {104, 103, 98, 99}, {111, 110, 103, 
+         104}, {82, 81, 87, 88}, {149, 148, 141, 142}, {77, 76, 118, 119}, {
+         124, 123, 110, 111}, {129, 128, 123, 124}, {88, 87, 76, 77}, {164, 
+         163, 155, 156}, {142, 141, 135, 136}, {136, 135, 128, 129}, {94, 93, 
+         81, 82}, {156, 155, 148, 149}}]}]}, 
+     {RGBColor[0.913989661761486, 0.6549741544037151, 0.33336795146060666`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{188, 41, 199}, {66, 67, 59}, {198, 41, 188}, {227, 68, 
+         233}, {50, 57, 58}, {120, 9, 169}, {215, 59, 222}, {202, 50, 211}, {
+         200, 50, 202}, {50, 49, 57}, {225, 68, 227}, {58, 66, 59}, {119, 9, 
+         77}, {213, 59, 215}}], 
+        PolygonBox[{{212, 58, 59, 213}, {137, 136, 129, 130}, {130, 129, 124, 
+         125}, {222, 59, 67, 223}, {125, 124, 111, 112}, {100, 99, 94, 95}, {
+         199, 41, 49, 197}, {150, 149, 142, 143}, {143, 142, 136, 137}, {197, 
+         49, 50, 200}, {220, 58, 57, 228}, {83, 82, 88, 89}, {95, 94, 82, 
+         83}, {229, 66, 58, 220}, {112, 111, 104, 105}, {165, 164, 156, 
+         157}, {157, 156, 149, 150}, {211, 50, 58, 212}, {105, 104, 99, 
+         100}, {223, 67, 68, 225}}], PolygonBox[{{89, 88, 77, 9, 120}}]}]}, 
+     {RGBColor[0.9397501501708894, 0.7193753754272234, 0.4132254655297569], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{95, 11, 100}, {209, 53, 210}, {193, 44, 195}, {195, 44, 
+         205}, {52, 60, 53}, {213, 51, 212}, {18, 17, 25}, {10, 17, 18}, {26, 
+         33, 34}, {212, 51, 211}, {52, 44, 51}, {51, 44, 43}, {26, 25, 33}, {
+         61, 53, 60}, {89, 10, 83}, {225, 60, 223}, {18, 25, 26}, {120, 10, 
+         89}, {132, 11, 133}, {232, 70, 234}, {183, 35, 190}, {223, 60, 
+         222}, {10, 18, 11}, {34, 42, 35}, {231, 70, 232}, {197, 42, 199}, {
+         200, 42, 197}, {42, 43, 35}, {181, 35, 183}, {172, 26, 179}, {221, 
+         61, 224}, {210, 53, 216}}], 
+        PolygonBox[{{205, 44, 52, 207}, {151, 150, 143, 144}, {211, 51, 43, 
+         202}, {227, 61, 60, 225}, {216, 53, 61, 221}, {171, 18, 26, 172}, {
+         222, 60, 52, 215}, {83, 10, 11, 95}, {230, 69, 70, 231}, {233, 69, 
+         61, 227}, {224, 61, 69, 230}, {190, 35, 43, 191}, {199, 42, 34, 
+         188}, {166, 165, 157, 158}, {113, 112, 105, 106}, {169, 17, 10, 
+         120}, {188, 34, 33, 198}, {191, 43, 44, 193}, {179, 26, 34, 180}, {
+         138, 137, 130, 131}, {126, 125, 112, 113}, {180, 34, 35, 181}, {158, 
+         157, 150, 151}, {133, 11, 18, 171}, {131, 130, 125, 126}, {202, 43, 
+         42, 200}, {144, 143, 137, 138}, {215, 52, 51, 213}, {207, 52, 53, 
+         209}}], PolygonBox[{{106, 105, 100, 11, 132}}]}]}, 
+     {RGBColor[0.9655106385802926, 0.7837765964507316, 0.49308297959890723`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{189, 37, 192}, {203, 46, 204}, {28, 20, 27}, {37, 29, 
+         36}, {204, 46, 206}, {231, 62, 230}, {209, 45, 207}, {207, 45, 
+         205}, {132, 12, 106}, {191, 36, 190}, {106, 12, 113}, {193, 36, 
+         191}, {218, 55, 219}, {172, 19, 171}, {171, 19, 133}, {20, 12, 19}, {
+         126, 13, 131}, {181, 27, 180}, {12, 20, 13}, {55, 62, 63}, {180, 27, 
+         179}, {146, 13, 170}, {221, 54, 216}, {177, 29, 178}, {55, 54, 62}, {
+         178, 29, 184}, {217, 55, 218}, {27, 20, 19}, {230, 62, 224}, {64, 71,
+          72}, {28, 36, 29}, {71, 64, 63}}], 
+        PolygonBox[{{206, 46, 54, 214}, {152, 151, 144, 145}, {113, 12, 13, 
+         126}, {216, 54, 46, 210}, {224, 62, 54, 221}, {133, 19, 12, 132}, {
+         145, 144, 138, 139}, {190, 36, 28, 183}, {234, 71, 63, 232}, {226, 
+         63, 64, 208}, {201, 45, 46, 203}, {219, 55, 63, 226}, {184, 29, 37, 
+         189}, {176, 28, 29, 177}, {167, 166, 158, 159}, {183, 28, 27, 181}, {
+         214, 54, 55, 217}, {170, 13, 20, 174}, {179, 27, 19, 172}, {159, 158,
+          151, 152}, {174, 20, 28, 176}, {210, 46, 45, 209}, {192, 37, 45, 
+         201}, {195, 37, 36, 193}, {232, 63, 62, 231}, {205, 45, 37, 195}}], 
+        PolygonBox[{{139, 138, 131, 13, 146}}]}]}, 
+     {RGBColor[0.991271126989696, 0.8481778174742399, 0.5729404936680574], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{31, 38, 39}, {201, 38, 192}, {146, 14, 139}, {173, 22, 
+         175}, {203, 38, 201}, {185, 31, 186}, {214, 47, 206}, {189, 30, 
+         184}, {177, 21, 176}, {31, 30, 38}, {139, 14, 145}, {176, 21, 174}, {
+         21, 22, 14}, {186, 31, 187}, {48, 40, 47}, {208, 56, 226}, {174, 21, 
+         170}, {226, 56, 219}, {217, 47, 214}, {47, 40, 39}}], 
+        PolygonBox[{{160, 159, 152, 153}, {168, 167, 159, 160}, {182, 30, 31, 
+         185}, {219, 56, 48, 218}, {184, 30, 22, 178}, {161, 14, 22, 173}, {
+         206, 47, 39, 204}, {204, 39, 38, 203}, {218, 48, 47, 217}, {170, 21, 
+         14, 146}, {194, 39, 40, 196}, {187, 31, 39, 194}, {192, 38, 30, 
+         189}, {178, 22, 21, 177}, {175, 22, 30, 182}}], 
+        PolygonBox[{{153, 152, 145, 14, 161}}]}]}, 
+     {RGBColor[1., 0.9499999999999998, 0.7499999999999998], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{153, 15, 160}, {23, 24, 16}, {161, 15, 153}, {194, 32, 
+         187}, {185, 23, 182}, {182, 23, 175}, {196, 32, 194}, {173, 15, 
+         161}, {23, 16, 15}}], 
+        PolygonBox[{{187, 32, 24, 186}, {175, 23, 15, 173}, {186, 24, 23, 
+         185}, {160, 15, 16, 168}}]}]}}, {{}, 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{168, 160, 153, 161, 173, 175, 182, 185, 186, 187, 194, 196}]},
+       "25"],
+      Annotation[#, 25, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{208, 226, 219, 218, 217, 214, 206, 204, 203, 201, 192, 189, 
+         184, 178, 177, 176, 174, 170, 146, 139, 145, 152, 159, 167}]},
+       "20"],
+      Annotation[#, 20, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{234, 232, 231, 230, 224, 221, 216, 210, 209, 207, 205, 195, 
+         193, 191, 190, 183, 181, 180, 179, 172, 171, 133, 132, 106, 113, 126,
+          131, 138, 144, 151, 158, 166}]},
+       "15"],
+      Annotation[#, 15, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{169, 120, 89, 83, 95, 100, 105, 112, 125, 130, 137, 143, 150,
+          157, 165}], 
+        LineBox[{198, 188, 199, 197, 200, 202, 211, 212, 213, 215, 222, 223, 
+         225, 227, 233}]},
+       "10"],
+      Annotation[#, 10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], LineBox[{228, 220, 229}],
+         LineBox[{119, 77, 88, 82, 94, 99, 104, 111, 124, 129, 136, 142, 149, 
+         156, 164}]},
+       "5"],
+      Annotation[#, 5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{118, 76, 87, 81, 93, 98, 103, 110, 123, 128, 135, 141, 148, 
+         155, 163}]},
+       "0"],
+      Annotation[#, 0, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{117, 75, 86, 80, 92, 97, 102, 109, 122, 127, 134, 140, 147, 
+         154, 162}]},
+       RowBox[{"-", "5"}]],
+      Annotation[#, -5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{114, 121, 108, 101, 96, 91, 79, 85, 74, 116}]},
+       RowBox[{"-", "10"}]],
+      Annotation[#, -10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{107, 90, 78, 84, 73, 115}]},
+       RowBox[{"-", "15"}]],
+      Annotation[#, -15, "Tooltip"]& ], {}, {}}, {InsetBox[
+      RowBox[{"-", "15"}], 235], InsetBox[
+      RowBox[{"-", "10"}], 236], InsetBox[
+      RowBox[{"-", "5"}], 237], InsetBox["0", 238], InsetBox["5", 239], 
+     InsetBox["10", 240], InsetBox["10", 241], InsetBox["15", 242], 
+     InsetBox["20", 243], InsetBox["25", 244]}}],
+  AspectRatio->1,
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->True,
+  FrameLabel->{None, None},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "GridLinesInFront" -> 
+    True},
+  PlotRange->{{6.999999999999999, 14.999999999999996`}, {-14., -7.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.981028129570842*^9, 3.9810281925281954`*^9, {3.981028242641205*^9, 
+   3.9810282488957143`*^9}, {3.981028282519331*^9, 3.9810282891069083`*^9}, {
+   3.9810283618751707`*^9, 3.9810283754585752`*^9}, 3.981028417876214*^9, 
+   3.981031756407349*^9, 3.9810353747840014`*^9, 3.9810439579116564`*^9},
+ CellLabel->
+  "Out[123]=",ExpressionUUID->"05cfe457-5f9a-4f84-b358-c3ad0242b4c6"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1:eJx1lg9oVVUcx4fRZBEFm9Vbu3PnnZ133nn33Yc9qbWQ8uambiFp9s+wYIse
+uOGcKNEfZ2Xk1CCllWFzhQxxaRhk07La9msIwl4pBm4xlLnKIiVSZCRDzPfO
+fefe977Vg/Hlw/n+ft/fOfe+dxZ+vn15akZRUdEPmb+s/qM/d7lF+uNQIdvA
+ClgCC2AOzICtHFdAvmEbWAFLYAHMgRmwRdc1V/n5hWwDK2AJLIA5MAM2+w/D
+/g3bwApYAgtgDsyATX415Bu2gRWwBBbAHJgBm/wI5Bu2gRWwBBbAHJgBm/wo
+5Bu2gRWwBBbAHJgBm/wY5Bu2gRWwBBbAHJgBm/w45Bu2gRWwBDbvf8LvV8g2
+sKLv1u6TU7dXuM21j783vSVOuz6aGrppqtz9/sT0xKZpm9aM1D9TOh5ya1O9
+TkmbDf4Y+BX4g/4m3/gNG7/hQr8CvwI/zh+FeSTMI6G/hP4S+kvoH4H+AvoL
+6pg4N1g2bLmD7WsnSppxPw7kOZDn+PX/fR4C6gXUC5i3GublMC+HeRXk4/Pj
+kM8hn0N+GPIZ5DPIl5CPz4tBPoN85vuHtVb5/g+1Vvr+dq0W5AvIsyDPgjyL
+fm5pSJVOMvcXrTbM7/jr5nkWruP7wqGfol8L6hVtuHUyr577/FBntp75/vNa
+JQ2syq+XNHKgIa+e+Zz21PcPahW0IfTKLbN8vwX7caivLpnHgu7p9DipldOd
+O397IVjndKTuZs1fekqftJyuL/PXGaXnbTyc5V0vTbdGhyvJudxdXHKO+fm9
+qR31J48pn7fV7Wssy/DbWm3anGNz3oY7PaX5i/LXA3a1SpI9+euSkjmeq1XQ
+N90LXqWuuPutp8SODrVdKbbdsKf+POZ8Wvoe1n4zz5/9nt/w4dPpPL+g7hzv
+1sqpYb9X36g1Ru8PePU7tSp67sEjHUF/RfTBSF5/RVcujc0O+nP6YrvH/VoZ
+LXrZq1+sNUqhvrSuL9cqafahU01DXcF9s+TZ86uC/pJ6esrHKv3+jGaEH9Vc
+vKDns3lbK2nLAxd1/VatESpuWtmSrZ+pVVBr89mzTy9MuKu1xmkwd77m/BJH
+88/LodE1H1esWBjcZ3+vrN3zWFdw/z1xx/q3Lvt+Qdv7D76ZXd+htZruS7de
+u5RZr9HKae6cP6xsv3u1xigR+vpMuj64H0PXayZXZOqT19qGPxfVtHRWx8XS
+mba7R10djdzG6FBtzdipzHroQO/mF7/iNK5OXphfYrtVU+NvvH6/Rb9v6uN/
+LUu4x4/1jj75iKTQj0v3pg7GXfed43e/luTUyK9GzmT86z79aWBJ0qL1k955
+mP3GTkQXZ+extUZpTk18+bsZblr91F6+Tf6L8f3EefD7gt+3/7u/8PcU/z8w
+v6c3AH8LKqg=
+   "], {{
+     {RGBColor[0.148, 0.33, 0.54], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{195, 72, 196}, {196, 72, 191}, {180, 71, 185}, {194, 70, 
+         177}, {186, 72, 195}}], 
+        PolygonBox[{{177, 70, 71, 180}, {185, 71, 72, 186}}]}]}, 
+     {RGBColor[0.2737918884877928, 0.3998843824932182, 0.6578051019171393], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{159, 66, 163}, {165, 67, 169}, {183, 69, 187}, {180, 66, 
+         177}, {186, 67, 185}, {187, 69, 189}, {178, 65, 156}, {171, 68, 
+         175}, {181, 69, 183}}], 
+        PolygonBox[{{163, 66, 67, 165}, {195, 68, 67, 186}, {185, 67, 66, 
+         180}, {196, 69, 68, 195}, {175, 68, 69, 181}, {169, 67, 68, 171}, {
+         177, 66, 65, 194}, {156, 65, 66, 159}}], 
+        PolygonBox[{{189, 69, 196, 191, 192}}]}]}, 
+     {RGBColor[0.444072192589802, 0.45976978014338094`, 0.5580214586692538], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{157, 156, 159, 160}, {179, 178, 156, 157}, {164, 163, 165,
+         166}, {190, 189, 192, 193}, {160, 159, 163, 164}, {172, 171, 175, 
+        176}, {182, 181, 183, 184}, {184, 183, 187, 188}, {170, 169, 171, 
+        172}, {166, 165, 169, 170}, {188, 187, 189, 190}, {176, 175, 181, 
+        182}}]]}, 
+     {RGBColor[0.6144028728911948, 0.519630402613519, 0.4578909629010229], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{172, 60, 170}, {150, 58, 151}, {152, 59, 153}, {158, 57, 
+         149}, {193, 64, 190}, {173, 63, 174}, {160, 58, 157}, {182, 61, 
+         176}, {161, 61, 162}, {167, 62, 168}, {166, 59, 164}, {154, 60, 
+         155}}], PolygonBox[{{176, 61, 60, 172}, {164, 59, 58, 160}, {162, 61,
+          62, 167}, {149, 57, 58, 150}, {184, 62, 61, 182}, {190, 64, 63, 
+         188}, {155, 60, 61, 161}, {157, 58, 57, 179}, {170, 60, 59, 166}, {
+         168, 62, 63, 173}, {151, 58, 59, 152}, {174, 63, 64, 148}, {188, 63, 
+         62, 184}, {153, 59, 60, 154}}]}]}, 
+     {RGBColor[0.7847335531925875, 0.5794910250836569, 0.357760467132792], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{37, 29, 36}, {50, 51, 43}, {45, 46, 38}, {47, 48, 40}, {
+         42, 50, 43}, {39, 40, 32}, {26, 33, 34}, {47, 40, 39}, {34, 42, 
+         35}, {52, 44, 51}, {51, 44, 43}, {39, 38, 46}, {39, 46, 47}, {55, 56,
+          48}, {43, 36, 35}, {44, 52, 45}, {45, 37, 44}, {42, 41, 49}, {53, 
+         45, 52}, {53, 54, 46}, {45, 53, 46}, {152, 51, 151}, {47, 46, 54}, {
+         31, 30, 38}, {148, 56, 174}, {47, 54, 55}, {44, 36, 43}, {39, 32, 
+         31}, {154, 52, 153}, {37, 38, 30}, {55, 48, 47}, {37, 45, 38}, {135, 
+         28, 138}, {161, 53, 155}, {167, 54, 162}, {34, 35, 27}, {141, 29, 
+         142}, {150, 50, 149}, {26, 34, 27}, {145, 31, 146}, {42, 49, 50}, {
+         36, 44, 37}, {42, 43, 35}, {34, 33, 41}, {127, 26, 130}, {31, 38, 
+         39}, {143, 30, 144}, {34, 41, 42}, {26, 25, 33}, {29, 37, 30}, {35, 
+         28, 27}, {131, 27, 134}, {140, 25, 125}, {36, 28, 35}, {173, 55, 
+         168}, {28, 36, 29}}], 
+        PolygonBox[{{144, 30, 31, 145}, {138, 28, 29, 141}, {149, 50, 49, 
+         158}, {142, 29, 30, 143}, {134, 27, 28, 135}, {125, 25, 26, 127}, {
+         168, 55, 54, 167}, {153, 52, 51, 152}, {130, 26, 27, 131}, {155, 53, 
+         52, 154}, {151, 51, 50, 150}, {174, 56, 55, 173}, {162, 54, 53, 
+         161}, {146, 31, 32, 147}}]}]}, 
+     {RGBColor[0.9087962034335432, 0.641990508583858, 0.3172682306439838], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{143, 22, 142}, {132, 22, 133}, {128, 21, 129}, {126, 17, 
+         94}, {147, 24, 146}, {131, 19, 130}, {145, 23, 144}, {127, 18, 
+         125}, {141, 21, 138}, {135, 20, 134}, {98, 18, 105}, {136, 23, 
+         137}, {106, 19, 113}, {114, 20, 121}}], 
+        PolygonBox[{{125, 18, 17, 140}, {121, 20, 21, 128}, {146, 24, 23, 
+         145}, {133, 22, 23, 136}, {94, 17, 18, 98}, {130, 19, 18, 127}, {105,
+          18, 19, 106}, {142, 22, 21, 141}, {138, 21, 20, 135}, {137, 23, 24, 
+         139}, {134, 20, 19, 131}, {144, 23, 22, 143}, {113, 19, 20, 114}, {
+         129, 21, 22, 132}}]}]}, 
+     {RGBColor[0.9360055772836059, 0.7100139432090148, 0.40161728957917836`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{115, 15, 118}, {99, 13, 102}, {106, 11, 105}, {132, 14, 
+         129}, {98, 10, 94}, {114, 12, 113}, {88, 12, 91}, {128, 13, 121}, {
+         136, 15, 133}, {82, 11, 85}, {79, 10, 76}, {107, 14, 110}, {95, 9, 
+         73}, {139, 16, 137}}], 
+        PolygonBox[{{113, 12, 11, 106}, {121, 13, 12, 114}, {118, 15, 16, 
+         122}, {110, 14, 15, 115}, {102, 13, 14, 107}, {85, 11, 12, 88}, {133,
+          15, 14, 132}, {76, 10, 11, 82}, {105, 11, 10, 98}, {73, 9, 10, 
+         79}, {94, 10, 9, 126}, {137, 16, 15, 136}, {91, 12, 13, 99}, {129, 
+         14, 13, 128}}]}]}, 
+     {RGBColor[0.9632149511336686, 0.7780373778341716, 0.4859663485143728], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{86, 85, 88, 89}, {103, 102, 107, 108}, {111, 110, 115, 
+        116}, {89, 88, 91, 92}, {108, 107, 110, 111}, {100, 99, 102, 103}, {
+        77, 76, 82, 83}, {83, 82, 85, 86}, {80, 79, 76, 77}, {92, 91, 99, 
+        100}, {96, 95, 73, 74}, {119, 118, 122, 123}, {74, 73, 79, 80}, {116, 
+        115, 118, 119}}]]}, 
+     {RGBColor[0.9904243249837315, 0.8460608124593285, 0.5703154074495673], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{101, 100, 103, 104}, {120, 119, 123, 124}, {75, 74, 80, 
+        81}, {84, 83, 86, 87}, {81, 80, 77, 78}, {93, 92, 100, 101}, {90, 89, 
+        92, 93}, {97, 96, 74, 75}, {117, 116, 119, 120}, {87, 86, 89, 90}, {
+        104, 103, 108, 109}, {109, 108, 111, 112}, {112, 111, 116, 117}, {78, 
+        77, 83, 84}}]]}, 
+     {RGBColor[1., 0.95, 0.75], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{124, 8, 120}, {84, 3, 78}, {81, 2, 75}, {109, 6, 104}, {
+         90, 4, 87}, {117, 7, 112}, {101, 5, 93}}], 
+        PolygonBox[{{112, 7, 6, 109}, {75, 2, 1, 97}, {93, 5, 4, 90}, {87, 4, 
+         3, 84}, {78, 3, 2, 81}, {120, 8, 7, 117}, {104, 6, 5, 
+         101}}]}]}}, {{}, 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{97, 75, 81, 78, 84, 87, 90, 93, 101, 104, 109, 112, 117, 120,
+          124}]},
+       "35"],
+      Annotation[#, 35, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{96, 74, 80, 77, 83, 86, 89, 92, 100, 103, 108, 111, 116, 119,
+          123}]},
+       "30"],
+      Annotation[#, 30, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{122, 118, 115, 110, 107, 102, 99, 91, 88, 85, 82, 76, 79, 73,
+          95}]},
+       "25"],
+      Annotation[#, 25, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{126, 94, 98, 105, 106, 113, 114, 121, 128, 129, 132, 133, 
+         136, 137, 139}]},
+       "20"],
+      Annotation[#, 20, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{140, 125, 127, 130, 131, 134, 135, 138, 141, 142, 143, 144, 
+         145, 146, 147}]},
+       "15"],
+      Annotation[#, 15, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{148, 174, 173, 168, 167, 162, 161, 155, 154, 153, 152, 151, 
+         150, 149, 158}]},
+       "10"],
+      Annotation[#, 10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{179, 157, 160, 164, 166, 170, 172, 176, 182, 184, 188, 190, 
+         193}]},
+       "5"],
+      Annotation[#, 5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{178, 156, 159, 163, 165, 169, 171, 175, 181, 183, 187, 189, 
+         192}]},
+       "0"],
+      Annotation[#, 0, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{191, 196, 195, 186, 185, 180, 177, 194}]},
+       RowBox[{"-", "5"}]],
+      Annotation[#, -5, "Tooltip"]& ], {}, {}}, {InsetBox[
+      RowBox[{"-", "5"}], 197], InsetBox["0", 198], InsetBox["5", 199], 
+     InsetBox["10", 200], InsetBox["15", 201], InsetBox["20", 202], 
+     InsetBox["25", 203], InsetBox["30", 204], InsetBox["35", 205]}}],
+  AspectRatio->1,
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->True,
+  FrameLabel->{None, None},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "GridLinesInFront" -> 
+    True},
+  PlotRange->{{5.999999999999999, 14.999999999999996`}, {-14., -7.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.981028129570842*^9, 3.9810281925281954`*^9, {3.981028242641205*^9, 
+   3.9810282488957143`*^9}, {3.981028282519331*^9, 3.9810282891069083`*^9}, {
+   3.9810283618751707`*^9, 3.9810283754585752`*^9}, 3.981028417876214*^9, 
+   3.981031756407349*^9, 3.9810353747840014`*^9, 3.981043957969421*^9},
+ CellLabel->
+  "Out[125]=",ExpressionUUID->"11d9da58-e19b-4bc4-92a8-e06b4013b812"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Power", "infy", 
+   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0.`\\\"]\\) \
+encountered.\"", 2, 126, 28, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439579858036`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"a3651717-05a1-43a8-95c5-dfa476f18331"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Infinity", "indet", 
+   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0.`\\\", \\\" \\\", \
+\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 126, 29, 
+   20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439580213985`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"da0cc582-344f-4068-a118-ba90365c28df"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Power", "infy", 
+   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0.`\\\"]\\) \
+encountered.\"", 2, 126, 30, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439580324306`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"536c9f52-7cb7-46d6-aee7-36c1e762971b"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Infinity", "indet", 
+   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0.`\\\", \\\" \\\", \
+\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 126, 31, 
+   20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439580622115`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"3eeeb224-1a0b-4893-8fd6-ff78429a7a40"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Power", "infy", 
+   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0.`\\\"]\\) \
+encountered.\"", 2, 126, 32, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439581069975`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"0358a38b-3d19-4b23-a54f-926497d5e5e5"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "General", "stop", 
+   "\"Further output of \\!\\(\\*StyleBox[RowBox[{\\\"Power\\\", \\\"::\\\", \
+\\\"infy\\\"}], \\\"MessageName\\\"]\\) will be suppressed during this \
+calculation.\"", 2, 126, 33, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439581248646`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"789c7c40-ec4e-4266-80f9-e43120987988"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Infinity", "indet", 
+   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0.`\\\", \\\" \\\", \
+\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 126, 34, 
+   20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.9810439581567307`*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"4ae7c846-a99a-4385-8f00-3b205e823137"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "General", "stop", 
+   "\"Further output of \\!\\(\\*StyleBox[RowBox[{\\\"Infinity\\\", \
+\\\"::\\\", \\\"indet\\\"}], \\\"MessageName\\\"]\\) will be suppressed \
+during this calculation.\"", 2, 126, 35, 20584141598713560047, "Local2"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.981031756314234*^9, 3.9810353745582323`*^9, 
+  3.981043958188727*^9},
+ CellLabel->
+  "During evaluation of \
+In[120]:=",ExpressionUUID->"92f880db-7242-44af-93e9-83ee76866a0c"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1:eJxl1A1QFGUYB/AbYgomQcHhjrivvb29vWVBhPjICIYXDWGKSiBTCBRQ0lEK
+Bk0JCDAVDFALRAGxbG4CNb4/QhHiLVAcpIThKMFBJ4dwOiSwARIiqI7e3fFp
+Z26e+c3uvM8+797718QnhSdYSCSSsn9+/9Yl8yVDEvPlip80D8wBs8AMMA1M
+ASv+sxz0J+aBOWAWmAGmgSlgBV40Wy30f9I8MAfMAjPANDAFTObXgPmJeWAO
+mAVmgGlgCpj014L+xDwwB8wCM8A0MAVM+utAf2IemANmgRlgGpgCJv31oD8x
+D8wBs8AMMA1MASuwS8DgkukDJ3T6c1PWjJ8L9pkxKGcOO4L+MpQfGe9WXeWM
+Kx7/MBn7nBPoL0N55vvi+QvsmJS3Zmhw+xrLpl3eSnRPajHcWMbjArkk7XGM
+GnXbSPwXalyww8Lct7014vnrOhTukraoEPrbTkxn/t6lEmzpnbgYu1WBPnLy
+yXJ35fAAvbvrUbYK7bHzup+KnIXzlRhjmAry1GPU/nJyXQhZj8N53INObqVK
+sLHoY9kXg+L5WseVmsYHyPw0duL7bMcNSmTrsDt3pp/FJlmvMb1XjWaffcfk
+P6YX+g10+txKlGnx0zuHrLZHKoX92XQrPfontXhe4zzWRY5eV6B6x3LXlB0M
+dld7qd+fVKHSlWUnWw/qhPXstqbvso9Q4WOB2u97OLLfCuyZLC1DP1LIy1x5
+HLIxdmxDE+nnigvrLXzb0sQ8GfzQYPdZHiXsn04T5x2XT/aDwW1vVSeetVUJ
+jiiYMwx+KubJ4czhkt4XlWh9wLuhY+U0dvOIimqMV6MSxzXVkfVaIU/43Pdm
+Nx/k8MWETI+2UjEvrExqv1UW5P1ovPe+9PJ3N1SCA/ZUZhqiFYhqjugIc6Ow
+SaFHeUdV6MCJ1dS19Rph/dt1R85JLzN4qqr90GScBj0yVz3+ZSjcmFJH5mNx
+MNXuvzaUzEfhS45NV362VwleYfeV96khMQ+/tJrWxV1Qosrlijdd3fcguF+N
+wper0P9M9rEtXCKFf3097KokhsyjwKHBIS80asU8XWzu/sYvg0ZL5spjm868
+/ugAMV+Tfpvra3iDFr7Hbd9CyZsRYn72eI7oGyYodNNcxfycLSmyrNM4486w
+ihb7nWIeXtty9+vGYjK/+Lxa4vOwrF+Hixdz54960Oi0ubI464/6YT9H0p/F
+eu9xJqFBzGdrwyc5NUc0aPVGjU2MtVpYz3ii/mJkP4U3z/jklE6Tfgpc9dJ2
+9xStmKfc8HljwDNinsuSi8+WJDHCvGeOD8dOXRDzWvpwx375K1okW65CPgdV
+Rh0IbHbGe9+2okfPkfcV8zyGlx6vrWBw9xXn/e7ndejGcsVrgxwMyflivpHn
+a3svxea+phbyd2JFy7Z5axfckXJy1asZMF916PnaewWjd3R45E7aWFk0i+4u
+V1x4XdWilbPC/p1K7egJzSHzifmuS83Uz85TmIqytt7WSp4X8z0ru2/fSDWH
+i3qjgjM6WDCfHt30fcr4Z41W8F8LUnn5BuX/8hfmFcwH+P+G88PvDd/nb475
+CZM=
+   "], {{
+     {RGBColor[0.148, 0.33, 0.54], EdgeForm[None], 
+      GraphicsGroupBox[{PolygonBox[{{58, 2, 57}, {59, 2, 58}}], 
+        PolygonBox[{{57, 2, 1, 65}}]}]}, 
+     {RGBColor[0.2934488676166527, 0.4068350652965872, 0.6465667998675269], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{66, 10, 63}, {3, 11, 4}, {3, 10, 11}, {61, 4, 60}, {70, 
+         11, 71}, {65, 9, 57}, {71, 11, 68}}], 
+        PolygonBox[{{60, 4, 11, 70}, {63, 10, 9, 85}, {68, 11, 10, 66}, {58, 
+         10, 3, 59}, {57, 9, 10, 58}}]}]}, 
+     {RGBColor[0.4757610704905324, 0.4709064464982702, 0.5393928531301663], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{78, 12, 75}, {88, 13, 80}, {13, 5, 12}, {77, 13, 88}, {
+         70, 12, 60}, {62, 6, 74}, {5, 13, 6}}], 
+        PolygonBox[{{64, 63, 85, 86}, {80, 13, 12, 78}, {67, 66, 63, 64}, {60,
+          12, 5, 61}, {74, 6, 13, 77}, {69, 68, 66, 67}, {72, 71, 68, 69}}], 
+        PolygonBox[{{75, 12, 70, 71, 72}}]}]}, 
+     {RGBColor[0.6580732733644119, 0.5349778276999531, 0.4322189063928058], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{67, 18, 69}, {82, 15, 102}, {86, 17, 64}, {15, 8, 7}, {7,
+          14, 15}, {77, 14, 74}, {93, 18, 87}, {102, 15, 97}, {95, 14, 91}, {
+         87, 18, 84}}], 
+        PolygonBox[{{79, 78, 75, 76}, {84, 18, 17, 111}, {76, 75, 72, 73}, {
+         97, 15, 14, 95}, {89, 88, 80, 81}, {64, 17, 18, 67}, {81, 80, 78, 
+         79}, {74, 14, 7, 62}, {83, 8, 15, 82}}], 
+        PolygonBox[{{91, 14, 77, 88, 89}, {73, 72, 69, 18, 93}}]}]}, 
+     {RGBColor[0.8403854762382916, 0.599049208901636, 0.32504495965544516`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{101, 20, 100}, {99, 20, 101}, {93, 19, 73}, {111, 25, 
+         84}, {73, 19, 76}, {112, 26, 110}, {79, 20, 81}, {82, 16, 83}, {108, 
+         16, 105}, {115, 26, 112}}], 
+        PolygonBox[{{110, 26, 25, 126}, {87, 26, 19, 93}, {94, 19, 26, 115}, {
+         92, 91, 89, 90}, {84, 25, 26, 87}, {100, 20, 19, 94}, {103, 102, 97, 
+         98}, {76, 19, 20, 79}, {98, 97, 95, 96}, {96, 95, 91, 92}}], 
+        PolygonBox[{{90, 89, 81, 20, 99}, {105, 16, 82, 102, 103}}]}]}, 
+     {RGBColor[0.9196002682287814, 0.6690006705719533, 0.3507608315092222], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{126, 33, 110}, {94, 27, 100}, {115, 27, 94}, {34, 33, 
+         41}, {118, 28, 120}, {136, 41, 143}, {120, 28, 119}, {90, 21, 92}, {
+         99, 21, 90}, {117, 22, 114}, {130, 34, 127}, {96, 22, 98}, {107, 22, 
+         117}}], PolygonBox[{{100, 27, 28, 101}, {127, 34, 41, 136}, {113, 21,
+          28, 118}, {109, 108, 105, 106}, {112, 34, 27, 115}, {116, 27, 34, 
+         130}, {119, 28, 27, 116}, {110, 33, 34, 112}, {101, 28, 21, 99}, {92,
+          21, 22, 96}, {106, 105, 103, 104}, {114, 22, 21, 113}}], 
+        PolygonBox[{{104, 103, 98, 22, 107}}]}]}, 
+     {RGBColor[0.9487236233204555, 0.7418090583011385, 0.4410432322934118], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{138, 44, 140}, {104, 23, 106}, {131, 30, 129}, {123, 30, 
+         131}, {44, 36, 43}, {140, 44, 139}, {133, 44, 138}, {124, 24, 122}, {
+         42, 49, 50}, {43, 36, 35}, {113, 29, 114}, {118, 29, 113}, {42, 43, 
+         35}, {42, 50, 43}, {130, 35, 116}, {136, 42, 127}, {107, 23, 104}, {
+         116, 35, 119}}], 
+        PolygonBox[{{128, 29, 36, 132}, {127, 42, 35, 130}, {106, 23, 24, 
+         109}, {137, 43, 50, 144}, {119, 35, 36, 120}, {143, 49, 42, 136}, {
+         121, 23, 30, 123}, {122, 24, 23, 121}, {120, 36, 29, 118}, {132, 36, 
+         44, 133}, {129, 30, 29, 128}, {117, 30, 23, 107}, {114, 29, 30, 
+         117}, {139, 44, 43, 137}}]}]}, 
+     {RGBColor[0.9778469784121295, 0.8146174460303237, 0.5313256330776014], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{132, 37, 128}, {142, 46, 145}, {135, 39, 141}, {53, 45, 
+         52}, {39, 38, 46}, {39, 32, 31}, {137, 51, 139}, {144, 51, 137}, {
+         133, 37, 132}, {37, 45, 38}, {45, 53, 46}, {45, 46, 38}, {123, 31, 
+         121}, {128, 37, 129}, {31, 38, 39}, {121, 31, 122}}], 
+        PolygonBox[{{139, 51, 52, 140}, {131, 38, 31, 123}, {122, 31, 32, 
+         124}, {140, 52, 45, 138}, {145, 46, 53, 146}, {125, 32, 39, 135}, {
+         141, 39, 46, 142}, {129, 37, 38, 131}, {138, 45, 37, 133}}]}]}, 
+     {RGBColor[1., 0.8923050672121714, 0.6418220010228215], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{135, 40, 125}, {146, 54, 145}, {47, 54, 55}, {47, 48, 
+         40}, {142, 47, 141}, {55, 48, 47}}], 
+        PolygonBox[{{134, 48, 55, 147}, {141, 47, 40, 135}, {145, 54, 47, 
+         142}}]}]}, 
+     {RGBColor[1., 0.95, 0.75], EdgeForm[None], 
+      GraphicsGroupBox[PolygonBox[{{147, 56, 134}}]]}}, {{}, 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], LineBox[{134, 147}]},
+       "15"],
+      Annotation[#, 15, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{125, 135, 141, 142, 145, 146}]},
+       "10"],
+      Annotation[#, 10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{124, 122, 121, 123, 131, 129, 128, 132, 133, 138, 140, 139, 
+         137, 144}]},
+       "5"],
+      Annotation[#, 5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{109, 106, 104, 107, 117, 114, 113, 118, 120, 119, 116, 130, 
+         127, 136, 143}]},
+       "0"],
+      Annotation[#, 0, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{126, 110, 112, 115, 94, 100, 101, 99, 90, 92, 96, 98, 103, 
+         105, 108}]},
+       RowBox[{"-", "5"}]],
+      Annotation[#, -5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{83, 82, 102, 97, 95, 91, 89, 81, 79, 76, 73, 93, 87, 84, 
+         111}]},
+       RowBox[{"-", "10"}]],
+      Annotation[#, -10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{62, 74, 77, 88, 80, 78, 75, 72, 69, 67, 64, 86}]},
+       RowBox[{"-", "15"}]],
+      Annotation[#, -15, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{61, 60, 70, 71, 68, 66, 63, 85}]},
+       RowBox[{"-", "20"}]],
+      Annotation[#, -20, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{59, 58, 57, 65}]},
+       RowBox[{"-", "25"}]],
+      Annotation[#, -25, "Tooltip"]& ], {}, {}}, {InsetBox[
+      RowBox[{"-", "20"}], 148], InsetBox[
+      RowBox[{"-", "15"}], 149], InsetBox[
+      RowBox[{"-", "10"}], 150], InsetBox[
+      RowBox[{"-", "5"}], 151], InsetBox["0", 152], InsetBox["5", 153], 
+     InsetBox["10", 154]}}],
+  AspectRatio->1,
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->True,
+  FrameLabel->{None, None},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "GridLinesInFront" -> 
+    True},
+  PlotRange->{{5.999999999999999, 11.999999999999998`}, {-14., -7.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.981028129570842*^9, 3.9810281925281954`*^9, {3.981028242641205*^9, 
+   3.9810282488957143`*^9}, {3.981028282519331*^9, 3.9810282891069083`*^9}, {
+   3.9810283618751707`*^9, 3.9810283754585752`*^9}, 3.981028417876214*^9, 
+   3.981031756407349*^9, 3.9810353747840014`*^9, 3.981043958236641*^9},
+ CellLabel->
+  "Out[127]=",ExpressionUUID->"f96f95af-a78c-4ab3-b297-9b2006772a29"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1:eJx1lQ1MVWUYxy93go0KQQz0cuEezj3n3HMPHxOQWIX46pIaIl0+rEBlwbpC
+Y4hQjpSoEXptKEMFykCufMhgMkOUj7Cid1gtAm8EEhqCNKDpTHBCFKAQHDrn
+3X1YZ7v777fnfd/nPM89z//1TEyLMioVCkXN4m9JF8THFSnExxtbswCYB8wB
+ZgDTgCnA6v/YDeSXWADMA+YAM4BpwBRgNZ4XWSPnt2YBMA+YA8wApgFTgKX6
+PUH9EguAecAcYAYwDZgCLOXXgvwSC4B5wBxgBjANmAIs5WdBfokFwDxgDjAD
+mAZMAZby60B+iQXAPGAOMAOYBkwBXszvzeRGB6rkfOqGEld9GiPHX69MMVBK
++P27ogibQUudh5c1m3lc73rF/YEFzoe0nsNNVQGnK+zd0MAvGzoMR1k5Htu1
+aSGkSytzQvTC9vFMMr92M/RY3DEyv1MNNdyIXo1rWm43mZI3gP65obLLe68v
+vZ9gE6aMCfSQ6zNsK77bWrpe7pc9SoiJ7FQh2/KNF2qNWuv9ZjLvZ8XzOOy8
+9tpjSknm8eWL5rB+o9Q/Mu8ZTqXhQxZyXmuQS3/ncRo/poP/fmAh89ty0OXa
+FaeV/vCCzfuOE0UUHtNHzJy316DJdTUfRMn9Wjxf+ZAaWqz/iEPp3pwh4ifb
+HnavPpbsLvdDmvfPs6tClvrx1qtNve0qMt/1RZs69ryhlvux29tY1lvsIbPV
+fjMPzuOwj6ac9c8h/vB758W5oFBpP/Gf+UOZPf90kvPsMr85l+2sxaf3GKbd
+tcRPfr2fuj3LeaVfiesLKdz1tG9B2zDxLyluP354yxynxoXpP+VEN1Lge/BE
+Dcc/zn13sf62tMYzqkjiL1OOqaVTvdJ6xnq9mfjd5fiK0I5ZDt9ZraF/sBA/
+Cut579KaV1b6XZpjQVN2BCvzrvZnt71tobHis6tb77Wu9MP8w+W8ewSFPR16
+buQWaxEtKovHSlSbtW7Er47eZyqKTQwyiSrgUTax3aGfBvVq0RZLXWFqi4DP
+VccPpMwQP3szfWLSb5ZGscsqr/efDm2uDuBxTJ9Hb/A8i3aJqsfNjjcv/Mwy
+qEVUHrvG1eLkk4xc/8iEUdETT6NRUYm/Bjw/3aupZfFzMSff8TWzyEVUnRx3
+yuLzo3itzHEZq76PqqVw0XjUI0HPouJlleONo0/lVRvUePPM+bu3Y3UoRFQv
+XDm3L5K5xaAqUYnf7kx50nH2iR6XbfRO2b9Oh8yi6uV4q7IyW3lAh5vU41lH
+shjULCrx5zT77lXZdxi8r8epxdTGoaRlleNfGGe/S9xPY9sbLq8Nf038OODb
+vgrbbuL3P7IDp16cZFHhjmbtwT80OP23jOlP3Rk00jj2p89LaqzJW1OwdVSH
+KFFZfCIk6ZB7LofyRSX3yY6bu338BjX4ltLX/14RB/5vHXLQRPp9eV3A4YHP
+mE0MuQ+SAq/6fFWmQ8miavGl4QMLfwVzqEFU2nr/Th6rTfFV3nnS+TQWPnIe
+tCz220tUT5CPldlu/ZlTrEGLVfWflMys1aGgeKfASdZDjnMNCZnhfeT+af/w
+UUBM3f/dL2Re4fcL/RbWB/0Rvs+/jbbJ8Q==
+   "], {{
+     {RGBColor[0.148, 0.33, 0.54], EdgeForm[None], 
+      GraphicsGroupBox[PolygonBox[{{60, 1, 69}}]]}, 
+     {RGBColor[0.2620315371912007, 0.3933508539951115, 0.6467914395917594], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{PolygonBox[{{70, 9, 86}, {61, 2, 57}}], 
+        PolygonBox[{{57, 2, 9, 70}, {69, 9, 2, 60}}]}]}, 
+     {RGBColor[
+      0.42535707993678656`, 0.45319258400334356`, 0.5690233140307709], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{70, 10, 57}, {87, 17, 102}, {74, 10, 71}, {63, 3, 59}}], 
+        PolygonBox[{{71, 10, 17, 87}, {86, 17, 10, 70}, {59, 3, 10, 74}, {57, 
+         10, 3, 61}}]}]}, 
+     {RGBColor[0.5915797505845024, 0.511609497010528, 0.4713077504551168], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{91, 18, 88}, {87, 18, 71}, {74, 11, 59}, {72, 5, 64}, {
+         103, 25, 117}, {65, 5, 72}, {148, 49, 132}, {132, 49, 149}, {75, 11, 
+         76}}], PolygonBox[{{102, 25, 18, 87}, {64, 5, 4, 62}, {88, 18, 25, 
+         103}, {71, 18, 11, 74}, {76, 11, 18, 91}, {59, 11, 4, 63}, {62, 4, 
+         11, 75}}]}]}, 
+     {RGBColor[0.7578024212322183, 0.5700264100177126, 0.3735921868794627], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{75, 12, 62}, {73, 13, 78}, {78, 13, 89}, {103, 26, 88}, {
+         122, 42, 134}, {92, 19, 93}, {89, 13, 83}, {135, 50, 153}, {62, 12, 
+         64}, {106, 26, 104}, {91, 19, 76}, {119, 42, 122}}], 
+        PolygonBox[{{132, 42, 41, 148}, {149, 50, 42, 132}, {118, 33, 41, 
+         116}, {104, 26, 33, 118}, {83, 13, 12, 80}, {64, 12, 13, 72}, {88, 
+         26, 19, 91}, {134, 42, 50, 135}, {80, 12, 19, 92}, {116, 41, 42, 
+         119}, {117, 33, 26, 103}, {93, 19, 26, 106}, {76, 19, 12, 75}}], 
+        PolygonBox[{{66, 65, 72, 13, 73}}]}]}, 
+     {RGBColor[0.9038378741022259, 0.6295946852555647, 0.3018974097169003], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{95, 20, 97}, {92, 20, 80}, {141, 52, 145}, {116, 34, 
+         118}, {118, 34, 104}, {107, 27, 108}, {127, 43, 136}, {135, 43, 
+         134}, {106, 27, 93}, {80, 20, 83}, {73, 6, 66}, {119, 34, 116}, {145,
+          52, 156}, {124, 43, 127}, {67, 6, 77}}], 
+        PolygonBox[{{153, 51, 43, 135}, {139, 51, 52, 141}, {104, 34, 27, 
+         106}, {97, 20, 27, 107}, {79, 78, 89, 90}, {108, 27, 34, 121}, {136, 
+         43, 51, 139}, {93, 27, 20, 92}}], 
+        PolygonBox[{{90, 89, 83, 20, 95}, {121, 34, 119, 122, 123}, {123, 122,
+          134, 43, 124}, {77, 6, 73, 78, 79}}]}]}, 
+     {RGBColor[0.9303910163782189, 0.6959775409455471, 0.3842121507724784], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{107, 28, 97}, {79, 14, 77}, {141, 44, 139}, {68, 7, 
+         81}, {96, 21, 105}, {121, 35, 108}, {36, 28, 35}, {123, 35, 121}, {
+         151, 53, 157}, {114, 36, 126}, {124, 35, 123}, {95, 21, 90}, {82, 14,
+          94}, {150, 53, 151}, {139, 44, 136}, {130, 44, 138}}], 
+        PolygonBox[{{77, 14, 7, 67}, {126, 36, 44, 130}, {127, 36, 35, 124}, {
+         81, 7, 14, 82}, {110, 28, 36, 114}, {136, 44, 36, 127}, {90, 21, 14, 
+         79}, {105, 21, 28, 110}, {94, 14, 21, 96}, {108, 35, 28, 107}, {97, 
+         28, 21, 95}}], 
+        PolygonBox[{{146, 145, 156, 53, 150}, {138, 44, 141, 145, 146}}]}]}, 
+     {RGBColor[0.9569441586542118, 0.7623603966355296, 0.4665268918280566], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{150, 45, 146}, {84, 15, 98}, {120, 37, 128}, {155, 54, 
+         159}, {96, 22, 94}, {99, 22, 109}, {130, 37, 126}, {114, 29, 110}, {
+         133, 45, 140}, {110, 29, 105}, {82, 15, 81}, {146, 45, 138}, {154, 
+         54, 155}}], 
+        PolygonBox[{{94, 22, 15, 82}, {138, 45, 37, 130}, {111, 29, 37, 
+         120}, {128, 37, 45, 133}, {126, 37, 29, 114}, {81, 15, 8, 68}, {105, 
+         29, 22, 96}, {98, 15, 22, 99}, {109, 22, 29, 111}, {85, 8, 15, 84}}],
+         PolygonBox[{{152, 151, 157, 54, 154}, {140, 45, 150, 151, 152}}]}]}, 
+     {RGBColor[0.9834973009302047, 0.8287432523255118, 0.5488416328836346], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{120, 30, 111}, {125, 38, 129}, {84, 16, 85}, {154, 46, 
+         152}, {111, 30, 109}, {142, 47, 143}, {101, 23, 112}, {133, 38, 
+         128}, {158, 55, 160}, {152, 46, 140}, {143, 47, 147}, {99, 23, 98}}],
+         PolygonBox[{{128, 38, 30, 120}, {109, 30, 23, 99}, {100, 16, 23, 
+         101}, {112, 23, 30, 113}, {140, 46, 38, 133}, {129, 38, 46, 137}, {
+         98, 23, 16, 84}, {159, 55, 47, 155}, {137, 46, 47, 142}, {113, 30, 
+         38, 125}, {147, 47, 55, 158}, {155, 47, 46, 154}}]}]}, 
+     {RGBColor[1., 0.9021614182598326, 0.6603026592371863], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{158, 48, 147}, {125, 31, 113}, {113, 31, 112}, {101, 24, 
+         100}, {142, 39, 137}, {32, 24, 31}, {137, 39, 129}, {39, 32, 31}}], 
+        PolygonBox[{{160, 56, 48, 158}, {115, 32, 39, 131}, {129, 39, 31, 
+         125}, {112, 31, 24, 101}}], 
+        PolygonBox[{{131, 39, 142, 143, 144}, {144, 143, 147, 48, 58}}]}]}, 
+     {RGBColor[1., 0.95, 0.75], EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{144, 40, 131}, {58, 40, 144}, {131, 40, 115}}]]}}, {{}, 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{58, 144, 131, 115}]},
+       "0"],
+      Annotation[#, 0, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{100, 101, 112, 113, 125, 129, 137, 142, 143, 147, 158, 160}]},
+       RowBox[{"-", "2.5`"}]],
+      Annotation[#, -2.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{85, 84, 98, 99, 109, 111, 120, 128, 133, 140, 152, 154, 155, 
+         159}]},
+       RowBox[{"-", "5"}]],
+      Annotation[#, -5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{68, 81, 82, 94, 96, 105, 110, 114, 126, 130, 138, 146, 150, 
+         151, 157}]},
+       RowBox[{"-", "7.5`"}]],
+      Annotation[#, -7.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{67, 77, 79, 90, 95, 97, 107, 108, 121, 123, 124, 127, 136, 
+         139, 141, 145, 156}]},
+       RowBox[{"-", "10"}]],
+      Annotation[#, -10, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{66, 73, 78, 89, 83, 80, 92, 93, 106, 104, 118, 116, 119, 122,
+          134, 135, 153}]},
+       RowBox[{"-", "12.5`"}]],
+      Annotation[#, -12.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{117, 103, 88, 91, 76, 75, 62, 64, 72, 65}], 
+        LineBox[{148, 132, 149}]},
+       RowBox[{"-", "15"}]],
+      Annotation[#, -15, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{63, 59, 74, 71, 87, 102}]},
+       RowBox[{"-", "17.5`"}]],
+      Annotation[#, -17.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{61, 57, 70, 86}]},
+       RowBox[{"-", "20"}]],
+      Annotation[#, -20, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], LineBox[{69, 60}]},
+       RowBox[{"-", "22.5`"}]],
+      Annotation[#, -22.5, "Tooltip"]& ], {}, {}}, {InsetBox[
+      RowBox[{"-", "17.5`"}], 161], InsetBox[
+      RowBox[{"-", "15"}], 162], InsetBox[
+      RowBox[{"-", "12.5`"}], 163], InsetBox[
+      RowBox[{"-", "10"}], 164], InsetBox[
+      RowBox[{"-", "7.5`"}], 165], InsetBox[
+      RowBox[{"-", "5"}], 166], InsetBox[
+      RowBox[{"-", "2.5`"}], 167]}}],
+  AspectRatio->1,
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->True,
+  FrameLabel->{None, None},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "GridLinesInFront" -> 
+    True},
+  PlotRange->{{5.999999999999999, 11.999999999999998`}, {-14., -7.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.981028129570842*^9, 3.9810281925281954`*^9, {3.981028242641205*^9, 
+   3.9810282488957143`*^9}, {3.981028282519331*^9, 3.9810282891069083`*^9}, {
+   3.9810283618751707`*^9, 3.9810283754585752`*^9}, 3.981028417876214*^9, 
+   3.981031756407349*^9, 3.9810353747840014`*^9, 3.9810439583156447`*^9},
+ CellLabel->
+  "Out[129]=",ExpressionUUID->"8abe564d-bdf1-46e2-a947-59aab06d0771"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1:eJx11D1rVUEQh/GLYBMsRcW7cjeTdV2HI1oIYhqPb2BhJVoEREQwRi0EXwpJ
+lcIUaYKdgmAjgXwCEUEPWAnaxNrORg0WIrcQE73ucfZyHjAQhh8z/GfnQDJ5
+5da5q1t6vd7T0e/f+jv/7Kx7+adqulY4wREOsMAedv/cx36zwgmOcIAF9rBr
+NrMHZX/XCic4wgEW2MN2/yTuNyuc4AgHWGAP2/4p7DcrnOAIB1hgD9v+vdhv
+VjjBEQ6wwB62/fuw36xwgiMcYIE9bPv3Y79Z4QRHOMACe9g1c9vvHz45r/X1
+thbb/m4/oZ/Qj+hH9AP6FRwwL+gL+h79sdfS97nFoUPfNV/v7Fr8+HZPPTy6
+7c23T1ps93b7Cf2EfkQ/oh/Qr+CAeUFf0Pfoj73eVvRdc29enp2YTsXSfz7x
++Eiqp3LVYrv/xu7WN9tabPfPXmx9LddYbPdXa0vZB3INTejkV6Vv97960v/1
+aOTXuUqx3f/5/cvhw5G/5OqL7X67b3146syDu66pTx/8uXxe6+O5hmbwQg99
+qLT2uYZmo4qzO7ZqvZlrKPP2Pps327y5Ox8wHzAf8B7BewTvEeQL8gX5gnyP
+fI98j3yPfI/88fzC0qUfg1VX5o/dvnB5ZcaV+Y2Zs++qCX5/xXsU71G8R/Ee
+xXsU+Qn5CfkJ+Qn5CfkJ+RH5EfkR+RH5Efmcd5h3mHf//f78nvb9+ffN/w9/
+AGX3r6s=
+   "], {{
+     {RGBColor[
+      0.14800000000000013`, 0.33000000000000007`, 0.5400000000000001], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{113, 72, 65, 134}, {110, 71, 73, 116}, {116, 73, 74, 
+        119}, {128, 77, 78, 131}, {131, 78, 79, 152}, {137, 66, 67, 140}, {
+        122, 75, 76, 125}, {134, 65, 66, 137}, {125, 76, 77, 128}, {149, 70, 
+        71, 110}, {143, 68, 69, 146}, {140, 67, 68, 143}, {146, 69, 70, 
+        149}, {119, 74, 75, 122}}]]}, 
+     {RGBColor[0.5635596418214577, 0.5017621744420458, 0.4877796354787598], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{129, 128, 131, 132}, {111, 110, 116, 117}, {144, 143, 146,
+         147}, {150, 149, 110, 111}, {120, 119, 122, 123}, {132, 131, 152, 
+        153}, {141, 140, 143, 144}, {117, 116, 119, 120}, {138, 137, 140, 
+        141}, {147, 146, 149, 150}, {123, 122, 125, 126}, {114, 113, 134, 
+        135}, {126, 125, 128, 129}, {135, 134, 137, 138}}]]}, 
+     {RGBColor[0.8661996976677175, 0.6081212994998368, 0.3098698262911821], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{136, 135, 138, 139}, {145, 144, 147, 148}, {124, 123, 126,
+         127}, {121, 120, 123, 124}, {112, 111, 117, 118}, {148, 147, 150, 
+        151}, {127, 126, 129, 130}, {142, 141, 144, 145}, {139, 138, 141, 
+        142}, {151, 150, 111, 112}, {115, 114, 135, 136}, {133, 132, 153, 
+        154}, {130, 129, 132, 133}, {118, 117, 120, 121}}]]}, 
+     {RGBColor[0.9429456475261945, 0.7273641188154862, 0.42313150733120286`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{97, 58, 98}, {130, 63, 127}, {139, 58, 136}, {101, 60, 
+         102}, {99, 59, 100}, {104, 61, 105}, {151, 60, 148}, {118, 61, 
+         112}, {108, 63, 109}, {124, 62, 121}, {106, 62, 107}, {154, 64, 
+         133}, {145, 59, 142}, {103, 57, 96}}], 
+        PolygonBox[{{100, 59, 60, 101}, {127, 63, 62, 124}, {102, 60, 61, 
+         104}, {98, 58, 59, 99}, {112, 61, 60, 151}, {107, 62, 63, 108}, {133,
+          64, 63, 130}, {109, 63, 64, 95}, {105, 61, 62, 106}, {148, 60, 59, 
+         145}, {96, 57, 58, 97}, {142, 59, 58, 139}, {136, 58, 57, 115}, {121,
+          62, 61, 118}}]}]}, 
+     {RGBColor[0.9912907043706449, 0.8482267609266124, 0.5730011835489993], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{87, 17, 80}, {36, 28, 35}, {47, 40, 39}, {42, 43, 35}, {
+         39, 46, 47}, {52, 44, 51}, {39, 38, 46}, {51, 44, 43}, {45, 46, 
+         38}, {88, 21, 89}, {90, 22, 91}, {26, 33, 34}, {34, 41, 42}, {18, 26,
+          19}, {18, 17, 25}, {27, 20, 19}, {28, 20, 27}, {26, 27, 19}, {34, 
+         42, 35}, {42, 50, 43}, {55, 56, 48}, {31, 38, 39}, {44, 36, 43}, {37,
+          38, 30}, {39, 32, 31}, {37, 36, 44}, {42, 41, 49}, {48, 40, 47}, {
+         31, 30, 38}, {45, 37, 44}, {50, 51, 43}, {53, 45, 52}, {101, 52, 
+         100}, {47, 46, 54}, {53, 54, 46}, {99, 51, 98}, {18, 25, 26}, {44, 
+         52, 45}, {45, 53, 46}, {43, 36, 35}, {37, 45, 38}, {20, 28, 21}, {29,
+          30, 22}, {26, 34, 27}, {34, 35, 27}, {23, 22, 30}, {81, 18, 82}, {
+         95, 56, 109}, {55, 48, 47}, {97, 50, 96}, {108, 55, 107}, {83, 19, 
+         84}, {92, 23, 93}, {104, 53, 102}, {47, 54, 55}, {21, 29, 22}, {35, 
+         28, 27}, {29, 37, 30}, {29, 21, 28}, {26, 25, 33}, {85, 20, 86}, {28,
+          36, 29}, {106, 54, 105}, {23, 30, 31}, {31, 32, 24}, {32, 39, 40}, {
+         37, 29, 36}, {42, 49, 50}, {31, 24, 23}, {34, 33, 41}}], 
+        PolygonBox[{{107, 55, 54, 106}, {84, 19, 20, 85}, {105, 54, 53, 
+         104}, {102, 53, 52, 101}, {100, 52, 51, 99}, {80, 17, 18, 81}, {91, 
+         22, 23, 92}, {93, 23, 24, 94}, {98, 51, 50, 97}, {89, 21, 22, 90}, {
+         86, 20, 21, 88}, {96, 50, 49, 103}, {82, 18, 19, 83}, {109, 56, 55, 
+         108}}]}]}, 
+     {RGBColor[1., 0.95, 0.75], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{7, 6, 14}, {90, 14, 89}, {81, 10, 80}, {94, 16, 93}, {13,
+          14, 6}, {16, 8, 15}, {15, 8, 7}, {88, 13, 86}, {85, 12, 84}, {7, 14,
+          15}, {92, 15, 91}, {83, 11, 82}, {9, 2, 1}, {12, 5, 4}, {5, 13, 
+         6}, {11, 12, 4}, {10, 2, 9}, {3, 2, 10}, {3, 11, 4}, {3, 10, 11}, {
+         13, 5, 12}}], 
+        PolygonBox[{{86, 13, 12, 85}, {84, 12, 11, 83}, {89, 14, 13, 88}, {93,
+          16, 15, 92}, {80, 10, 9, 87}, {82, 11, 10, 81}, {91, 15, 14, 
+         90}}]}]}}, {{}, 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{87, 80, 81, 82, 83, 84, 85, 86, 88, 89, 90, 91, 92, 93, 94}]},
+       "0"],
+      Annotation[#, 0, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{95, 109, 108, 107, 106, 105, 104, 102, 101, 100, 99, 98, 97, 
+         96, 103}]},
+       RowBox[{"-", "20"}]],
+      Annotation[#, -20, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{115, 136, 139, 142, 145, 148, 151, 112, 118, 121, 124, 127, 
+         130, 133, 154}]},
+       RowBox[{"-", "40"}]],
+      Annotation[#, -40, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{114, 135, 138, 141, 144, 147, 150, 111, 117, 120, 123, 126, 
+         129, 132, 153}]},
+       RowBox[{"-", "60"}]],
+      Annotation[#, -60, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{152, 131, 128, 125, 122, 119, 116, 110, 149, 146, 143, 140, 
+         137, 134, 113}]},
+       RowBox[{"-", "80"}]],
+      Annotation[#, -80, "Tooltip"]& ], {}, {}}, {InsetBox[
+      RowBox[{"-", "80"}], 155], InsetBox[
+      RowBox[{"-", "60"}], 156], InsetBox[
+      RowBox[{"-", "40"}], 157], InsetBox[
+      RowBox[{"-", "20"}], 158], InsetBox["0", 159]}}],
+  AspectRatio->1,
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->True,
+  FrameLabel->{None, None},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "GridLinesInFront" -> 
+    True},
+  PlotRange->{{5.999999999999999, 13.999999999999998`}, {-14., -7.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.981028129570842*^9, 3.9810281925281954`*^9, {3.981028242641205*^9, 
+   3.9810282488957143`*^9}, {3.981028282519331*^9, 3.9810282891069083`*^9}, {
+   3.9810283618751707`*^9, 3.9810283754585752`*^9}, 3.981028417876214*^9, 
+   3.981031756407349*^9, 3.9810353747840014`*^9, 3.981043958368606*^9},
+ CellLabel->
+  "Out[131]=",ExpressionUUID->"a673bc34-fa70-4266-9de3-2022e38562e0"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1:eJx1mHtYFGUbxjHTTAhUTAR3l9nZ2dnZ2cUjkCKHV8FQREFQkwAxU9RC/VJS
+Q8QA8xQqpmmaBwgFFTUV0oSUpzykoqVwhYifx9ICD6QSEIp+8O7ODPv0tf/c
+1++a2fd+n/vdwzyPdvLsiKkv2dnZrWtnZ9eqL+jLhdjRlxlsWUQsIOYRc4hZ
+xAxilZV7IX+JRcQCYh4xh5hFzCBWwXPK7rK/LYuIBcQ8Yg4xi5hBLNWvRfVL
+LCIWEPOIOcQsYgax5K9D/hKLiAXEPGIOMYuYQSz565G/xCJiATGPmEPMImYQ
+S/4G5C+xiFhAzCPmELOIGcSSvxH5SywiFhDziDnELGIGseRvQv4Si4gFxDxi
+DjGLmEEsff88ZH9bFhELiHnEHGIWMYNYBcdHeB1eUtWL3NjhFj30gQk+2ecZ
+Wxnai5wYv7l3Qq4JQrt6vmwucSO5ndxe2hBnAucPB+Qv7udGVhZt+qWkpwmq
+KvtHlOe4kpkJrrurL4mQ7dv/b76HKxmj2ZTs/KkI07P6ZSUt70k8L/YM9wsS
+kZ8R+RmRnxH5GZGfgPwE5CfIflKekp/Ekp/Ekp/Ekp/Ekp/Ekp/Etn4C8hOQ
+n4D8BOQnID8B+QkoTwPK04DyNKA8DShPHuXJozx5VB+P6uNRfTyqj0f18ag+
+HtXHo/r0qD49qk+P6tOj+jhUH4fq42Ah66GelKT8Pqo6PXlHtVpFnJb83dcx
+WIS1N0v9A/M0ZMSfU7dnR5pQHmaUhxnlYUZ5mFEeZpSHGeVhhqiXqqNa9yN9
+3r69P7Fn637+/+ePQ/vh0H44tB8O7YdD++HQfjh0Pjp0Pjp0Pjp0Pjp0Piw6
+HxadDyvX75FaZ3YMFuT6Y+f1yciONIKu61xvVzkfAY5tfuriKecjQJFNPiyk
+2eTDwgibfFjoapMPC5U2+bCQZZMPC9Ns8mFlv2s0Hy2kWv2+p/loYbjVbyfN
+RwtdrH4raD5a2c+SDwPbrX7hNB8G4m3yYeT6P1s+6EuHYF6uP+5Cs/3mSAOs
+Gd2xrjZDyoeHdYc1JC9bI3Pg8Lb5MED2ts2HAb8ubfNhwCexbT4MDLTJhwEv
+m3wY6G+TDwMBVj9C1R3MVj8Pqu7gavVzo6qBjla/V6hq4Mlli18dVTXcHGzx
+u0VVDRe2W/x+oqqS6x9uaN80/01Orj8k2imrPFwPJ77xbFO/Cop6t61fBQfy
+BrSpXwW5TNv6VbB1U9v6VbCuW9v6VbDy07b1K78vFjbLvy8Sj3vnbFFTonSd
+gxWvLdym66OR+fhRc1potfL8Pcl6/8EDU2IX+bCwxnr/2aV+P6910cn334zp
+MSS3TgfLylOHfXKJsb5fgL4zD7y72FPyY8G77IuCB00K+76R2j7me7XMQ7fM
+iDy3TCPziHYROQNHK8//XrMt6335RuXBADcGysot61XPOH9l3iIGZg+0rDdw
+C7Tbf5MB+62W9Zb+VGi8E6iFXdb1frHbPUaVp5X7h4J8JvfUUA7uzd9a0FzK
+kPtUlX7Er/BpTcA4ncwX0/zYodkshKldwlfPlurl4dCg95a+/43ST+R8depq
+vz5SvQw0hl+rX39L4VEv6ro2rlPL/NU+B4/oNzUy10dzw483Kjyys++72nyl
+/wmMOk3XD7Io+N+1rB9gURg09y+6vo9FwdPuNbq+l0Wh9yrL+n0tCkY3y/om
+i8r1ak9kTnXdoYXE2/pJyVu05EOqerjyxOX1kb2lelSgWam6O+yawu8y2iMk
+Qy3zrsP65YMHa2S+HypGedco3O/X3mK/TUo/V5RUcSAnhSXFVEWozXP0q57P
+Wq+LUFMROvb761L+HBSfq7+Refaf/VuYT2nhrDFGmSc0XI/asIMHf8+Qpqkn
+GRJgUfl66vSy82/Na/m/q81Iv3xQR5ZSNcCKhoz06HKlX5uZVvrqtJOSPwN7
+dfzBlJb9RAWHTm7+Tg1ve26I6dagI9FU9ZDWVFa6dyJL0qlycO7jxoIUef8q
+KLjxdIZdJkcKqYpwaF928NPfpXrNsNvv91O+yaxcn0NyROiRRSx5zaJQ1alh
+V7l8nQWfIP8JFS1sUaVfrEs7vTipSg8Vkad2hi9i5f2HxO/e28obzkdEZTep
+4FHpsW8WbdOTxxaFWZ/r4yrk9VUQ+rDDB2/b8WQUVREe191aOLq3gTyhaoJ3
+yKo57b/j5P1b/PWkJmSAw3/biRCmTY3c0/J+6TzP2MPY5ulK/zn96PrysHg9
+mUFVB+MmmBqHBPFkPFUBpoyrP7enUnq/ACd0Tw7tSWrTr74f1sEuuYUTWlUL
+hwOiQ8ak8+SIRSGlKa50y2il//x08rTdLguV/naeT2YZfKQnDxOZnalPNFBS
+Wxb03koDAap62OrVIC7qIMh5nJ34bH18vMJ/LWv3IuxHhbUHO84YJCj94qgq
++3J2hcIfte/q51CjsDrh62HL5hqJhqoJTFeXlrk3S/Uq/fWhNWMf3CUiDIgc
+tbDHWqV/drIviWhOMZAuVHVwSZ+zYMkSpf+tcbvUret6I7lH1SCvVx5rP/dA
+pg72Tfvlx7A6af883P7B+c6ER0q/fOV27dAdLderqHLQNP33JbEt159S1cOz
+MV5nh20W5Xo2nr1Sov7VRL6wKATezc85vlEkQRaFLR+4zPrPHqV/H9xd3HZq
+vyCz1G/PKUh3qdSboH/FgT/yfZT+OviPhNzJX0v3tzyPNjmvz5yi9PPdAjJ9
+yp0F4kyVhd9Oh4zsDAK5Q5WFw6M7xAxJMJIjVHWy34BJ/qe77BRgz8AO/S5n
+mUg+VSOc48Y/mDdOJKVUlXlCUj/7bCc9D5O7Tzjnc1CqX4DY839ptjtJ+2Ph
+hznihIiNChtc49Z2cFfmDatK1p37Nlfhzg8dG8+/IhB7qgyMfXXjypy1AhlH
+lYFtnLs6qZeRbKeqheqAvK/DdxpJDVUtONZmF2dONBEnqgYoGP08sa+zSAqp
+KvOPdgXhWU47dRDY7Ny11CDtv6U/O3NndFJHab8MLJ718Ns/Fyi8oHsDO+2e
+wnOKXmRci1XmJQmTOjVEXlS4/7H9WQtb1otPih3S4KCC2RcGH3/Ust6tzfOT
+f32kgr3XzlxtXS+meO2RnyvUUPNg3N+t61VczX9cXKwBw/PbPca2rDfm2SmP
+XVnu8v5NR71ce7lqYff614NDVCayh6penlf81nnQsvElyv0x+YfrozRqyFk6
+Njax2kx2UBXhRGThpmEn/znPuR7z+Jn3GRMkBK6rVl9X5itNNzLK2leJ5ClV
+ZV5Teflpk/dwIziuTtieWOtBulA1wuoV50Pr8sxkDVVlHhTi1djkfYaHKa7d
+f2x8S5nXVOX7i24nlXlQ4MsNj8bcNpEgqlqYumxy0cVVIomnqsyHVvZpWW84
+B0n6u6vr9nmQZKoGmKB60zcx3kyiqPLwfsjnO8ovmeXz3lJfv9WhjzJvcvd+
+/vzaNhMhCc+ai/3c4bt416RtoSJJutC/zneTMv9a0up3Rgs+x+JSEhM8iC9V
+PTgUlpjqODNxpKrMtw58kJHumKKBYR/3SNs/UvLn4PnYKzPrRA/ygqpOPr+9
+n2wJzL9hlPnDVo4zwA/3I+j5naCqzKcS6f3KPGsuvZ+Fudc/a3N+DGQMuXe9
+c8v5qNIrjr1+3R18ji8wxm43kwXJjyKK/NWw/Gj7znzYv8+78PMYni/gfh8/
+3+DPB56X4edL/P3B54vnXfh5Af8f4PkNfp7B5/Fv8znp/HCe+Lz/B09I5R8=
+
+   "], {{
+     {RGBColor[0.148, 0.33, 0.54], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{140, 10, 131}, {142, 13, 149}, {160, 14, 167}, {178, 15, 
+         185}, {102, 11, 109}, {95, 10, 88}, {116, 12, 123}, {226, 15, 215}, {
+         133, 9, 81}, {210, 14, 206}, {158, 11, 156}, {240, 16, 232}, {203, 
+         13, 192}, {176, 12, 174}}], 
+        PolygonBox[{{215, 15, 14, 210}, {149, 13, 14, 160}, {109, 11, 12, 
+         116}, {123, 12, 13, 142}, {81, 9, 10, 95}, {185, 15, 16, 194}, {192, 
+         13, 12, 176}, {174, 12, 11, 158}, {206, 14, 13, 203}, {88, 10, 11, 
+         102}, {131, 10, 9, 201}, {156, 11, 10, 140}, {167, 14, 15, 178}, {
+         232, 16, 15, 226}}]}]}, 
+     {RGBColor[
+      0.26145437199845273`, 0.39303020666580707`, 0.6462509198080748], 
+      EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{103, 102, 109, 110}, {110, 109, 116, 117}, {168, 167, 178,
+         179}, {175, 174, 158, 159}, {159, 158, 156, 157}, {161, 160, 167, 
+        168}, {143, 142, 149, 150}, {179, 178, 185, 186}, {233, 232, 226, 
+        227}, {124, 123, 142, 143}, {193, 192, 176, 177}, {186, 185, 194, 
+        195}, {157, 156, 140, 141}, {150, 149, 160, 161}, {117, 116, 123, 
+        124}, {141, 140, 131, 132}, {82, 81, 95, 96}, {204, 203, 192, 193}, {
+        207, 206, 203, 204}, {211, 210, 206, 207}, {96, 95, 88, 89}, {134, 
+        133, 81, 82}, {132, 131, 201, 202}, {177, 176, 174, 175}, {89, 88, 
+        102, 103}, {227, 226, 215, 216}, {216, 215, 210, 211}, {241, 240, 232,
+         233}}]]}, 
+     {RGBColor[0.4427285770634384, 0.4592975829935407, 0.5588113157198957], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{159, 19, 175}, {352, 74, 355}, {177, 20, 193}, {18, 17, 
+         25}, {350, 65, 307}, {355, 74, 375}, {18, 25, 26}, {18, 26, 19}, {
+         220, 20, 224}, {224, 20, 221}, {247, 26, 246}, {307, 65, 351}, {250, 
+         26, 247}, {202, 17, 132}, {141, 18, 157}}], 
+        PolygonBox[CompressedData["
+1:eJwt0K9PAmEcx/EH5uxwFhzFP8UI8UyyMZXCpbt0JGgOEsOkyTFMmpyD5EWM
+MHEQMJigeE0CwcT7u/uE1+72PM/351kj8sO8c66MI3TQxgB3SPGLDbZ4wgjP
+eMErPJzgTWd2N8YED7hXjMXWcIkmAjyiqBxD1RwoxmK/dHeKf6ywxCcWqOec
+q/Ct4pr/hO87pvjAj3rzlCtQ7RARdvjTjKnO7C5GC3vVLuE4l9W02jPM9SbW
+zmx3V7w5d1lP1ttWu1vjGzfWp3ZQ09laM9lsPXTh4wK3KGhHfe10rBkTvfGV
+03IfADd5P4Q=
+         "]], PolygonBox[{{205, 204, 193, 20, 220}}]}]}, 
+     {RGBColor[0.6270396206526078, 0.5240714321782327, 0.45046233162913796`], 
+      EdgeForm[None], GraphicsGroupBox[{PolygonBox[CompressedData["
+1:eJwtkD9LQlEYh88xcHEJytSuljdDSNNa7F5pCHRwcBDE9WI4uAi5+iUF3auv
+0Bbios/L+Q0Pz8v58/7ec+LFevqVc8414QJeoAtvtuad6+MEt3AbGnCAIvyZ
+2evgG/yt9a36WI8EjhDBHso+9CnhJ929xz1lWeal8q7wuw99OrgOKfUM/yrL
+ZhnqjJ39hAF15kP2q2ZJtf6Bn/Gj3tNWbe+qai/CeYip/6Hiw5/c4pwP5wt4
+oowRvtbMNnvNh8w7H/Isd4FXMKbe4AdlRvqjVLOeNI/lbPXGnf7Ozv64cLel
++0v1tN6Zsub4DNQ/IOM=
+         "]], PolygonBox[CompressedData["
+1:eJwt0b0vw1EUxvF7hEli8E69pK3FW2vCbjBKMDHpxKImnWqwMOpUMxNzTTry
+HzDorEttJCQk+J6cZ/jkPrkv53d+92ZL5c3DrpTSDLqxbSmtMq5gg9xmfMUL
+WjjHGbZ8Lz7wjg7eMMKZecY5DJIHLHIOPRZ7OqrZ1pyvZdFPzmAhRY1Rcq9F
+bz7XR55CkbyEU6xb9LqMNYs9vncRQ+Rpi+xzE+RxFFLUmCQ3Ge/xgEfvW+t+
+ZpZ8zXiFG9ziEnXN+dqw6vuZMYs78bvZQ0k872BXPO/jQDW9dgN3OEEVF6jh
+S3eXwTd+lPP4lbze78/7triLgv6lpbd7wrO+0dA/N9WD91LGkXg+RgWfepuc
+eqmpt7ruoqK9VfX+D6diP2c=
+         "]], 
+        PolygonBox[{{354, 66, 352, 355, 356}, {239, 21, 220, 224, 225}, {225, 
+         224, 221, 27, 251}, {356, 355, 375, 75, 358}, {308, 307, 351, 66, 
+         312}, {213, 212, 208, 21, 222}, {311, 57, 350, 307, 308}}]}]}, 
+     {RGBColor[0.8113506642417772, 0.5888452813629249, 0.34211334753838024`], 
+      EdgeForm[None], GraphicsGroupBox[{PolygonBox[CompressedData["
+1:eJwtj8kOAUEQhruJ2B3syyAO1iDCiOXIkZNHmOCGxNHRm3oCDyDBV+k6fPn+
+6amu6moFt8M1ZIxpQBgK1pg2zuA4dMgJnIcpuYTvsCc/8Aa25B3+YQ++8ISe
+9OX8pedv+GiWs7PePeKKziriOnTJVev6Ss1J569hBhG++ziHVzAnT6x7t7w/
+ibNaI7VH7RNgD3xyU/7r3QG+6F6yX1T7xPBY64e4bN38mnV7errT0rq3+dYh
+eWFdX+k/windK43/MmAY4A==
+         "]], PolygonBox[CompressedData["
+1:eJwt0bsvRFEQx/E7okCIyvu5hVeIiEckiMYmdDayt6K6KgpWRbVaSqpVU1FT
+UfIfUNiEimZ1FHS+v8wUn5zZe+bsmZmTy/Y39uqSJBlGPfotSUZZR9BHPI8F
+4mnlELeY7ymnlfiG9Rq3uEN37Ov/uog7zM/OoJO43XxvCG3ETfFbZ5qJz1nP
+UMEFeszPzqKXOIdBFJHiiO+HKOMYu9hBCQdYI2cVK8ib55TjDt11hcvoQb3k
+I3cRS+Y1VCJHuRPmtaimcXOKNaNl4hfWZ7zhHSmKyLCNH3yjhq+osRQ9qJdP
+fOAV1cipxTftpdH7OgoYiHrmMGb+BnqLezwExY94wilOoibV1mD+FnqDRvOa
+Vfsv/rCFzZipZjtlfpfunDTvKYsc5RaiNs1cs69GL5qJZvMP+klCVg==
+         "]], 
+        PolygonBox[{{273, 272, 275, 41, 295}, {296, 50, 276, 272, 273}, {318, 
+         58, 312, 319, 320}, {253, 28, 255, 258, 259}, {316, 315, 301, 53, 
+         313}, {357, 67, 358, 363, 364}, {310, 309, 294, 50, 296}, {364, 363, 
+         376, 76, 365}, {320, 319, 354, 67, 322}, {259, 258, 267, 37, 263}, {
+         249, 248, 239, 28, 253}}]}]}, 
+     {RGBColor[0.9152814229761896, 0.658203557440474, 0.3373724112261877], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{259, 29, 253}, {346, 68, 362}, {29, 30, 22}, {295, 49, 
+         273}, {273, 49, 296}, {296, 49, 310}, {263, 29, 259}, {223, 22, 
+         214}, {253, 29, 249}, {322, 59, 320}, {268, 31, 266}, {334, 68, 
+         346}, {320, 59, 318}, {214, 22, 219}, {256, 31, 257}, {374, 77, 
+         379}, {318, 59, 299}, {299, 59, 300}, {265, 30, 264}, {364, 68, 
+         357}, {365, 68, 364}, {271, 32, 269}, {373, 77, 374}}], 
+        PolygonBox[CompressedData["
+1:eJwt0SFPQlEYxvFz3N1EptWGCh8AIcKkwYYN2bhJi5hkg0mChBUiJM2QIGvS
+qB/DJkVIEtgI/N+dJ/y2c9/7nvfc89z0fafePnDOnSPCAnO84R0TjPGCV9Xs
+3Qc+UfLOXaGAIiooq2bvblBDFde4Y88tHtHSTJs9xQwr/OEXS8RooIkHZJiR
+RgMxNtT+tWelnqbOsLN2ONP9nA9n2tlP6KKPHgZ4xgk9F+o/Zp3wYX8Khz70
+DJSJZZP0odd6jlh7PduMiHUeOWRxiTX1U/Xbt20122o/GGGoO8fK2LL+wrcL
+GVaVsWU9U3Zz/btY2dSUfVH/Jqdv6eruPd19D+YvNg0=
+         "]], 
+        PolygonBox[{{303, 302, 300, 59, 321}, {321, 59, 322, 331, 332}, {332, 
+         331, 357, 68, 334}, {231, 230, 219, 22, 238}, {371, 370, 378, 77, 
+         373}, {362, 68, 365, 370, 371}}]}]}, 
+     {RGBColor[0.9447240816965042, 0.7318102042412604, 0.42864465325916296`], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{260, 24, 257}, {371, 69, 362}, {381, 79, 347}, {231, 23, 
+         237}, {238, 23, 231}, {359, 70, 360}, {360, 70, 369}, {380, 79, 
+         381}, {314, 61, 317}, {332, 60, 321}, {334, 60, 332}, {321, 60, 
+         303}, {252, 23, 238}, {256, 23, 252}, {303, 60, 305}, {373, 69, 
+         371}}], PolygonBox[CompressedData["
+1:eJwt0LFKA0EQxvHdkHeITQrjE6QVUybggSdecQeBBBRDwBNFJQEvKbxWy6RK
+aq3OOldpaV7G0t7/sF/x44bZudmZPby6T+4azrk2mvhFCwf4w8I7F/MdYE5c
+8n3BCmsckesgRYZvcl/4wR41dsrZ2RtekSLDs/qfY0lcWE53lLrD7tpgqxls
+lj5mxBO+1xhhjBsfznoYEp/5EFvukjjCqdVYH3RxovpjH2r62ndKnOBC/0Ta
+MVXOzjLtYjNMdKf1sp6xDzPb7O/4EIsrfML78Nb25o74QfvFepuxdstxiyc8
+6o0K9aj0xrVqctVY7T+2EDLo
+         "]], PolygonBox[{{326, 325, 317, 61, 333}}]}]}, 
+     {RGBColor[0.9741667404168188, 0.8054168510420471, 0.5199168952921384], 
+      EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{380, 71, 377}, {200, 8, 191}, {148, 5, 129}, {353, 62, 
+         333}, {333, 62, 326}, {108, 3, 94}, {101, 2, 87}, {184, 7, 173}, {
+         122, 4, 115}, {367, 71, 372}, {166, 6, 155}, {326, 62, 330}, {366, 
+         71, 367}, {377, 71, 369}, {359, 62, 353}}], 
+        PolygonBox[{{87, 2, 1, 139}, {173, 7, 6, 166}, {191, 8, 7, 184}, {94, 
+         3, 2, 101}, {115, 4, 3, 108}, {129, 5, 4, 122}, {344, 343, 338, 
+         339}, {155, 6, 5, 148}, {292, 291, 343, 344}}], 
+        PolygonBox[{{345, 62, 359, 360, 361}, {382, 381, 347, 80, 383}, {372, 
+         71, 380, 381, 382}, {339, 338, 330, 62, 345}, {361, 360, 369, 71, 
+         366}}]}]}, 
+     {RGBColor[1., 0.881550077238827, 0.6216563948228006], EdgeForm[None], 
+      GraphicsGroupBox[{
+        PolygonBox[{{361, 63, 345}, {366, 63, 361}, {383, 72, 382}, {345, 63, 
+         339}, {339, 63, 344}, {382, 72, 372}}], 
+        PolygonBox[{{348, 63, 366, 367, 368}, {368, 367, 372, 72, 306}, {293, 
+         292, 344, 63, 348}}]}]}, 
+     {RGBColor[1., 0.95, 0.75], EdgeForm[None], 
+      GraphicsGroupBox[
+       PolygonBox[{{348, 64, 293}, {306, 64, 368}, {368, 64, 348}}]]}}, {{}, 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{293, 348, 368, 306}]},
+       "37.5`"],
+      Annotation[#, 37.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{383, 382, 372, 367, 366, 361, 345, 339, 344, 292}]},
+       "35"],
+      Annotation[#, 35, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{139, 87, 101, 94, 108, 115, 122, 129, 148, 155, 166, 173, 
+         184, 191, 200}], 
+        LineBox[{347, 381, 380, 377, 369, 360, 359, 353, 333, 326, 330, 338, 
+         343, 291}]},
+       "32.5`"],
+      Annotation[#, 32.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{245, 237, 231, 238, 252, 256, 257, 260}], 
+        LineBox[{379, 374, 373, 371, 362, 346, 334, 332, 321, 303, 305, 314, 
+         317, 325, 329, 337, 342, 290}], 
+        LineBox[{138, 86, 100, 93, 107, 114, 121, 128, 147, 154, 165, 172, 
+         183, 190, 199}]},
+       "30"],
+      Annotation[#, 30, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{271, 269, 268, 266, 265, 264, 263, 259, 253, 249, 223, 214, 
+         219, 230, 236, 244}], LineBox[{295, 273, 296, 310}], 
+        LineBox[{378, 370, 365, 364, 357, 331, 322, 320, 318, 299, 300, 302, 
+         304, 313, 316, 324, 328, 336, 341, 289}], 
+        LineBox[{137, 85, 99, 92, 106, 113, 120, 127, 146, 153, 164, 171, 182,
+          189, 198}]},
+       "27.5`"],
+      Annotation[#, 27.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{130, 286, 285, 282, 281, 278, 277, 270, 267, 258, 255, 254, 
+         251, 225, 239, 248, 222, 213, 218, 229, 235, 243}], 
+        LineBox[{274, 261, 275, 272, 276, 279, 280, 283, 284, 287, 297, 298, 
+         301, 315, 323, 327, 335, 340, 288}], 
+        LineBox[{376, 363, 358, 356, 354, 319, 312, 308, 311, 294, 309}], 
+        LineBox[{136, 84, 98, 91, 105, 112, 119, 126, 145, 152, 163, 170, 181,
+          188, 197}]},
+       "25"],
+      Annotation[#, 25, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{262, 246, 247, 250, 209, 221, 224, 220, 205, 208, 212, 217, 
+         228, 234, 242}], LineBox[{350, 307, 351, 349, 352, 355, 375}], 
+        LineBox[{135, 83, 97, 90, 104, 111, 118, 125, 144, 151, 162, 169, 180,
+          187, 196}]},
+       "22.5`"],
+      Annotation[#, 22.5, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{134, 82, 96, 89, 103, 110, 117, 124, 143, 150, 161, 168, 179,
+          186, 195}], 
+        LineBox[{202, 132, 141, 157, 159, 175, 177, 193, 204, 207, 211, 216, 
+         227, 233, 241}]},
+       "20"],
+      Annotation[#, 20, "Tooltip"]& ], 
+     TagBox[
+      TooltipBox[
+       {GrayLevel[0], Opacity[0.5], CapForm["Butt"], 
+        LineBox[{194, 185, 178, 167, 160, 149, 142, 123, 116, 109, 102, 88, 
+         95, 81, 133}], 
+        LineBox[{201, 131, 140, 156, 158, 174, 176, 192, 203, 206, 210, 215, 
+         226, 232, 240}]},
+       "17.5`"],
+      Annotation[#, 17.5, "Tooltip"]& ], {}, {}}, {InsetBox["17.5`", 384], 
+     InsetBox["17.5`", 385], InsetBox["20", 386], InsetBox["20", 387], 
+     InsetBox["22.5`", 388], InsetBox["22.5`", 389], InsetBox["22.5`", 390], 
+     InsetBox["25", 391], InsetBox["25", 392], InsetBox["25", 393], 
+     InsetBox["25", 394], InsetBox["27.5`", 395], InsetBox["27.5`", 396], 
+     InsetBox["27.5`", 397], InsetBox["30", 398], InsetBox["30", 399], 
+     InsetBox["30", 400], InsetBox["32.5`", 401], InsetBox["32.5`", 402], 
+     InsetBox["35", 403]}}],
+  AspectRatio->1,
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->True,
+  FrameLabel->{None, None},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "GridLinesInFront" -> 
+    True},
+  PlotRange->{{5.999999999999999, 14.999999999999996`}, {-14., -7.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.981028129570842*^9, 3.9810281925281954`*^9, {3.981028242641205*^9, 
+   3.9810282488957143`*^9}, {3.981028282519331*^9, 3.9810282891069083`*^9}, {
+   3.9810283618751707`*^9, 3.9810283754585752`*^9}, 3.981028417876214*^9, 
+   3.981031756407349*^9, 3.9810353747840014`*^9, 3.981043958431691*^9},
+ CellLabel->
+  "Out[133]=",ExpressionUUID->"7f4d9ec0-26bd-4258-a0d3-b7703b800a7f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"122.48", " ", "-", " ", "60.45"}]], "Input",
+ CellChangeTimes->{{3.981032547648391*^9, 3.98103255779564*^9}},
+ CellLabel->
+  "In[103]:=",ExpressionUUID->"8fdba874-f3d7-4a51-aae1-666689856aeb"],
+
+Cell[BoxData["62.03`"], "Output",
+ CellChangeTimes->{3.98103255836028*^9},
+ CellLabel->
+  "Out[103]=",ExpressionUUID->"f14a382a-2021-4285-a807-1c49dd424adc"]
+}, Open  ]]
+},
+Evaluator->"Local2",
+WindowSize->{958, 721},
+WindowMargins->{{Automatic, -448}, {720, Automatic}},
+FrontEndVersion->"13.2 for Microsoft Windows (64-bit) (January 30, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"fabbc470-ad0a-4538-9b66-ac9042e6afa8"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 1437, 34, 140, "Input",ExpressionUUID->"a3b55698-735d-4375-9aef-20c20ae1b873",
+ InitializationCell->True],
+Cell[1998, 56, 653, 13, 86, "Input",ExpressionUUID->"31cb1776-ddce-49ab-8da8-e4eb9f26c616"],
+Cell[CellGroupData[{
+Cell[2676, 73, 302, 5, 28, "Input",ExpressionUUID->"462e5cc6-b9f1-4fef-b1ac-0c18c3263e99"],
+Cell[2981, 80, 41376, 647, 1536, "Output",ExpressionUUID->"bfdcb8d5-23e7-41f8-b967-552319fb9f1b"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[44394, 732, 4445, 124, 451, "Input",ExpressionUUID->"9f2dba0a-a554-4816-a19a-5342e94bcf6a"],
+Cell[48842, 858, 423, 10, 38, "Message",ExpressionUUID->"675003a9-2512-4ce4-b43f-84403a2afc97"],
+Cell[49268, 870, 424, 10, 38, "Message",ExpressionUUID->"e3a47f66-5965-4155-b99e-6f157fa300a6"],
+Cell[49695, 882, 426, 10, 38, "Message",ExpressionUUID->"bc6311a2-68ce-42e4-9b6f-263976bb95e1"],
+Cell[50124, 894, 504, 11, 28, "Message",ExpressionUUID->"debb0989-ce9c-44e3-914e-10ff703a9f7b"],
+Cell[50631, 907, 10071, 191, 371, "Output",ExpressionUUID->"42a5d6a5-a2d7-43a1-ab45-eb91f7053401"],
+Cell[60705, 1100, 13896, 259, 371, "Output",ExpressionUUID->"05cfe457-5f9a-4f84-b358-c3ad0242b4c6"],
+Cell[74604, 1361, 11335, 227, 371, "Output",ExpressionUUID->"11d9da58-e19b-4bc4-92a8-e06b4013b812"],
+Cell[85942, 1590, 426, 10, 38, "Message",ExpressionUUID->"a3651717-05a1-43a8-95c5-dfa476f18331"],
+Cell[86371, 1602, 461, 11, 28, "Message",ExpressionUUID->"da0cc582-344f-4068-a118-ba90365c28df"],
+Cell[86835, 1615, 426, 10, 38, "Message",ExpressionUUID->"536c9f52-7cb7-46d6-aee7-36c1e762971b"],
+Cell[87264, 1627, 461, 11, 28, "Message",ExpressionUUID->"3eeeb224-1a0b-4893-8fd6-ff78429a7a40"],
+Cell[87728, 1640, 426, 10, 38, "Message",ExpressionUUID->"0358a38b-3d19-4b23-a54f-926497d5e5e5"],
+Cell[88157, 1652, 504, 11, 28, "Message",ExpressionUUID->"789c7c40-ec4e-4266-80f9-e43120987988"],
+Cell[88664, 1665, 461, 11, 28, "Message",ExpressionUUID->"4ae7c846-a99a-4385-8f00-3b205e823137"],
+Cell[89128, 1678, 506, 11, 28, "Message",ExpressionUUID->"92f880db-7242-44af-93e9-83ee76866a0c"],
+Cell[89637, 1691, 9986, 205, 371, "Output",ExpressionUUID->"f96f95af-a78c-4ab3-b297-9b2006772a29"],
+Cell[99626, 1898, 10863, 221, 371, "Output",ExpressionUUID->"8abe564d-bdf1-46e2-a947-59aab06d0771"],
+Cell[110492, 2121, 7991, 157, 371, "Output",ExpressionUUID->"a673bc34-fa70-4266-9de3-2022e38562e0"],
+Cell[118486, 2280, 17133, 325, 371, "Output",ExpressionUUID->"7f4d9ec0-26bd-4258-a0d3-b7703b800a7f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[135656, 2610, 216, 4, 28, "Input",ExpressionUUID->"8fdba874-f3d7-4a51-aae1-666689856aeb"],
+Cell[135875, 2616, 157, 3, 32, "Output",ExpressionUUID->"f14a382a-2021-4285-a807-1c49dd424adc"]
+}, Open  ]]
+}
+]
+*)
+
