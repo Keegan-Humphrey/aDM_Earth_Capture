@@ -202,7 +202,7 @@ v0to\[Beta]D[v0_,meD_,mpD_]:=Module[{\[Beta]D,vpDmean,veDmean},
 (*
 v0 is the velocity corresponding to the temperature of the aDM particles. By equipartition: 3/2 Subscript[T, D] = 1/2(Subscript[m, Subscript[e, D]]Subscript[v^2, Subscript[e, D]]+Subscript[m, Subscript[p, D]]Subscript[v^2, Subscript[p, D]]) so we define 3 Subscript[T, D] = Overscript[m, _] Subscript[v^2, 0] 
 *)
-\[Beta]D = 3/((meD + mpD)v0^2);
+\[Beta]D = 6/((meD + mpD)v0^2);
 vpDmean = Sqrt[3/( 2 mpD \[Beta]D)];
 veDmean = Sqrt[3/( 2 meD \[Beta]D)]; (*v0i for each species, not really the mean*)
 

@@ -673,8 +673,9 @@ pdictwtherm = Get\[Tau]sFromPDict[PDict,"\[Delta]"/.\[Delta]Listcurrent,Nuccoeff
 \[Delta]Listcurrent=Append[\[Delta]Listcurrent,<|"\[Delta]table"->\[Delta]table,"v0"->v0,"meDbympD"->mratio,"\[Alpha]Dby\[Alpha]"->\[Alpha]Dby\[Alpha],"fD"->fD,"vescsSun"->vescsSun|>];
 return\[Delta]List=Append[return\[Delta]List,\[Delta]Listcurrent];
 
-(*Capture`ExportDatFileToDir[\[Delta]Listcurrent,ToString@StringForm["\[Delta]Dict_``_aDbya_``_fD_``_\[Delta]_``",v0ind,\[Alpha]Dby\[Alpha],fD,("\[Delta]"/.\[Delta]Listcurrent)],"\[Delta]Dicts"];*)
-Capture`ExportDatFileToDir[\[Delta]Listcurrent,ToString@StringForm["\[Delta]Dict_``_aDbya_``_fD_``_delta_``",v0ind,\[Alpha]Dby\[Alpha],fD,StringReplace[(ToString@Log10@("\[Delta]"/.\[Delta]Listcurrent)),"."->"p"]],"\[Delta]Dicts"];
+
+(*Capture`ExportDatFileToDir[\[Delta]Listcurrent,ToString@StringForm["\[Delta]Dict_``_aDbya_``_fD_``_delta_``",v0ind,\[Alpha]Dby\[Alpha],fD,StringReplace[(ToString@Log10@("\[Delta]"/.\[Delta]Listcurrent)),"."->"p"]],"\[Delta]Dicts"];*)
+Capture`ExportDatFileToDir[\[Delta]Dict,ToString@StringForm["\[Delta]Dict_mrat_``_aDbya_``_fD_``_delta_``",mratio,\[Alpha]Dby\[Alpha],fD,StringReplace[(ToString@Log10@("\[Delta]"/.\[Delta]Listcurrent)),"."->"p"]],ToString@StringForm["\[Delta]Dicts_mrat_``_aDbya_``_fD_``",mratio,\[Alpha]Dby\[Alpha],fD]];
 
 ,{\[Delta],Length[\[Delta]List]}];
 
@@ -691,17 +692,17 @@ return\[Delta]List
 
 
 Clear[ScanOverUnfixedParameters]
-ScanOverUnfixedParameters[\[Delta]ScanList_,NuccoeffList_,\[Alpha]Dby\[Alpha]s_:{1,2},fDs_:{0.01,0.05},vescsSun_:{"vescSpD"->0,"vescSeD"->0}(*normalization: vescsSun^2Subscript[m, Subscript[p, D]]/Subscript[m, i] is the contribution to Subscript[vesc, i]^2 *)]:=Module[{\[Delta]Dict},
+ScanOverUnfixedParameters[\[Delta]ScanList_,NuccoeffList_,\[Alpha]Dby\[Alpha]s_:{1,2},fDs_:{0.01,0.05},vescsSun_:{"vescSpD"->0,"vescSeD"->0}(*normalization: vescsSun^2Subscript[m, Subscript[p, D]]/Subscript[m, i] is the contribution to Subscript[vesc, i]^2 *)]:=Module[{\[Delta]Dict,medrat},
 Do[
 Print["Running: ",{v0ind,\[Alpha]Dby\[Alpha],fD}];
 
 \[Delta]Dict=Quiet@Compute\[Delta]DictonScan[\[Delta]ScanList,NuccoeffList,v0ind,\[Alpha]Dby\[Alpha],fD,vescsSun];(*this was the culpable line (I think) it was expecting \[Sigma] dicts to be passed too.*)
 
-
+medrat = ("meD")/("mpD")/.\[Delta]ScanList[[1]]["pdict"][[1,1]];
 (*\[Delta]Dict = "test string test string";*)
 
 
-Capture`ExportDatFileToDir[\[Delta]Dict,ToString@StringForm["\[Delta]Dict_``_aDbya_``_fD_``",v0ind,\[Alpha]Dby\[Alpha],fD],"\[Delta]Dicts"];
+Capture`ExportDatFileToDir[\[Delta]Dict,ToString@StringForm["\[Delta]Dict_mrat_``_aDbya_``_fD_``",medrat,\[Alpha]Dby\[Alpha],fD],ToString@StringForm["\[Delta]Dicts_mrat_``_aDbya_``_fD_``",medrat,\[Alpha]Dby\[Alpha],fD]];
 ,{v0ind,(*4*)1},{\[Alpha]Dby\[Alpha],\[Alpha]Dby\[Alpha]s},{fD,fDs}](*this system of having a hardcoded v0ind is stupid, this needs to be read in from the \[Delta]scan list some how or not at all. 
 Ie. the accounting and printing can be done internally to Compute\[Delta]DictonScan*)
 ]
@@ -734,6 +735,7 @@ Monitor[Do[
 
 \[Delta]Scantruth = Flatten[\[Delta]Scan[[1]]["\[Delta]table"]][[i]];
 \[Delta]Scantruth["\[Delta]"]=\[Delta]truth;
+\[Delta]Scantruth["vescsSun"]=vescsSun;
 
 (*Print["test 3"];*)
 
