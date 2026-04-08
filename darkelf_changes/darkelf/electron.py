@@ -68,21 +68,48 @@ def dRdomega_electron(self,omega, sigmae=1e-38, kcut=0, withscreening=True, meth
     scalar_input = np.isscalar(omega)
     omega = np.atleast_1d(omega)
     dRdomega = np.zeros_like(omega)
+
     for i in range(len(omega)):
         # Kinematic limits on k range
-        kmin = self.qmin(omega[i])
-        kmax = self.qmax(omega[i])
-        if(method == "Lindhard"):  
-            # Accounts for the finite range where eps2 is nonzero in Lindhard.
-            kmin1 =  max( np.sqrt( 2*self.me * omega[i] + self.kF**2 ) - self.kF, kmin ) 
-            kmax1 =  min( np.sqrt( 2*self.me * omega[i] + self.kF**2 ) + self.kF, kmax ) 
-            kmin, kmax = kmin1, kmax1
+        # kmin = self.qmin(omega[i])
+        # kmax = self.qmax(omega[i])
+        # if(method == "Lindhard"):  
+        #     # Accounts for the finite range where eps2 is nonzero in Lindhard.
+        #     kmin1 =  max( np.sqrt( 2*self.me * omega[i] + self.kF**2 ) - self.kF, kmin ) 
+        #     kmax1 =  min( np.sqrt( 2*self.me * omega[i] + self.kF**2 ) + self.kF, kmax ) 
+        #     kmin, kmax = kmin1, kmax1
+        # else:
+        #     # Set max of k range based on grid range if using grid
+        #     kmax = min(kmax,kcut)
+
+        if method == "Lindhard":
+            # Lindhard support in k from eps2 != 0
+            kmin_eps = np.sqrt(2*self.me * omega[i] + self.kF**2) - self.kF
+            kmax_eps = np.sqrt(2*self.me * omega[i] + self.kF**2) + self.kF
         else:
-            # Set max of k range based on grid range if using grid
-            kmax = min(kmax,kcut)
+            kmin_eps = 0.0
+            kmax_eps = kcut
+
+        if vdist == "halo":
+            # Hard kinematic support from finite vmax
+            kmin_kin = self.qmin(omega[i])
+            kmax_kin = self.qmax(omega[i])
+
+            kmin = max(kmin_eps, kmin_kin)
+            kmax = min(kmax_eps, kmax_kin)
+
+        elif vdist == "disk":
+            # No hard upper-speed cutoff in the current disk implementation.
+            # The rate is suppressed through etav_disk(vmin), not sharply cut off.
+            kmin = max(kmin_eps, 0.0)
+            kmax = kmax_eps
 
         if(kmin >= kmax): # accounts for kmin=kmax=0 when omega is too high (kinematics)
             continue
+
+        # avoid starting exactly at k=0 because vmin ~ omega/k there
+        if kmin == 0.0:
+            kmin = 1e-12
 
         # Note: division and multiplication by self.eVtoInvYr in the integrand improves performance of quad
         dRdomega[i] = self.eVtoInvYr * integrate.quad(lambda x: self.dRdomegadk_electron(omega[i],x,sigmae, \
@@ -124,10 +151,22 @@ def R_electron(self,threshold=-1.0,Emax=-1.0,sigmae=1e-38, kcut = 0, withscreeni
           else:
             threshold=np.max([2.0*self.E_gap,1e-3]) # prevent zero threshold for metals
   
-    if (Emax < 1.0):
-        Emax = np.min([self.ommax,0.5*(self.vesc+self.veavg)**2*self.mX])
+    # if (Emax < 1.0):
+    #     Emax = np.min([self.ommax,0.5*(self.vesc+self.veavg)**2*self.mX])
+    # else:
+    #     Emax = np.min([self.ommax,0.5*(self.vesc+self.veavg)**2*self.mX, Emax])
+
+    if vdist == "halo":
+        kin_emax = 0.5*(self.vesc+self.veavg)**2*self.mX
+    elif vdist == "disk":
+        kin_emax = self.ommax
     else:
-        Emax = np.min([self.ommax,0.5*(self.vesc+self.veavg)**2*self.mX, Emax])
+        raise ValueError("vdist must be 'halo' or 'disk'")
+
+    if (Emax < 1.0):
+        Emax = np.min([self.ommax, kin_emax])
+    else:
+        Emax = np.min([self.ommax, kin_emax, Emax])
 
     olist=np.linspace(threshold,Emax,200)
     return np.trapz(self.dRdomega_electron(olist,sigmae=sigmae,kcut=kcut, \

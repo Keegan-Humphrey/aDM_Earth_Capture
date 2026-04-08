@@ -334,22 +334,28 @@ class darkelf(object):
             self.veavg = vekms/self.c0   # km/s
             # self.vekms = vekms
 
-        self.vmax = self.vesc+ self.veavg
+        # self.vmax = self.vesc+ self.veavg
+        # self.omegaDMmax = self.mX/2.0*(self.vesc + self.veavg)**2
 
-        # need to change the definition of vmax
+        # no maximum v or omega in the disk case
+        if self.vdist == "halo":
+            self.vmax = self.vesc + self.veavg
+            self.omegaDMmax = 0.5*self.mX*self.vmax**2
+        elif self.vdist == "disk":
+            self.vmax = None
+            self.omegaDMmax = None
 
         self.zz = self.vesc/self.v0
         zz = self.zz
         self.Nfv = (erf(zz) - 2*zz*exp(-zz*zz)/sqrt(pi))*pow(pi,1.5)*self.v0**3
         # self.Nfv_disk = pi**(3/2)*self.v0**3*erfc(zz) + 2*pi*self.v0**2*self.vesc*exp(-zz*zz)
         self.Nfv_disk = pi**(3/2)*self.v0**3 * exp(zz * zz) * erfc(zz) + pi**(3/2)*self.v0**3 * 2 * zz / pi**(1/2) 
-        self.omegaDMmax = self.mX/2.0*(self.vesc + self.veavg)**2
-
+        
         # Reduced mass
         self.muxN = self.mX*self.mN/(self.mX + self.mN)
         self.muxnucleon = self.mX*self.mp/(self.mX + self.mp)
 
-        self.muXe = mX*self.me/(mX + self.me)
+        self.muXe = self.mX*self.me/(self.mX + self.me)
 
         # reference momentum used in mediator form factor for nuclear recoils
         if(q0==0.0):
@@ -529,7 +535,7 @@ class darkelf(object):
     ########################### Disk - velocity distributions ##################################
 
     # boosted velocity integrand for isotropic approx - dimensionless
-    # disk case, comoving with Earth, Maxwell-Boltzmann at infinity
+    # disk case, assumes comoving with Earth (so ve irrelevant), Maxwell-Boltzmann at infinity
     def _fv_1d_scalar_disk(self, v):
         if(v < self.vesc):
             return 0
@@ -579,4 +585,17 @@ class darkelf(object):
             print("Warning! etav_disk function given invalid quantity ")
             return 0.0
 
-    
+    #  # Minimum and maximum allowed q values (TOTAL momentum transfer), given omega (energy deposited) and other DM params
+    # def qmin_disk(self,omega):
+    #     if( omega + self.delta < self.omegaDMmax):
+    #         return self.mX*self.vmax - np.sqrt(self.mX**2*self.vmax**2 \
+    #             - 2 * (omega + self.delta) * self.mX)
+    #     else:
+    #         return 0
+
+    # def qmax_disk(self,omega):
+    #     if( omega + self.delta < self.omegaDMmax):
+    #         return self.mX*self.vmax + np.sqrt(self.mX**2*self.vmax**2  \
+    #             - 2 * (omega + self.delta) * self.mX)
+    #     else:
+    #         return 0
